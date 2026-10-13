@@ -25,6 +25,22 @@ if (-not $env:CODEX_BIN -and -not (Get-Command codex -ErrorAction SilentlyContin
 }
 & $nodeExecutable 'node_modules\typescript\bin\tsc'
 if ($LASTEXITCODE -ne 0) { throw 'TypeScript build failed.' }
+if (-not $Test) {
+  if (-not (Test-Path -LiteralPath (Join-Path $projectRoot 'apps\web\node_modules\vite'))) {
+    $webPnpm = Get-Command pnpm -ErrorAction SilentlyContinue
+    $bundledWebPnpm = Join-Path $bundledRuntime 'node_modules\pnpm\bin\pnpm.mjs'
+    $bundledWebPnpmCjs = Join-Path $bundledRuntime 'node_modules\pnpm\bin\pnpm.cjs'
+    if ($webPnpm) { & $webPnpm.Source --dir apps/web install --frozen-lockfile }
+    elseif (Test-Path -LiteralPath $bundledWebPnpm) { & $nodeExecutable $bundledWebPnpm --dir apps/web install --frozen-lockfile }
+    elseif (Test-Path -LiteralPath $bundledWebPnpmCjs) { & $nodeExecutable $bundledWebPnpmCjs --dir apps/web install --frozen-lockfile }
+    else { throw 'Run pnpm --dir apps/web install --frozen-lockfile first.' }
+    if ($LASTEXITCODE -ne 0) { throw 'Frontend dependency installation failed.' }
+  }
+  & $nodeExecutable 'apps\web\node_modules\typescript\bin\tsc' --noEmit -p apps/web
+  if ($LASTEXITCODE -ne 0) { throw 'Frontend type check failed.' }
+  & $nodeExecutable 'apps\web\node_modules\vite\bin\vite.js' build apps/web --logLevel warn
+  if ($LASTEXITCODE -ne 0) { throw 'Frontend build failed.' }
+}
 if ($Test) { & $nodeExecutable --import tsx --test 'tests/*.test.ts' }
 else { & $nodeExecutable 'dist\src\main.js' }
 exit $LASTEXITCODE

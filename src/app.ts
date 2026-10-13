@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance } from "fastify";
+import fastifyStatic from "@fastify/static";
 import { z } from "zod";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
@@ -27,6 +28,7 @@ import {
 
 export type AppOptions = {
   dataDir: string;
+  webDir?: string;
   agent?: AgentPort;
   fetcher?: typeof fetchPublic;
   token?: string;
@@ -58,6 +60,8 @@ export async function createApp(options: AppOptions) {
   if (!options.token && !existsSync(tokenFile))
     writeFileSync(tokenFile, token, { mode: 0o600, flag: "wx" });
   const app = Fastify({ logger: false, bodyLimit: 30 * 1024 * 1024 });
+  const frontend =
+    !!options.webDir && existsSync(join(options.webDir, "index.html"));
   const paths: Record<string, any> = {};
   const origins = new Set(options.allowedOrigins ?? []);
   app.addHook("onRequest", async (req, reply) => {
@@ -90,6 +94,15 @@ export async function createApp(options: AppOptions) {
     }
     if (req.method === "OPTIONS") return reply.code(204).send();
     if (req.url === "/health") return;
+    const pathname = req.url.split("?")[0]!;
+    if (
+      frontend &&
+      ["GET", "HEAD"].includes(req.method) &&
+      (pathname === "/" ||
+        pathname === "/index.html" ||
+        pathname.startsWith("/assets/"))
+    )
+      return;
     const supplied = req.headers.authorization?.startsWith("Bearer ")
       ? req.headers.authorization.slice(7)
       : "";
@@ -205,7 +218,7 @@ export async function createApp(options: AppOptions) {
   route("GET", "/health", "프로세스 상태", () => ({
     status: "ok",
     version: "0.1.0",
-    frontend: false,
+    frontend,
   }));
   route("GET", "/api/openapi.json", "API 명세", () => ({
     openapi: "3.1.0",
@@ -591,6 +604,17 @@ export async function createApp(options: AppOptions) {
     (req) => exams.start(req.params.id),
     z.object({}).strict(),
   );
+  route("GET", "/api/attempts", "목표별 응시 기록", (req) => {
+    learning.expire();
+    const goalId = key.parse(req.query.goalId);
+    catalog.readGoal(goalId);
+    return store
+      .all(
+        "SELECT a.id FROM attempts a JOIN exams e ON e.id=a.exam_id WHERE e.goal_id=? ORDER BY a.started_at DESC",
+        goalId,
+      )
+      .map((r) => exams.attempt(r.id));
+  });
   route("GET", "/api/attempts/:id", "응시·저장 답안 조회", (req) => {
     learning.expire();
     return exams.attempt(req.params.id);
@@ -861,9 +885,25 @@ export async function createApp(options: AppOptions) {
     formats: ["text/plain", "text/html", "application/pdf"],
     ocr: false,
     codeExecution: false,
-    frontend: false,
+    frontend,
     fsrsVersion: "5.4.2",
   }));
+  if (frontend)
+    await app.register(fastifyStatic, {
+      root: options.webDir!,
+      index: "index.html",
+      setHeaders(res, path) {
+        res.setHeader("X-Content-Type-Options", "nosniff");
+        res.setHeader("Referrer-Policy", "no-referrer");
+        if (path.endsWith(".html")) {
+          res.setHeader("Cache-Control", "no-store");
+          res.setHeader(
+            "Content-Security-Policy",
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+          );
+        }
+      },
+    });
   let ticker: NodeJS.Timeout | undefined;
   if (options.autoWorker !== false) {
     jobs.kick();

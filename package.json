@@ -9,16 +9,21 @@
   "packageManager": "pnpm@10.18.3",
   "scripts": {
     "dev": "tsx watch src/main.ts",
-    "build": "tsc",
+    "build": "pnpm build:server && pnpm build:web",
     "start": "node dist/src/main.js",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
-    "check": "pnpm typecheck && pnpm test",
+    "check": "pnpm typecheck && pnpm typecheck:web && pnpm test",
     "codex:probe": "tsx scripts/codex-probe.ts",
     "restore": "tsx scripts/restore.ts",
-    "openapi": "tsx scripts/openapi.ts"
+    "openapi": "tsx scripts/openapi.ts",
+    "dev:web": "pnpm --dir apps/web dev",
+    "build:server": "tsc",
+    "build:web": "pnpm --dir apps/web build",
+    "typecheck:web": "pnpm --dir apps/web typecheck"
   },
   "dependencies": {
+    "@fastify/static": "8.3.0",
     "cheerio": "1.2.0",
     "fastify": "5.12.5",
     "ipaddr.js": "2.5.0",

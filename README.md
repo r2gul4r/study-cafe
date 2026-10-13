@@ -2,7 +2,9 @@
 
 로컬 코덱스와 함께 목표를 정하고, 자료를 조사하고, 시험을 풀고, 개념별 약점을 복습하는 개인 학습 시스템.
 
-현재 구현은 **백엔드 전용**이다. 프론트엔드는 만들지 않았다. TypeScript·Fastify·SQLite로 학습 규칙과 REST API, 작업 큐를 구현했다. AI 기능은 설치된 Codex App Server와 기존 로그인으로 연결한다.
+React·Vite 기반 한국어 프론트엔드와 TypeScript·Fastify·SQLite 백엔드를 로컬에서 함께 실행한다. 무료 MIT 템플릿의 탐색·목록·노트 구성을 참고했다. AI 기능은 설치된 Codex App Server와 기존 로그인으로 연결한다.
+
+다른 컴퓨터에서 이어가기: [작업 현황과 인수인계](PROJECT_STATUS.md). 현재 구현·검증 범위, 다음 작업, 설치 및 데이터 복원 절차를 기록한다.
 
 ## 실행
 
@@ -19,11 +21,14 @@ cd C:\git\study-cafe
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm --dir apps/web install --frozen-lockfile
 pnpm build
 pnpm start
 ```
 
 기본 주소는 `http://127.0.0.1:4317`이다. 데이터 기본 위치는 Windows의 `%LOCALAPPDATA%\study-cafe`이며 `STUDY_CAFE_DATA_DIR`로 변경할 수 있다. 데이터 폴더는 실행 코드·Git 저장소와 분리한다. 서버를 종료하려면 Ctrl+C를 누른다.
+
+브라우저에서 기본 주소를 열고 `session-token` 파일 내용을 연결 화면에 입력한다. 토큰은 해당 탭의 세션에만 보관한다. 프론트 개발 시 백엔드 `pnpm dev`와 별도 터미널의 `pnpm dev:web`을 실행하고 `http://127.0.0.1:5173`에 접속한다.
 
 API는 `/health`를 제외하고 로컬 세션 토큰이 필요하다. 토큰 파일의 값을 `Authorization: Bearer ...` 헤더에 넣는다. 토큰을 URL이나 Git에 넣지 않는다.
 
@@ -68,6 +73,7 @@ pnpm openapi
 Windows에서는 `.\scripts\start.ps1 -Test`로 빌드와 테스트를 실행할 수도 있다. 실제 코덱스와 네트워크를 사용하는 별도 검사는 `node --import tsx scripts/live-smoke.ts`이며 `--full`을 붙이면 25문항을 검증한다. 계정 사용량을 소모한다. 자동 테스트의 AI 응답은 fixture이고 실제 모델 검증과 구분한다.
 
 - [백엔드 API와 사용 흐름](docs/BACKEND.md)
+- [프론트 화면·실행·검증 안내](docs/FRONTEND.md)
 - [OpenAPI 명세](openapi.json) / 실행 중 `/api/openapi.json`
 - [검증 기록](docs/VERIFICATION.md)
 - [프로젝트 설계](docs/PROJECT_DESIGN.md)
@@ -93,4 +99,4 @@ src/main.ts        로컬 서버 시작
 tests/            도메인·저장·HTTP·프로토콜 검증
 ```
 
-설계에서 제안했던 여러 패키지는 현재 백엔드 하나의 모듈 구조로 구현했다. 프론트엔드를 추가할 때 API 계약을 기준으로 분리할 수 있다. 현재 작업 브랜치는 `develop`이다.
+백엔드는 `src/`, 프론트엔드는 `apps/web/`에 분리되어 있다. 프로덕션 빌드는 Fastify가 같은 로컬 주소에서 제공한다. 현재 작업 브랜치는 `develop`이다.
