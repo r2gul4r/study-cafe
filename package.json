@@ -1,0 +1,37 @@
+{
+  "name": "study-cafe",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc",
+    "start": "node dist/src/main.js",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "check": "pnpm typecheck && pnpm test",
+    "codex:probe": "tsx scripts/codex-probe.ts",
+    "restore": "tsx scripts/restore.ts",
+    "openapi": "tsx scripts/openapi.ts"
+  },
+  "dependencies": {
+    "cheerio": "1.2.0",
+    "fastify": "5.12.5",
+    "ipaddr.js": "2.5.0",
+    "pdfjs-dist": "5.7.284",
+    "ts-fsrs": "5.4.2",
+    "undici": "7.30.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "pdf-lib": "1.17.1",
+    "prettier": "3.9.10",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3"
+  }
+}

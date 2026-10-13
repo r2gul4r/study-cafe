@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.data/
+data/
+coverage/
+*.db
+*.db-shm
+*.db-wal
+session-token
+codex-schema/
+live-smoke-result.json
