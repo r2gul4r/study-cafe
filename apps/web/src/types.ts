@@ -110,6 +110,28 @@ export type Attempt = {
   answers: Answer[];
 };
 export type Assessment = {
+  criteria?: {
+    id: string;
+    score: number;
+    evidence: string;
+    reason: string;
+    verdict?: string;
+  }[];
+  gradingReview?: {
+    policyVersion: number;
+    rubricAudit: {
+      criteria: {
+        id: string;
+        aligned: boolean;
+        promptField: "stem" | "passage";
+        promptQuote: string;
+        reason: string;
+      }[];
+      explanation: string;
+    };
+    secondPass: boolean;
+    issue: string | null;
+  };
   correctionRevision?: string;
   correctedAnswer?: string[];
   correctedExplanation?: string;

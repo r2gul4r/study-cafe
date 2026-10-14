@@ -245,6 +245,7 @@ test("generation uses current late evidence, waits on unsupported answers, then 
       usable: supported,
       evidenceValid: supported,
       answerValid: supported,
+      rubricCheck: null,
       reason: supported ? "근거 대조" : "인용만으로 정답을 확정할 수 없음",
     });
   });
@@ -445,6 +446,7 @@ test("extraction isolates rejected candidates and keeps uncertain answer mapping
       usable: good,
       evidenceValid: true,
       answerValid: good,
+      rubricCheck: null,
       reason: good ? "정답표 대조" : "보기와 정답표 매핑 불일치",
     });
   });

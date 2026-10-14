@@ -2759,3 +2759,30 @@ blockquote small {
 .rubric-editor input[type="number"] {
   max-width: 110px;
 }
+.short-grade-details {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.short-grade-details summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.grade-criterion {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+}
+.grade-quote {
+  border-left: 3px solid var(--line);
+  padding-left: 12px;
+  min-width: 0;
+}
+.grade-issue {
+  color: #865322;
+  margin: 0;
+}

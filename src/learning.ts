@@ -1,33 +1,9 @@
 import { fsrs, createEmptyCard, Rating, type Card } from "ts-fsrs";
-import { z } from "zod";
 import { Exams } from "./exams.js";
 import { id, now, decode, requireThat, dayAt } from "./core.js";
+import { gradeOutput, resolveShortGrade } from "./grading.js";
 
-export const gradeOutput = z
-  .object({
-    status: z.enum(["confirmed", "pending"]),
-    criteria: z.array(
-      z
-        .object({
-          id: z.string(),
-          score: z.number().nonnegative(),
-          evidence: z.string(),
-          reason: z.string(),
-        })
-        .strict(),
-    ),
-    explanation: z.string(),
-    reason: z.enum([
-      "concept",
-      "interpretation",
-      "application",
-      "calculation",
-      "unanswered",
-      "unknown",
-    ]),
-    passed: z.boolean(),
-  })
-  .strict();
+export { gradeOutput } from "./grading.js";
 export class Learning {
   scheduler = fsrs({ enable_fuzz: false });
   constructor(public exams: Exams) {}
@@ -183,6 +159,31 @@ export class Learning {
     );
     return this.latest(attemptId, slot);
   }
+  reviewedGrade(
+    attemptId: string,
+    slot: number,
+    input: { audit: unknown; first?: unknown; second?: unknown },
+    expectedVersion: number,
+  ) {
+    const attempt = this.store.get("attempts", attemptId);
+    const item = this.exams
+      .get(attempt.exam_id, true)
+      .items.find((q: any) => q.slot === slot);
+    requireThat(item?.type === "short", "TYPE", "주관식 평가만 가능합니다.");
+    const answer = decode(
+      this.store.one(
+        "SELECT data FROM answers WHERE attempt_id=? AND slot=?",
+        attemptId,
+        slot,
+      )?.data,
+    );
+    return this.aiGrade(
+      attemptId,
+      slot,
+      resolveShortGrade(item, answer.value, input),
+      expectedVersion,
+    );
+  }
   aiGrade(
     attemptId: string,
     slot: number,
@@ -190,6 +191,15 @@ export class Learning {
     expectedVersion: number,
   ) {
     const data = gradeOutput.parse(input);
+    const latest = this.latest(attemptId, slot);
+    requireThat(
+      latest?.status === "pending" &&
+        !["user", "correction"].includes(latest.actor) &&
+        !latest.correctionRevision,
+      "GRADE_PROTECTED",
+      "확정·수동 검토·정정된 채점은 자동으로 덮어쓰지 않습니다.",
+      409,
+    );
     const attempt = this.store.get("attempts", attemptId);
     const q = decode(
       this.store.one(

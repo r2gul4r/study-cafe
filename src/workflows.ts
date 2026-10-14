@@ -12,7 +12,15 @@ import { Jobs, Waiting, type JobContext } from "./jobs.js";
 import { Catalog } from "./catalog.js";
 import { Sources } from "./sources.js";
 import { Exams } from "./exams.js";
-import { Learning, gradeOutput } from "./learning.js";
+import { Learning } from "./learning.js";
+import {
+  rubricAuditOutput,
+  semanticGradeOutput,
+  rubricInstruction,
+  semanticInstruction,
+  validateRubricAudit,
+  needsGradeReview,
+} from "./grading.js";
 import {
   decode,
   id,
@@ -58,8 +66,14 @@ const verifyOutput = z
     reason: z.string(),
     evidenceValid: z.boolean(),
     answerValid: z.boolean(),
+    rubricCheck: rubricAuditOutput.nullable(),
   })
   .strict();
+const shortAnswerPolicy =
+  "For short questions, every scored requirement must be explicitly requested by the stem or passage. " +
+  "If explanation, reasoning, an example, units or a specific format will be scored, state that requirement in the question. " +
+  "Use separate criteria for separately requested outputs and explanations. A model answer is illustrative: allow semantically equivalent answers and never require its exact phrasing. " +
+  "Do not add rubric requirements merely to fill points. For extracted questions preserve the source wording; leave unsupported rubric details out or report the question unresolved.";
 export function registerWorkflows(
   jobs: Jobs,
   catalog: Catalog,
@@ -91,7 +105,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 3,
+          promptVersion: 4,
           startedAt: started,
         }),
         now(),
@@ -106,7 +120,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 3,
+            promptVersion: 4,
             startedAt: started,
           }),
           now(),
@@ -129,8 +143,8 @@ export function registerWorkflows(
       scope: { id: scope.id, version: scope.version, ...decode(scope.data) },
     };
   };
-  const verify = async (q: any, ctx: JobContext) =>
-    ask(
+  const verify = async (q: any, ctx: JobContext) => {
+    const review = await ask(
       ctx,
       "verify_question",
       {
@@ -141,10 +155,25 @@ export function registerWorkflows(
           text: s.get("segments", e.segmentId).text,
         })),
         instruction:
-          "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. An exact quote alone is not proof: the material must support the correct answer and requested concept. For extracted questions, independently check sourceMatch: the question number, choice-to-answer mapping, edition and passage must agree with the quoted question and answer sheet; never accept a match just because the numbers look similar. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty.",
+          "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. An exact quote alone is not proof: the material must support the correct answer and requested concept. For extracted questions, independently check sourceMatch: the question number, choice-to-answer mapping, edition and passage must agree with the quoted question and answer sheet; never accept a match just because the numbers look similar. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty. For non-short questions rubricCheck=null. For short questions return rubricCheck using this policy: " +
+          rubricInstruction,
       },
       verifyOutput,
     );
+    if (q.type === "short") {
+      const audit = validateRubricAudit(q, review.rubricCheck);
+      const mismatches = audit.criteria.filter((c) => !c.aligned);
+      if (mismatches.length)
+        return {
+          ...review,
+          usable: false,
+          reason:
+            "문제 요구와 채점 기준 불일치: " +
+            mismatches.map((c) => c.reason).join(" "),
+        };
+    }
+    return review;
+  };
   jobs.handlers.set("plan_goal", async (input, ctx) =>
     ctx.step("plan", async () => {
       let previousFailure: string | null = null;
@@ -474,6 +503,7 @@ export function registerWorkflows(
               segments: batch,
               sourceHeader: relevant[0],
               answerSegments: selectedAnswers,
+              shortAnswerPolicy,
               instruction:
                 "Extract only existing complete questions from segments, not new ones or questions appearing only in sourceHeader. Keep exact stem, choices and passage wording. sourceMatch is required: use the identical printed questionReference/answerReference, cite questionEvidence and answerEvidence with their numbers and original answer. If the answer comes from a separate document, edition must be a common verbatim edition/session identifier and editionEvidence must quote it from BOTH documents. Include all match citations in evidence. Never infer a matching edition from a shared website or URL alone. For answers printed with the question, edition may be null and editionEvidence=[]. Missing or ambiguous answers, edition, passages or assets go in unresolved. Use source kind for origin; user_material and reference map to external_practice only when actual questions exist. Keep linked passage groups together. Never invent unavailable question text.",
             },
@@ -630,6 +660,7 @@ export function registerWorkflows(
                   previousFailure: feedback,
                   exclude: current.items.map((q: any) => q.stem),
                   sourceMatch: null,
+                  shortAnswerPolicy,
                   instruction:
                     "Create exactly one original grounded question for this slot. origin=ai_generated. Set goalId, scopeId, type and conceptIds exactly from the input. Use human-readable choice/rubric IDs. familyId, parentId and groupId must be null for a new independent question. No unsupported image/audio assets. Use exact supplied evidence quotes. For short answers choices=[] and answer=[], provide modelAnswer and rubric whose points sum to points. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above. Correct previousFailure if present.",
                 },
@@ -715,6 +746,7 @@ export function registerWorkflows(
       if (
         item.type !== "short" ||
         item.assessment.status !== "pending" ||
+        item.assessment.actor === "user" ||
         item.assessment.actor === "correction" ||
         item.assessment.correctionRevision
       )
@@ -722,24 +754,67 @@ export function registerWorkflows(
       const expectedVersion = item.assessment.version;
       await ctx.step(
         `grade:${item.slot}:${expectedVersion}`,
-        () =>
-          ask(
+        async () => {
+          const question = {
+            stem: item.stem,
+            passage: item.passage,
+            modelAnswer: item.modelAnswer,
+            rubric: item.rubric,
+          };
+          // Audit without the model answer or learner's answer to avoid adding
+          // requirements after seeing a verbose solution or a concise response.
+          const audit = validateRubricAudit(
+            question,
+            await ask(
+              ctx,
+              "audit_rubric",
+              {
+                question: {
+                  stem: item.stem,
+                  passage: item.passage,
+                  rubric: item.rubric,
+                },
+                instruction: rubricInstruction,
+              },
+              rubricAuditOutput,
+            ),
+          );
+          if (audit.criteria.some((c) => !c.aligned)) return { audit };
+          const gradingInput = {
+            question,
+            rubricAudit: audit,
+            answer: item.answerGiven?.value ?? "",
+            instruction: semanticInstruction,
+          };
+          const first = await ask(
             ctx,
             "grade_answer",
-            {
-              question: {
-                stem: item.stem,
-                passage: item.passage,
-                modelAnswer: item.modelAnswer,
-                rubric: item.rubric,
-              },
-              answer: item.answerGiven?.value ?? "",
-              instruction:
-                "Evaluate only this submitted answer against each frozen rubric criterion. Evidence must quote exact answer text. Set passed=true only when every required criterion receives full points; if no criterion is marked required, every rubric criterion must receive full points to pass. Otherwise passed=false. Use pending if ambiguous. Never assign fallback partial credit for an error.",
-            },
-            gradeOutput,
+            gradingInput,
+            semanticGradeOutput,
+          );
+          const second =
+            first.status === "confirmed" && needsGradeReview(question, first)
+              ? await ask(
+                  ctx,
+                  "review_short_answer",
+                  {
+                    ...gradingInput,
+                    instruction:
+                      semanticInstruction +
+                      " Independently re-evaluate this answer, particularly alternate valid wording and any deductions for unrequested detail. You are not given the earlier grade; do not infer it.",
+                  },
+                  semanticGradeOutput,
+                )
+              : undefined;
+          return { audit, first, ...(second ? { second } : {}) };
+        },
+        (r) =>
+          learning.reviewedGrade(
+            input.attemptId,
+            item.slot,
+            r,
+            expectedVersion,
           ),
-        (r) => learning.aiGrade(input.attemptId, item.slot, r, expectedVersion),
       );
     }
     return learning.result(input.attemptId);
@@ -828,6 +903,7 @@ export function registerWorkflows(
             parent,
             materials,
             sourceMatch: null,
+            shortAnswerPolicy,
             instruction:
               "Test the same concept with a meaningfully different situation. origin=ai_variant and parentId must equal the original ID. Preserve goal/scope and family. Cite exact source evidence. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above.",
           },

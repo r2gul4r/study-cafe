@@ -26,6 +26,7 @@ import {
 } from "../src/backup.js";
 import { decode, now, questionInput } from "../src/core.js";
 import type { AgentPort } from "../src/agent.js";
+import { alignedAudit } from "./helpers/grading.js";
 
 const temp = () => mkdtempSync(join(tmpdir(), "study-cafe-test-"));
 class FakeAgent implements AgentPort {
@@ -41,6 +42,8 @@ class FakeAgent implements AgentPort {
         usable: true,
         evidenceValid: true,
         answerValid: true,
+        rubricCheck:
+          input.question.type === "short" ? alignedAudit(input.question) : null,
         reason: "독립 검토 fixture",
       };
     else if (role === "generate_question")
@@ -72,7 +75,8 @@ class FakeAgent implements AgentPort {
           },
         ],
       };
-    else if (role === "grade_answer")
+    else if (role === "audit_rubric") output = alignedAudit(input.question);
+    else if (role === "grade_answer" || role === "review_short_answer")
       output = {
         status: "confirmed",
         criteria: input.question.rubric.map((r: any) => ({
@@ -80,6 +84,7 @@ class FakeAgent implements AgentPort {
           score: input.answer.includes("repeat") ? r.points : 0,
           evidence: input.answer.includes("repeat") ? "repeat" : "",
           reason: "fixture comparison",
+          verdict: input.answer.includes("repeat") ? "met" : "missing",
         })),
         explanation: "fixture grade",
         reason: "unknown",

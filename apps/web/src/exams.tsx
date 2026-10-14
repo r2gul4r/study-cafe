@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { StudyText } from "./study-content";
+import { ShortGradeDetails } from "./short-grade-details";
 import {
   Plus,
   Play,
@@ -840,6 +841,7 @@ export function ResultsPage({ id, slot }: { id: string; slot?: number }) {
               className="muted"
               text={item.assessment.explanation || item.assessment.reason || ""}
             />
+            {item.type === "short" && <ShortGradeDetails item={item} />}
             <div className="row wrap">
               <Button variant="secondary" onClick={() => setManual(item)}>
                 채점 직접 검토

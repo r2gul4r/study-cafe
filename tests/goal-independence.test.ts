@@ -1,4 +1,5 @@
 import test from "node:test";
+import { alignedAudit } from "./helpers/grading.js";
 import assert from "node:assert/strict";
 import { mkdtempSync } from "node:fs";
 import { join } from "node:path";
@@ -126,9 +127,15 @@ for (const sample of cases) {
             usable: true,
             evidenceValid: true,
             answerValid: true,
+            rubricCheck:
+              input.question.type === "short"
+                ? alignedAudit(input.question)
+                : null,
             reason: "모의 근거 검토",
           });
-        if (role === "grade_answer") {
+        if (role === "audit_rubric")
+          return schema.parse(alignedAudit(input.question));
+        if (role === "grade_answer" || role === "review_short_answer") {
           assert.equal(input.question.modelAnswer, sample.fact);
           const passed = input.answer === sample.fact;
           return schema.parse({
@@ -139,6 +146,7 @@ for (const sample of cases) {
                 score: passed ? 1 : 0,
                 evidence: input.answer,
                 reason: "모의 기준 대조",
+                verdict: passed ? "equivalent" : "contradiction",
               },
             ],
             explanation: "모의 채점",
