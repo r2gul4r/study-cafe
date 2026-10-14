@@ -5,6 +5,7 @@ import { randomBytes, timingSafeEqual } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Store } from "./store.js";
+import { readNotes } from "./notes.js";
 import { Catalog, sourceInput } from "./catalog.js";
 import { Sources, fetchPublic } from "./sources.js";
 import { Jobs } from "./jobs.js";
@@ -337,12 +338,7 @@ export async function createApp(options: AppOptions) {
     z.object({}).strict(),
   );
   route("GET", "/api/goals/:id/notes", "요약 기록", (req) =>
-    store
-      .all(
-        "SELECT * FROM notes WHERE goal_id=? ORDER BY created_at DESC",
-        req.params.id,
-      )
-      .map((r) => ({ id: r.id, ...decode(r.data), createdAt: r.created_at })),
+    readNotes(store, req.params.id),
   );
   route("GET", "/api/goals/:id/reviews", "복습 예정", (req) =>
     store

@@ -4,6 +4,8 @@
 
 ## 처음부터 공부 한 회차까지
 
+`GET /api/goals/:id/notes`의 각 개념에는 `references`가 포함된다. 각 항목은 `questionId`, `attemptId`, `slot`, `examTitle`, `submittedAt`, `conceptIds`, `segmentIds`를 제공한다. 요약에 저장된 `assessmentIds`와 개념의 `attemptIds`를 원래 시험 스냅샷에 대조하며 목표가 다른 기록은 제외한다. 현재 오답 목록이나 현재 문제은행 순서로 번호를 추측하지 않는다. 조회는 기존 note JSON을 수정하지 않는다.
+
 주관식 통과 판정은 필수 채점 항목의 만점을 요구한다. 필수 항목이 하나도 없으면 전체 항목의 만점을 요구하며 빈 필수 집합 때문에 0점 답안을 통과시키지 않는다. 기준별 점수·답안 인용·통과 판정이 모순되면 저장하지 않고 실패/보류 상태를 유지한다.
 
 1. `POST /api/goals`에 `{"title":"파이썬 반복문"}`을 보내 목표 ID를 받는다.

@@ -664,7 +664,7 @@ export function registerWorkflows(
             goal: catalog.readGoal(input.goalId),
             wrong: snapshot.slice(0, 50),
             instruction:
-              "Group by actual concept IDs and explain from answer evidence. Distinguish inferred reasons from user-confirmed ones; propose a concise correction and a contrasting example.",
+              "Group by actual concept IDs and explain from answer evidence. Keep IDs only in structured fields (conceptId, attemptIds), never in summary/example prose. In prose refer to the question slot number and quote a short relevant answer. Write summary in 2-3 short paragraphs: observed answer, concept to revisit, next action. Distinguish inferred reasons from user-confirmed ones; do not diagnose an unanswered item without evidence. Put one concise contrasting example in example. Use fenced Markdown code blocks with a language tag for code and preserve indentation.",
           },
           z
             .object({

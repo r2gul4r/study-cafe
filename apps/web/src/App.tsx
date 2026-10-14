@@ -359,7 +359,14 @@ export function App() {
           ) : pathname.startsWith("/attempt/") ? (
             <AttemptPage id={pathname.split("/")[2]} />
           ) : pathname.startsWith("/result/") ? (
-            <ResultsPage id={pathname.split("/")[2]} />
+            <ResultsPage
+              key={route}
+              id={pathname.split("/")[2]}
+              slot={
+                Number(new URLSearchParams(route.split("?")[1]).get("slot")) ||
+                undefined
+              }
+            />
           ) : goals.loading ? (
             <Loading />
           ) : !goal ? (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { StudyText } from "./study-content";
 import {
   Plus,
   Play,
@@ -442,9 +443,13 @@ function ExamRunner({ initial }: { initial: Attempt }) {
             <span className="muted small">{item.points}점</span>
           </div>
           {item.passage && (
-            <div className="passage pre-wrap">{item.passage}</div>
+            <StudyText className="passage" text={item.passage} />
           )}
-          <h2 className="question-stem pre-wrap">{item.stem}</h2>
+          <StudyText
+            className="question-stem"
+            text={item.stem}
+            headingLevel="h2"
+          />
           {item.requiredAssetIds?.map((id) => (
             <AssetLink key={id} id={id} />
           ))}
@@ -494,7 +499,7 @@ function ExamRunner({ initial }: { initial: Attempt }) {
                     <span className="option-letter">
                       {String.fromCharCode(65 + i)}
                     </span>
-                    <span>{c.text}</span>
+                    <StudyText text={c.text} />
                     {selected && <Check size={18} />}
                   </label>
                 );
@@ -691,10 +696,19 @@ function ExamRunner({ initial }: { initial: Attempt }) {
     </>
   );
 }
-export function ResultsPage({ id }: { id: string }) {
+export function ResultsPage({ id, slot }: { id: string; slot?: number }) {
   const q = useQuery<Result>(`/attempts/${id}/result`, 10000);
   const [filter, setFilter] = useState("all"),
     [manual, setManual] = useState<ResultItem | null>(null);
+  useEffect(() => {
+    if (q.loading || !slot) return;
+    const frame = requestAnimationFrame(() => {
+      const item = document.getElementById(`result-question-${slot}`);
+      item?.scrollIntoView({ block: "start" });
+      item?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [id, slot, q.loading]);
   if (q.loading) return <Loading />;
   if (q.error) return <Notice>{q.error}</Notice>;
   const r = q.data;
@@ -785,7 +799,13 @@ export function ResultsPage({ id }: { id: string }) {
       </div>
       {items.length ? (
         items.map((item) => (
-          <section className="panel result-question" key={item.slot}>
+          <section
+            className={`panel result-question ${slot === item.slot ? "linked-question" : ""}`}
+            id={`result-question-${item.slot}`}
+            tabIndex={-1}
+            aria-label={`문항 ${item.slot} 결과`}
+            key={item.slot}
+          >
             <div className="section-heading">
               <h3>문항 {item.slot}</h3>
               <Badge
@@ -816,9 +836,10 @@ export function ResultsPage({ id }: { id: string }) {
                   : item.answerGiven?.value || "미응답"}
               </p>
             </div>
-            <p className="muted pre-wrap">
-              {item.assessment.explanation || item.assessment.reason}
-            </p>
+            <StudyText
+              className="muted"
+              text={item.assessment.explanation || item.assessment.reason || ""}
+            />
             <div className="row wrap">
               <Button variant="secondary" onClick={() => setManual(item)}>
                 채점 직접 검토

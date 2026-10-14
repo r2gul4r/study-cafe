@@ -1358,6 +1358,7 @@ tbody tr:hover {
   padding: 5px;
 }
 .question-stem {
+  font-weight: 650;
   font-size: 18px !important;
   line-height: 1.9 !important;
   letter-spacing: -0.5px;
@@ -1763,6 +1764,106 @@ blockquote small {
   font-size: 13px;
   color: #7d8c80;
   margin-top: 13px;
+}
+.study-text {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.study-text > p {
+  white-space: pre-wrap;
+  margin: 0 0 0.85em;
+}
+.study-text > p:last-child {
+  margin-bottom: 0;
+}
+.study-text > h2,
+.study-text > h3 {
+  font: inherit;
+  margin: 0 0 0.85em;
+  white-space: pre-wrap;
+}
+.study-text .inline-code {
+  font-family: Consolas, "Courier New", monospace;
+  background: #e8eee8;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+}
+.code-block {
+  max-width: 100%;
+  min-width: 0;
+  margin: 16px 0;
+  border: 1px solid #d9e3dc;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f5f8f5;
+  color: #243d33;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.code-language {
+  padding: 6px 14px;
+  background: #e9f0e9;
+  font:
+    11px/1.5 Consolas,
+    monospace;
+}
+.code-block pre {
+  margin: 0;
+  padding: 16px;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 4;
+  font:
+    13px/1.8 Consolas,
+    "Courier New",
+    monospace;
+  overflow-wrap: normal;
+}
+.code-block pre:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: -2px;
+}
+.option > .study-text {
+  flex: 1;
+}
+.summary-concept .study-text p {
+  color: #40584b;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.summary-concept h4 {
+  margin: 22px 0 10px;
+  font-size: 13px;
+}
+.summary-example {
+  margin: 22px 0;
+  padding: 1px 18px 18px;
+  border-left: 3px solid #80a48c;
+  border-radius: 5px;
+  background: #f2f6ef;
+}
+.summary-references ul {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.summary-references li {
+  display: grid;
+  gap: 4px;
+}
+.summary-references li span {
+  font-size: 11px;
+  color: #65786c;
+  overflow-wrap: anywhere;
+}
+.result-question {
+  scroll-margin-top: 24px;
+}
+.linked-question {
+  outline: 2px solid #76a18a;
 }
 .review-hero {
   display: flex;

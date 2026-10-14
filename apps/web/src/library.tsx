@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { reviewChoices } from "./review-choices";
+import { StudyText } from "./study-content";
 import {
   FileText,
   ExternalLink,
@@ -604,8 +605,8 @@ export function QuestionBody({
         <Badge value={q.origin} />
         <span className="muted small">{q.points}점</span>
       </div>
-      {q.passage && <div className="passage pre-wrap">{q.passage}</div>}
-      <h3 className="question-stem pre-wrap">{q.stem}</h3>
+      {q.passage && <StudyText className="passage" text={q.passage} />}
+      <StudyText className="question-stem" text={q.stem} headingLevel="h3" />
       {reordered && (
         <Notice tone="info">
           해설의 보기 기호와 맞추기 위해 원문 순서로 표시합니다. 시험에서 본
@@ -624,7 +625,7 @@ export function QuestionBody({
                   : ""
               }
             >
-              {c.text}
+              <StudyText text={c.text} />
               {answer &&
                 (q.assessment?.correctedAnswer ?? q.answer)?.includes(c.id) && (
                   <Badge>정답</Badge>
@@ -636,14 +637,14 @@ export function QuestionBody({
       {answer && (
         <div className="explanation">
           <h4>정답과 해설</h4>
-          <p className="pre-wrap">
-            {q.modelAnswer ||
+          <StudyText
+            text={
+              q.modelAnswer ||
               (q.assessment?.correctedExplanation ?? q.explanation) ||
-              "등록된 해설이 없어요."}
-          </p>
-          {q.modelAnswer && q.explanation && (
-            <p className="pre-wrap">{q.explanation}</p>
-          )}
+              "등록된 해설이 없어요."
+            }
+          />
+          {q.modelAnswer && q.explanation && <StudyText text={q.explanation} />}
         </div>
       )}
       {!!q.requiredAssetIds?.length && (

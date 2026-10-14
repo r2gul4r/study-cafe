@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { StudyText } from "./study-content";
+import { NoteSummary } from "./note-summary";
 import {
   NotebookPen,
   RotateCcw,
@@ -104,11 +106,13 @@ export function NotesPage({ goal }: { goal: Goal }) {
                   <QuestionBody q={current} answer />
                   <div className="given-answer">
                     <strong>채점 피드백</strong>
-                    <p>
-                      {current.assessment.explanation ||
+                    <StudyText
+                      text={
+                        current.assessment.explanation ||
                         current.assessment.reason ||
-                        "기록된 피드백이 없습니다."}
-                    </p>
+                        "기록된 피드백이 없습니다."
+                      }
+                    />
                   </div>
                   <div className="row wrap spaced">
                     <Button
@@ -158,13 +162,7 @@ export function NotesPage({ goal }: { goal: Goal }) {
                   {goal.scope?.concepts.find((x) => x.id === c.conceptId)
                     ?.name ?? "이전 범위의 개념"}
                 </h3>
-                <p className="pre-wrap">{c.summary}</p>
-                {c.example && (
-                  <div className="passage pre-wrap">{c.example}</div>
-                )}
-                {c.reasonIsInferred && (
-                  <Badge>오답 원인은 AI의 추정이에요</Badge>
-                )}
+                <NoteSummary concept={c} goalId={goal.id} />
               </div>
             ))}
           </section>
