@@ -180,7 +180,7 @@ export function SourcesPage({ goal }: { goal: Goal }) {
                 name="title"
                 required
                 maxLength={300}
-                placeholder="예: JLPT N2 공식 연습문제"
+                placeholder="어떤 자료인지 알아볼 수 있는 이름"
               />
             </Field>
             {inputType === "url" ? (

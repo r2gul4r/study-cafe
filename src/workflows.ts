@@ -84,7 +84,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 1,
+          promptVersion: 2,
           startedAt: started,
         }),
         now(),
@@ -99,13 +99,28 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 1,
+            promptVersion: 2,
             startedAt: started,
           }),
           now(),
         );
       throw e;
     }
+  };
+  // Exam/variant scopes are versioned. A newer goal scope must not replace the
+  // concepts belonging to an already-created exam or its original question.
+  const goalAtScope = (goalId: string, scopeId: string) => {
+    const goal = catalog.readGoal(goalId);
+    const scope = s.get("scopes", scopeId);
+    requireThat(
+      scope.goal_id === goalId,
+      "AGENT_SCOPE",
+      "목표 범위가 다릅니다.",
+    );
+    return {
+      ...goal,
+      scope: { id: scope.id, version: scope.version, ...decode(scope.data) },
+    };
   };
   const sourceContext = (goalId: string) =>
     s
@@ -190,7 +205,12 @@ export function registerWorkflows(
               .all("SELECT data FROM sources WHERE goal_id=?", input.goalId)
               .map((r) => decode(r.data)),
             instruction:
-              "Search official scope, public past papers, official exercises and reputable practice material relevant to the goal. Open original pages; never treat search snippets as verified past-paper evidence. Return actual absolute URLs. reuseEvidence only for an exact verbatim permission/license quote and its page. Set reuseEvidence=null if relevant reuse or AI-use restrictions require additional permission; do not quote a permissive fragment while ignoring a restriction. Maximum 30 candidate URLs. Report uncovered scope. Discovery does not mean the app has downloaded the source: do not claim acquisition in the discovery summary.",
+              (goal.kind === "exam"
+                ? "Prioritize the confirmed exam's official scope, public past papers and official practice material. "
+                : goal.kind === "skill"
+                  ? "Prioritize authoritative practical guides, worked examples and exercises for the abilities the user wants to demonstrate. Past papers and an exam syllabus are not prerequisites. "
+                  : "Prioritize authoritative explanations, learning resources and exercises for the user's interests and level. Past papers and an exam syllabus are not prerequisites. ") +
+              "Follow the supplied goal description, level and scope; never substitute a preset subject or curriculum. Open original pages; never treat search snippets as verified past-paper evidence. Classify explanatory material as reference and existing exercises by their actual provenance. Return actual absolute URLs. reuseEvidence only for an exact verbatim permission/license quote and its page. Set reuseEvidence=null if relevant reuse or AI-use restrictions require additional permission; do not quote a permissive fragment while ignoring a restriction. Maximum 30 candidate URLs. Report uncovered scope. Discovery does not mean the app has downloaded the source: do not claim acquisition in the discovery summary.",
           },
           researchOutput,
           true,
@@ -432,6 +452,7 @@ export function registerWorkflows(
             ctx,
             "extract_existing_questions",
             {
+              goal: goalAtScope(src.goalId, scope.id),
               source: src,
               scope,
               segments: batch.map((r) => ({
@@ -540,7 +561,7 @@ export function registerWorkflows(
                 ctx,
                 "generate_question",
                 {
-                  goal: catalog.readGoal(exam.goalId),
+                  goal: goalAtScope(exam.goalId, exam.scopeId),
                   scopeId: exam.scopeId,
                   slot,
                   materials,
@@ -654,6 +675,12 @@ export function registerWorkflows(
   });
   jobs.handlers.set("summarize_wrong", async (input, ctx) => {
     const snapshot = learning.wrong(input.goalId);
+    const conceptIds = new Set(
+      snapshot.flatMap((item: any) => item.conceptIds),
+    );
+    const concepts = s
+      .all("SELECT id,name,area FROM concepts WHERE goal_id=?", input.goalId)
+      .filter((concept) => conceptIds.has(concept.id));
     return ctx.step(
       "summary",
       () =>
@@ -662,6 +689,7 @@ export function registerWorkflows(
           "summarize_misconceptions",
           {
             goal: catalog.readGoal(input.goalId),
+            concepts,
             wrong: snapshot.slice(0, 50),
             instruction:
               "Group by actual concept IDs and explain from answer evidence. Keep IDs only in structured fields (conceptId, attemptIds), never in summary/example prose. In prose refer to the question slot number and quote a short relevant answer. Write summary in 2-3 short paragraphs: observed answer, concept to revisit, next action. Distinguish inferred reasons from user-confirmed ones; do not diagnose an unanswered item without evidence. Put one concise contrasting example in example. Use fenced Markdown code blocks with a language tag for code and preserve indentation.",
@@ -683,9 +711,7 @@ export function registerWorkflows(
             .strict(),
         ),
       (result) => {
-        const valid = new Set(
-          catalog.latestScope(input.goalId)?.concepts.map((c: any) => c.id),
-        );
+        const valid = new Set(concepts.map((concept) => concept.id));
         for (const c of result.concepts) {
           requireThat(valid.has(c.conceptId), "CONCEPT", "없는 개념");
           requireThat(
@@ -727,6 +753,7 @@ export function registerWorkflows(
           ctx,
           "generate_variant",
           {
+            goal: goalAtScope(parent.goalId, parent.scopeId),
             parent,
             materials,
             instruction:

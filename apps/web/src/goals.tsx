@@ -161,7 +161,7 @@ export function Dashboard({
           {!active.length ? (
             <Empty
               title="첫 번째 목표를 기다리고 있어요"
-              description="JLPT N2부터 파이썬 기초까지, 원하는 공부를 시작하세요."
+              description="관심 있는 주제, 익히고 싶은 능력, 준비할 시험을 목표로 만들어 보세요."
               action={
                 <Button variant="secondary" onClick={() => go("/goals?new=1")}>
                   <Plus size={16} /> 목표 만들기
@@ -541,7 +541,7 @@ export function Goals({
                 required
                 maxLength={200}
                 defaultValue={edit ? edit?.title : ""}
-                placeholder="예: JLPT N2 합격하기"
+                placeholder="무엇을 배우거나 할 수 있게 되고 싶나요?"
               />
             </Field>
             <Field label="목표 유형">
@@ -563,7 +563,7 @@ export function Goals({
               <input
                 name="level"
                 defaultValue={edit ? (edit?.level ?? "") : ""}
-                placeholder="예: N3 학습 완료 / 처음 시작해요"
+                placeholder="이미 아는 내용이나 경험을 적어 주세요. 처음이어도 괜찮아요."
               />
             </Field>
             <div className="form-grid">
@@ -668,7 +668,7 @@ export function ScopeEditor({
         </Field>
         <Field
           label="영역과 개념"
-          hint="한 줄에 하나씩 입력하세요. 예: 문법 | 조건 표현"
+          hint="내 목표에 맞는 영역과 개념을 한 줄에 하나씩 입력하세요."
         >
           <textarea
             name="concepts"
@@ -680,7 +680,7 @@ export function ScopeEditor({
                 .join("\n") ?? ""
             }
             placeholder={
-              "어휘 | 일상 어휘\n문법 | 조건 표현\n독해 | 핵심 내용 파악"
+              "영역 이름 | 학습할 개념\n다른 영역 이름 | 학습할 개념"
             }
           />
         </Field>
