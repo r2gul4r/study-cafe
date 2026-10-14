@@ -106,7 +106,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 4,
+          promptVersion: 5,
           startedAt: started,
         }),
         now(),
@@ -121,7 +121,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 4,
+            promptVersion: 5,
             startedAt: started,
           }),
           now(),
@@ -237,7 +237,7 @@ export function registerWorkflows(
                 : goal.kind === "skill"
                   ? "Prioritize authoritative practical guides, worked examples and exercises for the abilities the user wants to demonstrate. Past papers and an exam syllabus are not prerequisites. "
                   : "Prioritize authoritative explanations, learning resources and exercises for the user's interests and level. Past papers and an exam syllabus are not prerequisites. ") +
-              "Follow the supplied goal description, level and scope; never substitute a preset subject or curriculum. Open original pages; never treat search snippets as verified past-paper evidence. Classify explanatory material as reference and existing exercises by their actual provenance. Return actual absolute URLs. reuseEvidence only for an exact verbatim permission/license quote and its page. Set reuseEvidence=null if relevant reuse or AI-use restrictions require additional permission; do not quote a permissive fragment while ignoring a restriction. Maximum 30 candidate URLs. Report uncovered scope. Discovery does not mean the app has downloaded the source: do not claim acquisition in the discovery summary.",
+              "Follow the supplied goal description, level and scope; never substitute a preset subject or curriculum. Open original pages; never treat search snippets as verified past-paper evidence. Classify explanatory material as reference and existing exercises by their actual provenance. Return actual absolute URLs. reuseEvidence only for an exact verbatim permission/license quote and its page. Set reuseEvidence=null if relevant reuse or AI-use restrictions require additional permission; do not quote a permissive fragment while ignoring a restriction. If a preferred source cannot be acquired for this use, keep it link-only and search for independently authored, accessible alternatives with suitable permission within the same learning scope and candidate limit. Do not bypass the original source's restrictions through mirrors or invent permission; report uncovered scope if no permitted alternative is found. Maximum 30 candidate URLs. Report uncovered scope. Discovery does not mean the app has downloaded the source: do not claim acquisition in the discovery summary.",
           },
           researchOutput,
           true,
@@ -699,13 +699,7 @@ export function registerWorkflows(
               feedback = review.reason;
             } catch (e) {
               ctx.signal.throwIfAborted();
-              if (
-                e instanceof Fault &&
-                ["CODEX_SPAWN", "CODEX_EXIT", "CODEX_TURN_TIMEOUT"].includes(
-                  e.code,
-                )
-              )
-                throw e;
+              if (e instanceof Fault && e.code.startsWith("CODEX_")) throw e;
               feedback = (e instanceof Error ? e.message : String(e)).slice(
                 0,
                 4000,

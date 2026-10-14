@@ -4,7 +4,7 @@ import { mkdtempSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createApp } from "../src/app.js";
-import { questionInput } from "../src/core.js";
+import { Fault, questionInput } from "../src/core.js";
 import {
   latestMaterials,
   selectMaterials,
@@ -319,6 +319,95 @@ test("generation uses current late evidence, waits on unsupported answers, then 
   assert.equal(f.jobs.get(job.id).status, "succeeded");
   assert.equal(f.exams.get(exam.id).items.length, 1);
 });
+
+for (const code of ["CODEX_RATE_LIMITED", "CODEX_USAGE_LIMIT", "CODEX_RPC"])
+  test(`generation preserves provider failure without content retries: ${code}`, async (t) => {
+    const calls: string[] = [];
+    let unavailable = true;
+    const f = await createApp({
+      dataDir: mkdtempSync(join(tmpdir(), "study-generation-limit-")),
+      token: "test",
+      autoWorker: false,
+      agent: agentWith(async (role, raw, schema) => {
+        calls.push(role);
+        if (unavailable)
+          throw new Fault(429, code, "Provider unavailable", {
+            httpStatusCode: 429,
+          });
+        const input = raw as any;
+        if (role === "verify_question")
+          return schema.parse({
+            usable: true,
+            evidenceValid: true,
+            answerValid: true,
+            rubricCheck: null,
+            reason: "근거 대조",
+          });
+        return schema.parse({
+          goalId: input.goal.id,
+          scopeId: input.scopeId,
+          type: "single",
+          stem: "중앙값은 어떤 값인가?",
+          choices: [
+            { id: "middle", text: "가운데 값" },
+            { id: "max", text: "최댓값" },
+          ],
+          answer: ["middle"],
+          origin: "ai_generated",
+          conceptIds: [input.slot.conceptId],
+          evidence: [
+            {
+              segmentId: input.materials[0].segmentId,
+              quote: "중앙값은 가운데 값이다.",
+            },
+          ],
+        });
+      }),
+    });
+    t.after(() => f.app.close());
+    const goal = f.catalog.goal({ title: "통계" });
+    f.catalog.scope(goal.id, {
+      title: "통계",
+      concepts: [{ name: "중앙값", area: "통계" }],
+    });
+    const src = f.catalog.source(goal.id, {
+      title: "자료",
+      kind: "user_material",
+      rights: "user_provided",
+      rightsBasis: "authored",
+    });
+    f.sources.commit(
+      src.id,
+      await f.sources.prepare(src.id, { text: "중앙값은 가운데 값이다." }),
+    );
+    const template = f.exams.template({
+      name: "검사",
+      total: 1,
+      single: 1,
+      short: 0,
+      policy: "ai_only",
+    });
+    const exam = f.exams.create(goal.id, template.id);
+    const job = f.jobs.enqueue("prepare_exam", { examId: exam.id });
+    await f.jobs.tick();
+    const failed = f.jobs.get(job.id);
+    assert.equal(failed.status, "failed");
+    assert.equal(failed.error.code, code);
+    assert.equal(failed.error.details.httpStatusCode, 429);
+    assert.deepEqual(calls, ["generate_question"]);
+    assert.equal(f.exams.get(exam.id).items.length, 0);
+    assert.equal(f.catalog.listQuestions(goal.id, {}).total, 0);
+    unavailable = false;
+    f.jobs.resume(job.id);
+    await f.jobs.tick();
+    assert.equal(f.jobs.get(job.id).status, "succeeded");
+    assert.equal(f.exams.get(exam.id).items.length, 1);
+    assert.deepEqual(calls, [
+      "generate_question",
+      "generate_question",
+      "verify_question",
+    ]);
+  });
 
 test("evidence API keeps historical source revision, authenticates access and public exams omit answer matching", async (t) => {
   const f = await createApp({
