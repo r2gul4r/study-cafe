@@ -139,7 +139,7 @@ export function needsGradeReview(question: ShortQuestion, grade: Grade) {
   );
 }
 
-function validateGrade(
+export function validateSemanticGrade(
   question: ShortQuestion,
   answer: string,
   grade: Grade,
@@ -209,14 +209,14 @@ export function resolveShortGrade(
         mismatch.map((c) => c.reason).join(" "),
     );
   const first = semanticGradeOutput.parse(input.first);
-  const firstIssue = validateGrade(question, answer, first);
+  const firstIssue = validateSemanticGrade(question, answer, first);
   if (firstIssue) return pending(firstIssue + " " + first.explanation);
   if (!needsGradeReview(question, first))
     return { ...first, gradingReview: review };
   if (input.second === undefined)
     return pending("감점 근거의 재검토가 완료되지 않았습니다.");
   const second = semanticGradeOutput.parse(input.second);
-  const secondIssue = validateGrade(question, answer, second);
+  const secondIssue = validateSemanticGrade(question, answer, second);
   if (secondIssue) return pending(secondIssue + " " + second.explanation);
   // Different wording of a successful verdict is fine; a substantive disagreement
   // must never silently become a failing mark or a made-up average score.

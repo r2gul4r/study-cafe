@@ -58,6 +58,71 @@ function restoreOptional(value: any, schema: any): any {
   }
   return output;
 }
+// Keep only protocol diagnostics: provider messages/additionalDetails may contain
+// request text or credentials. A recoverable error event is not a failed turn.
+function turnFailure(turn: any): Fault {
+  const known = new Set([
+    "contextWindowExceeded",
+    "usageLimitExceeded",
+    "httpConnectionFailed",
+    "responseStreamConnectionFailed",
+    "responseStreamDisconnected",
+    "responseTooManyFailedAttempts",
+    "badRequest",
+    "unauthorized",
+    "sandboxError",
+    "internalServerError",
+    "other",
+  ]);
+  const info = turn.error?.codexErrorInfo;
+  const candidate =
+    typeof info === "string"
+      ? info
+      : info && typeof info === "object"
+        ? Object.keys(info)[0]
+        : null;
+  const providerCode = candidate && known.has(candidate) ? candidate : null;
+  const rawStatus =
+    providerCode && typeof info === "object"
+      ? info[providerCode]?.httpStatusCode
+      : null;
+  const httpStatusCode =
+    Number.isInteger(rawStatus) && rawStatus >= 100 && rawStatus <= 599
+      ? rawStatus
+      : null;
+  const details = {
+    status: turn.status === "interrupted" ? "interrupted" : "failed",
+    providerCode,
+    httpStatusCode,
+  };
+  if (providerCode === "usageLimitExceeded")
+    return new Fault(
+      429,
+      "CODEX_USAGE_LIMIT",
+      "Codex 계정 사용량 한도에 도달했습니다. 한도가 갱신된 후 작업을 다시 실행하세요.",
+      details,
+    );
+  if (httpStatusCode === 429)
+    return new Fault(
+      429,
+      "CODEX_RATE_LIMITED",
+      "Codex 요청이 제한되었습니다. 잠시 후 작업을 다시 실행하세요.",
+      details,
+    );
+  if (providerCode === "unauthorized" || httpStatusCode === 401)
+    return new Fault(
+      401,
+      "CODEX_AUTH_REQUIRED",
+      "Codex 로그인 상태를 확인한 후 작업을 다시 실행하세요.",
+      details,
+    );
+  return new Fault(
+    502,
+    "CODEX_TURN_FAILED",
+    "에이전트가 성공적으로 완료되지 않았습니다.",
+    details,
+  );
+}
 export class CodexAgent extends EventEmitter implements AgentPort {
   child?: ChildProcessWithoutNullStreams;
   private pending = new Map<
@@ -337,14 +402,7 @@ export class CodexAgent extends EventEmitter implements AgentPort {
         if (msg.method === "turn/completed") {
           turnId = p.turn.id;
           if (p.turn.status !== "completed") {
-            finish(
-              new Fault(
-                502,
-                "CODEX_TURN_FAILED",
-                "에이전트가 성공적으로 완료되지 않았습니다.",
-                { status: p.turn.status },
-              ),
-            );
+            finish(turnFailure(p.turn));
             return;
           }
           try {

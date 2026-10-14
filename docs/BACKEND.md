@@ -20,6 +20,8 @@
 
 `met`/`equivalent`는 기준 만점, `partial`은 0 초과 만점 미만, `missing`/`contradiction`은 0점이다. `uncertain` 또는 점수와 의미 판정의 모순은 보류한다. 감점 후보는 앞선 점수를 전달하지 않는 별도 평가와 항목별 점수·의미 판정을 대조한다. 두 평가가 다르면 평균을 내거나 한쪽을 임의로 확정하지 않는다. 구조·허위 인용 오류와 공급자 실패는 작업 실패로 남고 기존 보류 점수는 유지한다.
 
+요구사항 검토·첫 채점·감점 재검토는 문항 슬롯과 평가 버전별 체크포인트로 저장한다. 같은 작업을 재개하면 완료 호출을 재사용하고 미완료 단계만 실행한다. 허위 인용·없는 기준 ID는 저장 전에 거부해 재개할 때 응답을 교체할 수 있다. 사용자 수동 평가와 정정 버전 보호는 그대로 적용한다.
+
 결과의 `assessment.criteria`에는 선택적인 `verdict`가 추가되며 새 자동 평가에는 `gradingReview{policyVersion,rubricAudit,secondPass,issue}`를 보관한다. 기준 불일치/불확실/재검토 불일치는 설명과 함께 `pending`, score null이며 오답·복습에 반영하지 않는다. 과거 평가에는 이 필드가 없을 수 있다. `grade_attempt`는 미확정 자동 평가만 처리하고 수동 평가·문항 정정·확정 결과를 덮어쓰지 않는다. 과거 확정 점수는 기존 수동 평가 API로 정정할 수 있다.
 
 1. `POST /api/goals`에 `{"title":"파이썬 반복문"}`을 보내 목표 ID를 받는다.
@@ -78,6 +80,8 @@
 AI·수집 작업은 HTTP 202와 job ID를 반환한다. `Idempotency-Key` 헤더를 사용하면 같은 요청의 중복 작업 생성을 방지한다. 같은 키로 다른 입력을 보내면 409다.
 
 상태는 `queued`, `running`, `succeeded`, `waiting_user`, `paused`, `failed`, `cancelled`다. 실패·일시정지·입력 대기는 `/resume`으로 이어갈 수 있다. 취소는 다시 실행하지 않으며 새 작업을 만든다. 작업 입력은 재개 중 바뀌지 않는다.
+
+Codex 최종 실패의 `error.details`는 알려진 `providerCode`, 유효한 `httpStatusCode`, 완료 상태만 보존한다. HTTP 429는 `CODEX_RATE_LIMITED`, 계정 사용량 한도는 `CODEX_USAGE_LIMIT`, 인증 실패는 `CODEX_AUTH_REQUIRED`로 안내한다. 원본 오류 메시지·추가 상세를 그대로 노출하지 않는다. 중간 연결 오류 후 성공한 turn은 정상 처리하며, 자동 무한 재시도나 유료 대체 연결은 없다.
 
 목표 초안은 참고 URL을 절대 URL로만 출력하도록 지시하며 `AGENT_OUTPUT_INVALID`에 한해 오류 경로를 전달해 한 번 재시도한다. 재실패·연결 오류·취소는 그대로 보고한다. 초안은 사용자가 검토·저장하기 전에는 목표 범위에 적용하지 않는다.
 

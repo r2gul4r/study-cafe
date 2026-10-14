@@ -1,0 +1,985 @@
+{
+  "date": "2026-10-14",
+  "description": "Real Codex observations with hand-authored fixtures and isolated databases. Failed runs are retained. No credentials or user study-room data.",
+  "accountType": "chatgpt",
+  "model": "Existing configuration; exact model not recorded",
+  "effort": "medium",
+  "benchmarkCorrection": "historical-overstrict initially expected pending only. Whole-answer evidence already contains the range values, so full 4/4 is valid too. No deductions are acceptable for this answer. Original run flags are retained, not relabeled.",
+  "runs": [
+    {
+      "id": "frkDVM",
+      "startedAt": "2026-10-14T07:46:09.004Z",
+      "finishedAt": "2026-10-14T07:47:34.965Z",
+      "calls": 17,
+      "failedCalls": 10,
+      "callTimeMs": 82855.0,
+      "reportedPasses": 3,
+      "cases": [
+        {
+          "id": "meaning-paraphrase",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        },
+        {
+          "id": "negated-meaning",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        },
+        {
+          "id": "equivalent-fraction",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "output-only",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "unrequested-explanation",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": true,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": {
+            "jobStatus": "failed",
+            "error": {
+              "code": "CODEX_TURN_FAILED",
+              "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+              "details": {
+                "status": "failed"
+              }
+            },
+            "status": "usable"
+          }
+        },
+        {
+          "id": "requested-explanation-missing",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "correct-unit",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "wrong-unit",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "reordered-explanation",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "historical-overstrict",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": true,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": {
+            "jobStatus": "failed",
+            "error": {
+              "code": "CODEX_TURN_FAILED",
+              "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+              "details": {
+                "status": "failed"
+              }
+            },
+            "status": "usable"
+          }
+        },
+        {
+          "id": "historical-aligned",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        }
+      ],
+      "providerEvents": []
+    },
+    {
+      "id": "emuuxL",
+      "startedAt": "2026-10-14T07:47:58.77Z",
+      "finishedAt": "2026-10-14T07:48:16.68Z",
+      "calls": 2,
+      "failedCalls": 0,
+      "callTimeMs": 16597.0,
+      "reportedPasses": 1,
+      "cases": [
+        {
+          "id": "equivalent-fraction",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        }
+      ],
+      "providerEvents": []
+    },
+    {
+      "id": "ys0MMG",
+      "startedAt": "2026-10-14T07:48:48.406Z",
+      "finishedAt": "2026-10-14T07:52:17.439Z",
+      "calls": 15,
+      "failedCalls": 2,
+      "callTimeMs": 207057.0,
+      "reportedPasses": 4,
+      "cases": [
+        {
+          "id": "output-only",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        },
+        {
+          "id": "unrequested-explanation",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": {
+            "jobStatus": "succeeded",
+            "error": null,
+            "status": "needs_review"
+          }
+        },
+        {
+          "id": "requested-explanation-missing",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        },
+        {
+          "id": "correct-unit",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        },
+        {
+          "id": "wrong-unit",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "reordered-explanation",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": {
+            "code": "CODEX_TURN_FAILED",
+            "message": "에이전트가 성공적으로 완료되지 않았습니다.",
+            "details": {
+              "status": "failed"
+            }
+          },
+          "verification": null
+        },
+        {
+          "id": "historical-overstrict",
+          "jobStatus": "succeeded",
+          "reportedPassed": false,
+          "stateCorrect": false,
+          "error": null,
+          "verification": {
+            "jobStatus": "succeeded",
+            "error": null,
+            "status": "usable"
+          }
+        }
+      ],
+      "providerEvents": [
+        {
+          "caseId": "wrong-unit",
+          "code": {
+            "responseTooManyFailedAttempts": {
+              "httpStatusCode": 429
+            }
+          }
+        },
+        {
+          "caseId": "wrong-unit",
+          "code": {
+            "responseTooManyFailedAttempts": {
+              "httpStatusCode": 429
+            }
+          }
+        },
+        {
+          "caseId": "reordered-explanation",
+          "code": {
+            "responseTooManyFailedAttempts": {
+              "httpStatusCode": 429
+            }
+          }
+        },
+        {
+          "caseId": "reordered-explanation",
+          "code": {
+            "responseTooManyFailedAttempts": {
+              "httpStatusCode": 429
+            }
+          }
+        },
+        {
+          "caseId": "historical-overstrict",
+          "code": {
+            "responseStreamDisconnected": {
+              "httpStatusCode": null
+            }
+          }
+        },
+        {
+          "caseId": "historical-overstrict",
+          "code": {
+            "responseStreamDisconnected": {
+              "httpStatusCode": null
+            }
+          }
+        },
+        {
+          "caseId": "historical-overstrict",
+          "code": {
+            "responseStreamDisconnected": {
+              "httpStatusCode": null
+            }
+          }
+        },
+        {
+          "caseId": "historical-overstrict",
+          "code": {
+            "responseStreamDisconnected": {
+              "httpStatusCode": null
+            }
+          }
+        },
+        {
+          "caseId": "historical-overstrict",
+          "code": {
+            "responseStreamDisconnected": {
+              "httpStatusCode": null
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "JDZUGc",
+      "startedAt": "2026-10-14T07:55:35.971Z",
+      "finishedAt": "2026-10-14T07:56:03.455Z",
+      "calls": 4,
+      "failedCalls": 1,
+      "callTimeMs": 26392.0,
+      "reportedPasses": 1,
+      "cases": [
+        {
+          "id": "wrong-unit",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        },
+        {
+          "id": "reordered-explanation",
+          "jobStatus": "failed",
+          "reportedPassed": false,
+          "stateCorrect": true,
+          "error": {
+            "code": "CODEX_RATE_LIMITED",
+            "message": "Codex 요청이 제한되었습니다. 잠시 후 작업을 다시 실행하세요.",
+            "details": {
+              "status": "failed",
+              "providerCode": "responseTooManyFailedAttempts",
+              "httpStatusCode": 429
+            }
+          },
+          "verification": null
+        }
+      ],
+      "providerEvents": []
+    },
+    {
+      "id": "AOsbTW",
+      "startedAt": "2026-10-14T07:58:11.718Z",
+      "finishedAt": "2026-10-14T07:59:03.073Z",
+      "calls": 5,
+      "failedCalls": 1,
+      "callTimeMs": 49980.0,
+      "reportedPasses": 1,
+      "cases": [
+        {
+          "id": "reordered-explanation",
+          "jobStatus": "succeeded",
+          "reportedPassed": true,
+          "stateCorrect": true,
+          "error": null,
+          "verification": null
+        },
+        {
+          "id": "historical-overstrict",
+          "jobStatus": "succeeded",
+          "reportedPassed": false,
+          "stateCorrect": true,
+          "error": null,
+          "verification": {
+            "jobStatus": "failed",
+            "error": {
+              "code": "CODEX_RATE_LIMITED",
+              "message": "Codex 요청이 제한되었습니다. 잠시 후 작업을 다시 실행하세요.",
+              "details": {
+                "status": "failed",
+                "providerCode": "responseTooManyFailedAttempts",
+                "httpStatusCode": 429
+              }
+            },
+            "status": "usable"
+          }
+        }
+      ],
+      "providerEvents": []
+    }
+  ],
+  "observations": [
+    {
+      "run": "frkDVM",
+      "caseId": "meaning-paraphrase",
+      "elapsedMs": 15266,
+      "assessment": {
+        "status": "confirmed",
+        "score": 2,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "meaning",
+            "score": 2,
+            "evidence": "어떤 천체를 중심으로 그 둘레를 도는 천체다.",
+            "reason": "다른 천체 주위를 도는 천체라는 의미를 정확히 설명한 동등한 표현이다.",
+            "verdict": "equivalent"
+          }
+        ],
+        "explanation": "위성의 의미를 정확히 설명하여 만점이다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "meaning",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "위성의 의미를 설명하시오.",
+                "reason": "문항이 위성의 의미 설명을 명시적으로 요구하므로, 다른 천체 주위를 도는 천체라는 의미를 설명하는지 평가하는 기준은 요청 전체에 부합한다."
+              }
+            ],
+            "explanation": "제시된 기준은 위성의 의미 설명이라는 문항의 요구와 일치하며, 별도의 추가 과제를 요구하지 않는다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "frkDVM",
+      "caseId": "negated-meaning",
+      "elapsedMs": 21707,
+      "assessment": {
+        "status": "confirmed",
+        "score": 0,
+        "passed": false,
+        "criteria": [
+          {
+            "id": "meaning",
+            "score": 0,
+            "evidence": "다른 천체 주위를 돌지 않는 천체다.",
+            "reason": "위성은 다른 천체 주위를 도는 천체인데, 답안은 '돌지 않는'이라고 부정하여 의미를 반대로 설명했습니다.",
+            "verdict": "contradiction"
+          }
+        ],
+        "explanation": "위성의 핵심 의미를 부정했으므로 0점입니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "meaning",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "위성의 의미를 설명하시오.",
+                "reason": "문항은 위성의 의미 설명을 요구하며, 다른 천체 주위를 도는 천체라는 의미를 설명하는 기준은 이 요구에 부합한다."
+              }
+            ],
+            "explanation": "채점 기준 전체가 문항의 의미 설명 요구에 정렬되어 있다."
+          },
+          "secondPass": true,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "frkDVM",
+      "caseId": "historical-aligned",
+      "elapsedMs": 20985,
+      "assessment": {
+        "status": "confirmed",
+        "score": 4,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "output",
+            "score": 2,
+            "evidence": "1\n확인\n3\n확인\n5\n확인\n끝",
+            "reason": "전체 출력의 내용, 순서와 줄바꿈이 정확합니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "inside",
+            "score": 1,
+            "evidence": "들여쓰기된 print(확인)은 반복문 안이므로 3번",
+            "reason": "들여쓰기로 반복문 안에 포함되어 세 번 실행됨을 정확히 설명했습니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "outside",
+            "score": 1,
+            "evidence": "print(끝)은 들여쓰기 없이 반복문 밖이므로 반복 종료 후 1번 실행됩니다.",
+            "reason": "반복문 밖에 있어 반복 종료 후 한 번 실행됨을 정확히 설명했습니다.",
+            "verdict": "met"
+          }
+        ],
+        "explanation": "모든 필수 기준을 충족했습니다. 총 4점 만점에 4점입니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "output",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "다음 코드의 전체 출력 결과를 줄바꿈하여 쓰시오.",
+                "reason": "전체 출력과 줄바꿈을 명시적으로 요구하며, 기준에 제시된 출력 순서와 각 줄의 내용이 코드 실행 결과와 일치한다."
+              },
+              {
+                "id": "inside",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "또한 print('확인')과 print('끝')의 실행 횟수가 서로 다른 이유를 들여쓰기와 관련지어 설명하시오.",
+                "reason": "실행 횟수 차이를 들여쓰기와 연결하여 설명하라는 요구에 부합한다. 들여쓰기된 print('확인')이 반복문 안에서 매 반복마다 실행된다는 설명은 그 차이의 원인이다."
+              },
+              {
+                "id": "outside",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "또한 print('확인')과 print('끝')의 실행 횟수가 서로 다른 이유를 들여쓰기와 관련지어 설명하시오.",
+                "reason": "들여쓰기되지 않은 print('끝')이 반복문 밖에 있어 반복 종료 후 한 번 실행된다는 설명은 요청된 실행 횟수 차이와 들여쓰기의 관계에 해당한다."
+              }
+            ],
+            "explanation": "세 기준 모두 문항이 명시적으로 요구한 전체 출력, 줄바꿈 형식, 들여쓰기에 따른 실행 횟수 차이 설명에 부합한다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "emuuxL",
+      "caseId": "equivalent-fraction",
+      "elapsedMs": 16877,
+      "assessment": {
+        "status": "confirmed",
+        "score": 2,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "value",
+            "score": 2,
+            "evidence": "2/4",
+            "reason": "2/4는 0.5와 같은 값의 분수입니다. 기약분수를 요구하지 않았으므로 만점입니다.",
+            "verdict": "equivalent"
+          }
+        ],
+        "explanation": "0.5와 같은 값의 분수를 정확히 썼습니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "value",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "0.5를 분수로 나타내시오.",
+                "reason": "0.5와 같은 값의 분수를 쓰는 것은 문항이 요구한 내용과 정확히 일치하며, 추가 설명이나 특정 분수 형태를 요구하지 않습니다."
+              }
+            ],
+            "explanation": "채점 기준 전체가 문항의 요구에 부합합니다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "ys0MMG",
+      "caseId": "output-only",
+      "elapsedMs": 17824,
+      "assessment": {
+        "status": "confirmed",
+        "score": 2,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "output",
+            "score": 2,
+            "evidence": "0\n1\n2",
+            "reason": "0, 1, 2를 순서대로 각각 한 줄에 작성하여 출력 결과와 형식 모두 충족했다.",
+            "verdict": "met"
+          }
+        ],
+        "explanation": "요구된 전체 출력 결과를 정확하게 작성했다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "output",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "다음 코드의 전체 출력 결과만 줄바꿈하여 쓰시오.",
+                "reason": "코드는 0, 1, 2를 순서대로 각각 한 줄에 출력하므로, 이 결과를 줄바꿈하여 쓰도록 평가하는 기준은 요청한 내용과 형식에 모두 부합한다."
+              }
+            ],
+            "explanation": "해당 기준은 출력 결과와 명시된 줄바꿈 형식만 평가하며, 요청하지 않은 설명을 요구하지 않는다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "ys0MMG",
+      "caseId": "unrequested-explanation",
+      "elapsedMs": 20742,
+      "assessment": {
+        "status": "pending",
+        "score": null,
+        "passed": false,
+        "criteria": [],
+        "explanation": "문제의 요구와 채점 기준이 맞지 않습니다. 문항은 출력 결과만 줄바꿈하여 쓰도록 요구합니다. 기준의 0, 1, 2를 각각 한 줄에 쓰는 부분은 부합하지만, range의 시작값과 끝값 제외 원리 설명은 요구하지 않은 추가 조건이므로 기준 전체는 부합하지 않습니다. 점수와 오답 기록에 반영하지 않았습니다. 채점 직접 검토에서 확인해 주세요.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "output-and-reason",
+                "aligned": false,
+                "promptField": "stem",
+                "promptQuote": "다음 코드의 전체 출력 결과만 줄바꿈하여 쓰시오.",
+                "reason": "문항은 출력 결과만 줄바꿈하여 쓰도록 요구합니다. 기준의 0, 1, 2를 각각 한 줄에 쓰는 부분은 부합하지만, range의 시작값과 끝값 제외 원리 설명은 요구하지 않은 추가 조건이므로 기준 전체는 부합하지 않습니다."
+              }
+            ],
+            "explanation": "출력 결과만 요구한 문항에 원리 설명을 필수로 포함한 채점 기준은 정렬되지 않습니다."
+          },
+          "secondPass": false,
+          "issue": "문제의 요구와 채점 기준이 맞지 않습니다. 문항은 출력 결과만 줄바꿈하여 쓰도록 요구합니다. 기준의 0, 1, 2를 각각 한 줄에 쓰는 부분은 부합하지만, range의 시작값과 끝값 제외 원리 설명은 요구하지 않은 추가 조건이므로 기준 전체는 부합하지 않습니다."
+        }
+      }
+    },
+    {
+      "run": "ys0MMG",
+      "caseId": "requested-explanation-missing",
+      "elapsedMs": 40136,
+      "assessment": {
+        "status": "confirmed",
+        "score": 1,
+        "passed": false,
+        "criteria": [
+          {
+            "id": "output",
+            "score": 1,
+            "evidence": "0\n1\n2",
+            "reason": "0, 1, 2를 순서대로 각각 한 줄에 정확히 썼습니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "reason",
+            "score": 0,
+            "evidence": "",
+            "reason": "range의 끝값 3은 포함되지 않으므로 출력되지 않는다는 설명이 없습니다.",
+            "verdict": "missing"
+          }
+        ],
+        "explanation": "출력 결과는 정확하지만, 명시적으로 요구한 3이 출력되지 않는 이유가 빠졌습니다. 총 1/2점입니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "output",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "다음 코드의 전체 출력 결과를 줄바꿈하여 쓰고",
+                "reason": "전체 출력 결과와 줄바꿈 형식을 명시적으로 요구하므로, 0, 1, 2를 순서대로 각각 한 줄에 쓰는 기준은 부합한다."
+              },
+              {
+                "id": "reason",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "숫자 3이 출력되지 않는 이유를 설명하시오.",
+                "reason": "3이 출력되지 않는 이유를 명시적으로 요구하므로, range의 끝값 3이 포함되지 않음을 설명하는 기준은 부합한다."
+              }
+            ],
+            "explanation": "두 기준 모두 문항에서 명시적으로 요구한 내용과 형식에 부합한다."
+          },
+          "secondPass": true,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "ys0MMG",
+      "caseId": "correct-unit",
+      "elapsedMs": 16318,
+      "assessment": {
+        "status": "confirmed",
+        "score": 2,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "length",
+            "score": 2,
+            "evidence": "1,500m",
+            "reason": "1.5 km를 정확히 1500 m로 환산하고 숫자와 단위를 함께 썼다. 쉼표와 공백 차이는 의미에 영향을 주지 않는다.",
+            "verdict": "equivalent"
+          }
+        ],
+        "explanation": "환산값과 미터 단위 표기가 모두 정확하다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "length",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "1.5 km를 m 단위로 바꾸어 쓰시오. 숫자와 단위를 함께 쓰시오.",
+                "reason": "문항은 1.5 km를 미터로 환산하여 숫자와 단위를 함께 쓰도록 요구한다. 1500 m 또는 동등한 미터 단위의 값을 평가하는 기준은 이 요구와 일치한다."
+              }
+            ],
+            "explanation": "채점 기준 전체가 문항의 환산 결과 및 단위 표기 요구에 부합한다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "ys0MMG",
+      "caseId": "historical-overstrict",
+      "elapsedMs": 100326,
+      "assessment": {
+        "status": "confirmed",
+        "score": 4,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "output",
+            "score": 2,
+            "evidence": "1\n확인\n3\n확인\n5\n확인\n끝",
+            "reason": "전체 출력의 값, 순서, 줄바꿈이 모두 정확합니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "inside",
+            "score": 1,
+            "evidence": "1\n확인\n3\n확인\n5\n확인\n끝\n들여쓰기된 print(확인)은 반복문 안이므로 3번",
+            "reason": "출력에서 반복 값 1, 3, 5를 정확히 제시했고, 들여쓰기된 문장이 반복문 안에서 3번 실행된다고 설명했습니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "outside",
+            "score": 1,
+            "evidence": "print(끝)은 들여쓰기 없이 반복문 밖이므로 반복 종료 후 1번 실행됩니다.",
+            "reason": "들여쓰기 없이 반복문 밖에 있어 반복 종료 후 1번 실행됨을 정확히 설명했습니다.",
+            "verdict": "met"
+          }
+        ],
+        "explanation": "모든 필수 기준을 충족하여 4점 만점에 4점입니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "output",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "다음 코드의 전체 출력 결과를 줄바꿈하여 쓰시오.",
+                "reason": "전체 출력을 줄바꿈하여 쓰라는 요구에 해당하며, 기준의 출력 순서와 줄 구분은 코드의 실행 결과와 일치한다."
+              },
+              {
+                "id": "inside",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "또한 print('확인')과 print('끝')의 실행 횟수가 서로 다른 이유를 들여쓰기와 관련지어 설명하시오.",
+                "reason": "들여쓰기된 print('확인')이 반복문 안에서 실행되고, range가 제공하는 1, 3, 5에 따라 3번 실행된다는 설명은 요청된 실행 횟수 차이의 이유에 해당한다."
+              },
+              {
+                "id": "outside",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "또한 print('확인')과 print('끝')의 실행 횟수가 서로 다른 이유를 들여쓰기와 관련지어 설명하시오.",
+                "reason": "들여쓰기되지 않은 print('끝')이 반복문 밖에서 반복 종료 후 1번 실행된다는 설명은 요청된 들여쓰기와 실행 횟수 차이의 관계에 해당한다."
+              }
+            ],
+            "explanation": "세 기준 모두 전체 출력의 줄바꿈 작성과 들여쓰기에 따른 실행 횟수 차이 설명이라는 명시적 요구에 부합한다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "JDZUGc",
+      "caseId": "wrong-unit",
+      "elapsedMs": 24407,
+      "assessment": {
+        "status": "confirmed",
+        "score": 0,
+        "passed": false,
+        "criteria": [
+          {
+            "id": "length",
+            "score": 0,
+            "evidence": "1500 km",
+            "reason": "미터 단위로 써야 하지만 km로 표기했습니다. 1.5 km는 1500 m이며, 1500 km는 다른 길이입니다.",
+            "verdict": "contradiction"
+          }
+        ],
+        "explanation": "숫자는 1500으로 썼지만 단위가 잘못되어 요구한 환산값을 나타내지 못했습니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "length",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "1.5 km를 m 단위로 바꾸어 쓰시오. 숫자와 단위를 함께 쓰시오.",
+                "reason": "1.5 km를 미터로 환산하면 1500 m이며, 기준은 문항이 요구한 환산값과 미터 단위 표기를 평가한다."
+              }
+            ],
+            "explanation": "채점 기준 전체가 문항의 환산 및 숫자·단위 표기 요구와 일치한다."
+          },
+          "secondPass": true,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "AOsbTW",
+      "caseId": "reordered-explanation",
+      "elapsedMs": 21063,
+      "assessment": {
+        "status": "confirmed",
+        "score": 2,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "brightness",
+            "score": 1,
+            "evidence": "결과 사진도 한층 밝아져요.",
+            "reason": "사진이 더 밝아진다는 변화를 정확히 설명했습니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "light",
+            "score": 1,
+            "evidence": "들어오는 빛이 늘어나니까 결과 사진도 한층 밝아져요.",
+            "reason": "들어오는 빛의 증가를 사진이 밝아지는 이유로 정확히 설명했습니다.",
+            "verdict": "met"
+          }
+        ],
+        "explanation": "밝기의 변화와 그 이유를 모두 충족했습니다. 2점 만점에 2점입니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "brightness",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "사진의 밝기가 어떻게 변하는지와 그 이유를 설명하시오.",
+                "reason": "밝기의 변화를 명시적으로 요구하며, 셔터 속도와 감도가 같을 때 조리개 구멍을 크게 열면 사진이 밝아진다는 기준은 이에 부합한다."
+              },
+              {
+                "id": "light",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "사진의 밝기가 어떻게 변하는지와 그 이유를 설명하시오.",
+                "reason": "밝기가 변하는 이유를 명시적으로 요구하므로, 조리개 구멍이 커져 들어오는 빛이 증가한다고 설명하는 기준은 이에 부합한다."
+              }
+            ],
+            "explanation": "두 기준 모두 문항이 요구한 밝기의 변화와 그 이유에 대응하며, 추가 요구를 부과하지 않는다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    },
+    {
+      "run": "AOsbTW",
+      "caseId": "historical-overstrict",
+      "elapsedMs": 29564,
+      "assessment": {
+        "status": "confirmed",
+        "score": 4,
+        "passed": true,
+        "criteria": [
+          {
+            "id": "output",
+            "score": 2,
+            "evidence": "1\n확인\n3\n확인\n5\n확인\n끝",
+            "reason": "전체 출력의 순서와 줄바꿈이 정확합니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "inside",
+            "score": 1,
+            "evidence": "1\n확인\n3\n확인\n5\n확인\n끝\n들여쓰기된 print(확인)은 반복문 안이므로 3번",
+            "reason": "출력에서 반복값 1, 3, 5를 정확히 제시하고, 들여쓰기된 문장이 반복문 안에서 3번 실행됨을 설명했습니다.",
+            "verdict": "met"
+          },
+          {
+            "id": "outside",
+            "score": 1,
+            "evidence": "print(끝)은 들여쓰기 없이 반복문 밖이므로 반복 종료 후 1번 실행됩니다.",
+            "reason": "들여쓰기가 없어 반복문 밖에 있으며 반복 종료 후 1번 실행된다고 정확히 설명했습니다.",
+            "verdict": "met"
+          }
+        ],
+        "explanation": "모든 필수 기준을 충족했습니다. 총점 4/4점입니다.",
+        "gradingReview": {
+          "policyVersion": 1,
+          "rubricAudit": {
+            "criteria": [
+              {
+                "id": "output",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "다음 코드의 전체 출력 결과를 줄바꿈하여 쓰시오.",
+                "reason": "전체 출력을 줄바꿈하여 쓰라는 요구에 맞게 출력값의 순서와 각 줄의 구분을 평가한다."
+              },
+              {
+                "id": "inside",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "또한 print('확인')과 print('끝')의 실행 횟수가 서로 다른 이유를 들여쓰기와 관련지어 설명하시오.",
+                "reason": "들여쓰기된 print('확인')이 반복문 안에서 1, 3, 5에 대해 3번 실행된다는 설명은 요청된 실행 횟수 차이와 들여쓰기의 관계를 설명한다."
+              },
+              {
+                "id": "outside",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "또한 print('확인')과 print('끝')의 실행 횟수가 서로 다른 이유를 들여쓰기와 관련지어 설명하시오.",
+                "reason": "print('끝')이 반복문 밖에 있어 반복 종료 후 1번 실행된다는 설명은 요청된 실행 횟수 차이와 들여쓰기의 관계에 부합한다."
+              }
+            ],
+            "explanation": "세 기준 모두 전체 출력의 줄바꿈 작성 및 들여쓰기와 관련된 실행 횟수 차이 설명이라는 문항의 요구에 부합한다."
+          },
+          "secondPass": false,
+          "issue": null
+        }
+      }
+    }
+  ]
+}

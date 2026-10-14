@@ -69,3 +69,45 @@ test("Codex adapter cancels an active turn and settles the promise", async (t) =
     (e: any) => e.code === "CANCELLED",
   );
 });
+
+for (const [mode, code, providerCode, httpStatusCode] of [
+  ["rate-limit", "CODEX_RATE_LIMITED", "responseTooManyFailedAttempts", 429],
+  ["usage-limit", "CODEX_USAGE_LIMIT", "usageLimitExceeded", null],
+  ["unknown-error", "CODEX_TURN_FAILED", null, null],
+] as const)
+  test(`Codex final failure preserves safe diagnostics: ${mode}`, async (t) => {
+    const agent = new CodexAgent({
+      binary: process.execPath,
+      args: [resolve("tests/fake-codex.mjs"), mode],
+      cwd: mkdtempSync(join(tmpdir(), "study-cafe-protocol-")),
+      timeoutMs: 5000,
+    });
+    t.after(() => agent.close());
+    await assert.rejects(
+      () => agent.ask("grade_answer", {}, z.object({ ok: z.boolean() })),
+      (e: any) => {
+        assert.equal(e.code, code);
+        assert.deepEqual(e.details, {
+          status: "failed",
+          providerCode,
+          httpStatusCode,
+        });
+        assert.doesNotMatch(JSON.stringify(e), /must-not-leak|private/);
+        return true;
+      },
+    );
+  });
+
+test("Codex recoverable error does not override a successful final turn", async (t) => {
+  const agent = new CodexAgent({
+    binary: process.execPath,
+    args: [resolve("tests/fake-codex.mjs"), "recoverable"],
+    cwd: mkdtempSync(join(tmpdir(), "study-cafe-protocol-")),
+    timeoutMs: 5000,
+  });
+  t.after(() => agent.close());
+  assert.deepEqual(
+    await agent.ask("grade_answer", {}, z.object({ ok: z.boolean() })),
+    { ok: true },
+  );
+});

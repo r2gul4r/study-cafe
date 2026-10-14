@@ -19,6 +19,7 @@ import {
   rubricInstruction,
   semanticInstruction,
   validateRubricAudit,
+  validateSemanticGrade,
   needsGradeReview,
 } from "./grading.js";
 import {
@@ -752,8 +753,9 @@ export function registerWorkflows(
       )
         continue;
       const expectedVersion = item.assessment.version;
+      const gradeStep = `grade:${item.slot}:${expectedVersion}`;
       await ctx.step(
-        `grade:${item.slot}:${expectedVersion}`,
+        gradeStep,
         async () => {
           const question = {
             stem: item.stem,
@@ -763,20 +765,22 @@ export function registerWorkflows(
           };
           // Audit without the model answer or learner's answer to avoid adding
           // requirements after seeing a verbose solution or a concise response.
-          const audit = validateRubricAudit(
-            question,
-            await ask(
-              ctx,
-              "audit_rubric",
-              {
-                question: {
-                  stem: item.stem,
-                  passage: item.passage,
-                  rubric: item.rubric,
+          const audit = await ctx.step(`${gradeStep}:audit`, async () =>
+            validateRubricAudit(
+              question,
+              await ask(
+                ctx,
+                "audit_rubric",
+                {
+                  question: {
+                    stem: item.stem,
+                    passage: item.passage,
+                    rubric: item.rubric,
+                  },
+                  instruction: rubricInstruction,
                 },
-                instruction: rubricInstruction,
-              },
-              rubricAuditOutput,
+                rubricAuditOutput,
+              ),
             ),
           );
           if (audit.criteria.some((c) => !c.aligned)) return { audit };
@@ -786,24 +790,30 @@ export function registerWorkflows(
             answer: item.answerGiven?.value ?? "",
             instruction: semanticInstruction,
           };
-          const first = await ask(
-            ctx,
-            "grade_answer",
-            gradingInput,
-            semanticGradeOutput,
+          const checkedGrade = async (
+            role: string,
+            payload: typeof gradingInput,
+          ) => {
+            const value = await ask(ctx, role, payload, semanticGradeOutput);
+            // Reject fabricated quotes/IDs before checkpointing; a failed model
+            // response must remain replaceable when the user resumes the job.
+            validateSemanticGrade(question, gradingInput.answer, value);
+            return value;
+          };
+          // Persist successful calls independently. Resuming after a provider
+          // limit must not spend usage repeating the audit and first judgment.
+          const first = await ctx.step(`${gradeStep}:first`, () =>
+            checkedGrade("grade_answer", gradingInput),
           );
           const second =
             first.status === "confirmed" && needsGradeReview(question, first)
-              ? await ask(
-                  ctx,
-                  "review_short_answer",
-                  {
+              ? await ctx.step(`${gradeStep}:second`, () =>
+                  checkedGrade("review_short_answer", {
                     ...gradingInput,
                     instruction:
                       semanticInstruction +
                       " Independently re-evaluate this answer, particularly alternate valid wording and any deductions for unrequested detail. You are not given the earlier grade; do not infer it.",
-                  },
-                  semanticGradeOutput,
+                  }),
                 )
               : undefined;
           return { audit, first, ...(second ? { second } : {}) };

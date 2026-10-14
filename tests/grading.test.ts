@@ -8,6 +8,7 @@ import { createApp } from "../src/app.js";
 import type { AgentPort } from "../src/agent.js";
 import { resolveShortGrade, validateRubricAudit } from "../src/grading.js";
 import { alignedAudit } from "./helpers/grading.js";
+import { Fault } from "../src/core.js";
 
 const question = {
   stem: "위성의 의미를 설명하시오.",
@@ -404,4 +405,105 @@ test("pending user decisions and in-flight manual changes cannot be overwritten 
   assert.equal((await f.run()).status, "succeeded");
   assert.equal(f.calls.length, count);
   assert.equal(f.learning.latest(f.attempt.id, 1).explanation, "직접 검토 중");
+});
+
+test("provider limit during deduction review leaves no score or wrong note and resumes from the saved step", async (t) => {
+  let limited = true;
+  const f = await fixture(
+    t,
+    [{ stem: question.stem, answer: "다른 천체를 돌지 않는 천체" }],
+    (role, input) => {
+      if (role === "audit_rubric") return alignedAudit(input.question);
+      if (role === "review_short_answer" && limited)
+        throw new Fault(
+          429,
+          "CODEX_RATE_LIMITED",
+          "Codex 요청이 제한되었습니다.",
+          {
+            providerCode: "responseTooManyFailedAttempts",
+            httpStatusCode: 429,
+          },
+        );
+      return grade(input.answer, 0, "contradiction");
+    },
+  );
+  const frozen = JSON.stringify(f.exams.get(f.exam.id, true));
+  const job = await f.run();
+  assert.equal(job.status, "failed");
+  assert.equal(job.error.code, "CODEX_RATE_LIMITED");
+  assert.equal(job.error.details.httpStatusCode, 429);
+  assert.equal(f.learning.result(f.attempt.id).items[0].assessment.score, null);
+  assert.equal(
+    f.learning.result(f.attempt.id).items[0].assessment.status,
+    "pending",
+  );
+  assert.equal(f.learning.wrong(f.goal.id).length, 0);
+  assert.equal(
+    f.store.one(
+      "SELECT COUNT(*) n FROM review_events WHERE goal_id=?",
+      f.goal.id,
+    ).n,
+    0,
+  );
+  limited = false;
+  f.jobs.resume(job.id);
+  await f.jobs.tick();
+  for (
+    let i = 0;
+    i < 200 && ["queued", "running"].includes(f.jobs.get(job.id).status);
+    i++
+  )
+    await new Promise((r) => setTimeout(r, 10));
+  assert.equal(f.jobs.get(job.id).status, "succeeded");
+  const assessment = f.learning.result(f.attempt.id).items[0].assessment;
+  assert.equal(assessment.status, "confirmed");
+  assert.equal(assessment.score, 0);
+  assert.equal(f.learning.wrong(f.goal.id).length, 1);
+  assert.equal(
+    f.store.one(
+      "SELECT COUNT(*) n FROM review_events WHERE goal_id=?",
+      f.goal.id,
+    ).n,
+    1,
+  );
+  assert.equal(JSON.stringify(f.exams.get(f.exam.id, true)), frozen);
+  assert.deepEqual(
+    f.calls.map((call) => call.role),
+    [
+      "audit_rubric",
+      "grade_answer",
+      "review_short_answer",
+      "review_short_answer",
+    ],
+  );
+});
+
+test("invalid answer evidence is not checkpointed and can be replaced on resume", async (t) => {
+  let invalid = true;
+  const f = await fixture(
+    t,
+    [{ stem: question.stem, answer: "다른 천체 둘레를 도는 천체" }],
+    (role, input) => {
+      if (role === "audit_rubric") return alignedAudit(input.question);
+      return grade(invalid ? "invented quote" : input.answer);
+    },
+  );
+  const job = await f.run();
+  assert.equal(job.error.code, "GRADE_EVIDENCE");
+  assert.equal(f.learning.latest(f.attempt.id, 1).score, null);
+  invalid = false;
+  f.jobs.resume(job.id);
+  await f.jobs.tick();
+  for (
+    let i = 0;
+    i < 200 && ["queued", "running"].includes(f.jobs.get(job.id).status);
+    i++
+  )
+    await new Promise((r) => setTimeout(r, 10));
+  assert.equal(f.jobs.get(job.id).status, "succeeded");
+  assert.equal(f.learning.result(f.attempt.id).items[0].assessment.score, 2);
+  assert.deepEqual(
+    f.calls.map((call) => call.role),
+    ["audit_rubric", "grade_answer", "grade_answer"],
+  );
 });

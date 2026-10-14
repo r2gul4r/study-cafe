@@ -28,6 +28,29 @@ createInterface({ input: process.stdin }).on("line", (line) => {
       result: { turn: { id: "turn-1", status: "inProgress" } },
     });
     if (mode === "hang") return;
+    const errorInfo = {
+      "rate-limit": { responseTooManyFailedAttempts: { httpStatusCode: 429 } },
+      "usage-limit": "usageLimitExceeded",
+      "unknown-error": { "must-not-leak-secret": { httpStatusCode: 429 } },
+      recoverable: { responseStreamDisconnected: { httpStatusCode: null } },
+    }[mode];
+    const error = errorInfo
+      ? {
+          message: "must-not-leak@example.com Bearer private-token",
+          additionalDetails: "private source text",
+          codexErrorInfo: errorInfo,
+        }
+      : undefined;
+    if (error)
+      send({
+        method: "error",
+        params: {
+          threadId: "thread-1",
+          turnId: "turn-1",
+          error,
+          willRetry: mode === "recoverable",
+        },
+      });
     const text = mode === "invalid" ? "not json" : JSON.stringify({ ok: true });
     send({
       method: "item/completed",
@@ -42,7 +65,11 @@ createInterface({ input: process.stdin }).on("line", (line) => {
         threadId: "thread-1",
         turn: {
           id: "turn-1",
-          status: mode === "failure" ? "failed" : "completed",
+          status:
+            mode === "failure" || (error && mode !== "recoverable")
+              ? "failed"
+              : "completed",
+          ...(mode !== "recoverable" ? { error } : {}),
           items: [],
         },
       },
