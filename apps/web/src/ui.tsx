@@ -209,11 +209,13 @@ export function SubmitForm({
   children,
   onSubmit,
   submit = "저장",
+  submitVariant = "",
   onDone,
 }: {
   children: ReactNode;
   onSubmit: (f: FormData) => Promise<any>;
   submit?: string;
+  submitVariant?: string;
   onDone?: (v: any) => void;
 }) {
   const [busy, setBusy] = useState(false),
@@ -239,7 +241,7 @@ export function SubmitForm({
       {children}
       {error && <Notice>{error}</Notice>}
       <div className="form-footer">
-        <Button disabled={busy}>
+        <Button disabled={busy} variant={submitVariant}>
           {busy ? (
             <LoaderCircle className="spin" size={16} />
           ) : (

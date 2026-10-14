@@ -8,6 +8,7 @@ import { Store } from "./store.js";
 import { Catalog, sourceInput } from "./catalog.js";
 import { Sources, fetchPublic } from "./sources.js";
 import { Jobs } from "./jobs.js";
+import { GoalLifecycle } from "./goal-lifecycle.js";
 import { Exams } from "./exams.js";
 import { Learning } from "./learning.js";
 import { CodexAgent, type AgentPort } from "./agent.js";
@@ -44,6 +45,7 @@ export async function createApp(options: AppOptions) {
     exams = new Exams(catalog),
     learning = new Learning(exams),
     jobs = new Jobs(store);
+  const goalLifecycle = new GoalLifecycle(store, jobs);
   const agent =
     options.agent ??
     new CodexAgent({
@@ -264,6 +266,21 @@ export async function createApp(options: AppOptions) {
       return catalog.readGoal(req.params.id);
     },
     z.object({ archived: z.boolean() }).strict(),
+  );
+  route("GET", "/api/goals/:id/deletion-preview", "목표 삭제 범위", (req) =>
+    goalLifecycle.preview(req.params.id),
+  );
+  route(
+    "DELETE",
+    "/api/goals/:id",
+    "목표와 학습 기록 삭제",
+    (req) => goalLifecycle.delete(req.params.id, req.body),
+    z
+      .object({
+        title: z.string().min(1).max(200),
+        confirmation: z.string().length(64),
+      })
+      .strict(),
   );
   route(
     "POST",

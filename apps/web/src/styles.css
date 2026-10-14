@@ -669,6 +669,106 @@ main {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
+.goal-list {
+  display: grid;
+  gap: 12px;
+}
+.goal-list-item {
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #dfe7e2);
+  border-radius: 14px;
+  min-width: 0;
+}
+.goal-list-item.expanded {
+  border-color: #93b3a4;
+}
+.goal-list-heading {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 8px;
+}
+.goal-toggle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: none;
+  border: 0;
+  text-align: left;
+  padding: 16px 8px;
+  min-width: 0;
+  color: inherit;
+  cursor: pointer;
+  scroll-margin-top: 24px;
+}
+.goal-toggle .goal-chevron {
+  flex-shrink: 0;
+  transform: rotate(-90deg);
+}
+.goal-toggle[aria-expanded="true"] .goal-chevron {
+  transform: rotate(0deg);
+}
+.goal-list-title {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.goal-list-title strong {
+  font-size: 16px;
+}
+.goal-list-title > span {
+  font-size: 12px;
+  color: #62756e;
+}
+.goal-more {
+  flex-shrink: 0;
+}
+.goal-inline-detail {
+  border-top: 1px solid #e4ebe7;
+  padding: 22px;
+}
+.goal-inline-detail .section-heading {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.goal-inline-detail h2,
+.goal-action-title {
+  overflow-wrap: anywhere;
+}
+.goal-action-list {
+  display: grid;
+  gap: 12px;
+}
+.goal-action-list .button {
+  width: 100%;
+  justify-content: flex-start;
+}
+.button.danger {
+  background: #fff0ed;
+  color: #a32d28;
+  border-color: #e9b9b3;
+}
+.goal-delete-counts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 0;
+}
+.goal-delete-counts dd {
+  margin: 0;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .goal-inline-detail {
+    padding: 16px;
+  }
+  .goal-list-heading {
+    padding: 6px 8px;
+  }
+}
 .all-goals {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: 27px;

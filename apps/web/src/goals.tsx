@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  ChevronDown,
+  MoreHorizontal,
+  Archive,
   Target,
   BookOpen,
   ArrowUpRight,
@@ -28,6 +31,7 @@ import {
   Notice,
 } from "./ui";
 import { date, label, type Goal, type Home, type Concept } from "./types";
+import { GoalActions } from "./goal-actions";
 export function Dashboard({
   goals,
   home,
@@ -299,8 +303,15 @@ export function Goals({
   refresh: () => void;
 }) {
   const [create, setCreate] = useState(location.hash.includes("new=1")),
-    [edit, setEdit] = useState(false),
+    [edit, setEdit] = useState<Goal | null>(null),
     [scope, setScope] = useState(false);
+  const [expanded, setExpanded] = useState<string | null>(goal?.id ?? null);
+  const [archived, setArchived] = useState(false);
+  const [manage, setManage] = useState<Goal | null>(null);
+  useEffect(() => {
+    setExpanded(goal?.id ?? null);
+  }, [goal?.id]);
+  const visible = goals.filter((g) => g.archived === archived);
   const p = useQuery<Concept[]>(goal ? `/goals/${goal.id}/progress` : null);
   return (
     <>
@@ -314,107 +325,190 @@ export function Goals({
           </Button>
         }
       />
-      <div className="goal-grid all-goals">
-        {goals
-          .filter((g) => !g.archived)
-          .map((g, i) => (
-            <GoalCard
-              key={g.id}
-              goal={g}
-              index={i}
-              onClick={() => select(g.id)}
-              progress={g.id === goal?.id ? p.data : []}
-            />
-          ))}
+      <div
+        className="row wrap spaced goal-list-filters"
+        role="group"
+        aria-label="목표 목록 필터"
+      >
+        <Button
+          variant={archived ? "secondary" : ""}
+          aria-pressed={!archived}
+          onClick={() => setArchived(false)}
+        >
+          공부 중 {goals.filter((g) => !g.archived).length}
+        </Button>
+        <Button
+          variant={archived ? "" : "secondary"}
+          aria-pressed={archived}
+          onClick={() => setArchived(true)}
+        >
+          <Archive size={16} /> 보관함 {goals.filter((g) => g.archived).length}
+        </Button>
       </div>
-      {!goals.filter((g) => !g.archived).length && (
+      <div className="goal-list">
+        {visible.map((g) => (
+          <article
+            key={g.id}
+            className={`goal-list-item ${expanded === g.id && !archived ? "expanded" : ""}`}
+          >
+            <div className="goal-list-heading">
+              <button
+                className="goal-toggle"
+                id={`goal-toggle-${g.id}`}
+                aria-expanded={!archived && expanded === g.id}
+                aria-controls={
+                  !archived && expanded === g.id
+                    ? `goal-detail-${g.id}`
+                    : undefined
+                }
+                onClick={() => {
+                  if (archived) {
+                    setManage(g);
+                    return;
+                  }
+                  select(g.id);
+                  setExpanded(expanded === g.id ? null : g.id);
+                  requestAnimationFrame(() =>
+                    document
+                      .getElementById(`goal-toggle-${g.id}`)
+                      ?.scrollIntoView({
+                        block: expanded === g.id ? "nearest" : "start",
+                      }),
+                  );
+                }}
+              >
+                <ChevronDown size={18} className="goal-chevron" />
+                <span className="goal-list-title">
+                  <strong>{g.title}</strong>
+                  <span>
+                    {label(g.kind)} ·{" "}
+                    {g.minutesPerDay
+                      ? `하루 ${g.minutesPerDay}분`
+                      : "내 속도대로"}
+                    {archived ? " · 보관됨" : ""}
+                  </span>
+                </span>
+              </button>
+              <button
+                className="icon-button goal-more"
+                aria-label={`${g.title} 관리`}
+                onClick={() => setManage(g)}
+              >
+                <MoreHorizontal size={20} />
+              </button>
+            </div>
+            {goal && goal.id === g.id && expanded === g.id && !archived && (
+              <section
+                className="goal-inline-detail"
+                id={`goal-detail-${g.id}`}
+                role="region"
+                aria-labelledby={`goal-toggle-${g.id}`}
+              >
+                <div className="section-heading">
+                  <div>
+                    <p className="eyebrow">선택한 목표</p>
+                    <h2>{goal.title}</h2>
+                  </div>
+                  <Button variant="secondary" onClick={() => setEdit(goal)}>
+                    목표 수정
+                  </Button>
+                </div>
+                <p className="muted">
+                  {goal.description || "학습 범위와 자료를 준비해 보세요."}
+                </p>
+                <div className="row wrap spaced">
+                  <Badge value={goal.kind} />
+                  <Badge>{goal.level || "현재 수준 미정"}</Badge>
+                  <Badge>목표일 {date(goal.targetDate)}</Badge>
+                </div>
+                <div className="row wrap spaced">
+                  <Action
+                    run={() => api(`/goals/${goal.id}/plan`, "POST", {})}
+                    onDone={() => go("/jobs")}
+                  >
+                    <Sparkles size={16} /> AI로 범위 설계
+                  </Action>
+                  <Button variant="secondary" onClick={() => setScope(true)}>
+                    <Layers3 size={16} />
+                    {goal.scope ? "범위 수정" : "범위 직접 입력"}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={!goal.scope}
+                    onClick={() => go("/sources")}
+                  >
+                    <FolderOpen size={16} /> 자료 준비
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    disabled={!goal.scope}
+                    onClick={() => go("/exams")}
+                  >
+                    <Play size={16} /> 시험 만들기
+                  </Button>
+                </div>
+                {!goal.scope ? (
+                  <Notice tone="info">
+                    학습 범위를 먼저 정해 주세요. AI가 제안한 초안은 에이전트
+                    작업 화면에서 확인 후 저장할 수 있어요.
+                  </Notice>
+                ) : (
+                  <div className="concept-grid">
+                    {(p.data ?? goal.scope.concepts).map((c) => (
+                      <div key={c.id} className="concept">
+                        <div className="row between">
+                          <span className="muted small">{c.area}</span>
+                          <CheckCircle2 size={16} />
+                        </div>
+                        <strong>{c.name}</strong>
+                        <Badge value={c.status ?? "unseen"} />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
+          </article>
+        ))}
+      </div>
+      {!visible.length && (
         <Empty
-          title="무엇을 배우고 싶나요?"
-          description="‘일본어 공부’, ‘JLPT N2 합격’처럼 편하게 적어 주세요."
-          action={
-            <Button onClick={() => setCreate(true)}>첫 목표 만들기</Button>
+          title={archived ? "보관한 목표가 없어요" : "무엇을 배우고 싶나요?"}
+          description={
+            archived
+              ? "잠시 쉬고 싶은 목표를 보관하고 나중에 복원하세요."
+              : "원하는 공부를 첫 목표로 만들어 보세요."
           }
         />
       )}
-      {goal && (
-        <section className="panel goal-detail">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">선택한 목표</p>
-              <h2>{goal.title}</h2>
-            </div>
-            <Button variant="secondary" onClick={() => setEdit(true)}>
-              목표 수정
-            </Button>
-          </div>
-          <p className="muted">
-            {goal.description || "학습 범위와 자료를 준비해 보세요."}
-          </p>
-          <div className="row wrap spaced">
-            <Badge value={goal.kind} />
-            <Badge>{goal.level || "현재 수준 미정"}</Badge>
-            <Badge>목표일 {date(goal.targetDate)}</Badge>
-          </div>
-          <div className="row wrap spaced">
-            <Action
-              run={() => api(`/goals/${goal.id}/plan`, "POST", {})}
-              onDone={() => go("/jobs")}
-            >
-              <Sparkles size={16} /> AI로 범위 설계
-            </Action>
-            <Button variant="secondary" onClick={() => setScope(true)}>
-              <Layers3 size={16} />
-              {goal.scope ? "범위 수정" : "범위 직접 입력"}
-            </Button>
-            <Button
-              variant="secondary"
-              disabled={!goal.scope}
-              onClick={() => go("/sources")}
-            >
-              <FolderOpen size={16} /> 자료 준비
-            </Button>
-            <Button
-              variant="secondary"
-              disabled={!goal.scope}
-              onClick={() => go("/exams")}
-            >
-              <Play size={16} /> 시험 만들기
-            </Button>
-          </div>
-          {!goal.scope ? (
-            <Notice tone="info">
-              학습 범위를 먼저 정해 주세요. AI가 제안한 초안은 에이전트 작업
-              화면에서 확인 후 저장할 수 있어요.
-            </Notice>
-          ) : (
-            <div className="concept-grid">
-              {(p.data ?? goal.scope.concepts).map((c) => (
-                <div key={c.id} className="concept">
-                  <div className="row between">
-                    <span className="muted small">{c.area}</span>
-                    <CheckCircle2 size={16} />
-                  </div>
-                  <strong>{c.name}</strong>
-                  <Badge value={c.status ?? "unseen"} />
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+      {manage && (
+        <GoalActions
+          key={manage.id}
+          goal={manage}
+          close={() => setManage(null)}
+          edit={() => {
+            setEdit(manage);
+            setManage(null);
+          }}
+          changed={() => {
+            setManage(null);
+            refresh();
+          }}
+        />
       )}
       {(create || edit) && (
         <Modal
           title={edit ? "목표 수정" : "새 학습 목표"}
           onClose={() => {
             setCreate(false);
-            setEdit(false);
+            setEdit(null);
           }}
         >
           <SubmitForm
             submit={edit ? "변경 저장" : "목표 만들기"}
             onSubmit={(f) =>
               api(
-                edit ? `/goals/${goal!.id}` : "/goals",
+                edit ? `/goals/${edit!.id}` : "/goals",
                 edit ? "PATCH" : "POST",
                 {
                   title: f.get("title"),
@@ -429,10 +523,14 @@ export function Goals({
               )
             }
             onDone={(g) => {
-              select(g.id);
+              if (!g.archived) {
+                select(g.id);
+                setExpanded(g.id);
+                setArchived(false);
+              }
               refresh();
               setCreate(false);
-              setEdit(false);
+              setEdit(null);
               go("/goals");
             }}
           >
@@ -442,7 +540,7 @@ export function Goals({
                 autoFocus
                 required
                 maxLength={200}
-                defaultValue={edit ? goal?.title : ""}
+                defaultValue={edit ? edit?.title : ""}
                 placeholder="예: JLPT N2 합격하기"
               />
             </Field>
@@ -450,21 +548,21 @@ export function Goals({
               <Select
                 name="kind"
                 options={["general", "exam", "skill"]}
-                defaultValue={edit ? goal?.kind : "general"}
+                defaultValue={edit ? edit?.kind : "general"}
               />
             </Field>
             <Field label="공부 방향">
               <textarea
                 name="description"
                 rows={3}
-                defaultValue={edit ? goal?.description : ""}
+                defaultValue={edit ? edit?.description : ""}
                 placeholder="어떤 상황에서 활용하고 싶은지 알려 주세요."
               />
             </Field>
             <Field label="현재 수준 (선택)">
               <input
                 name="level"
-                defaultValue={edit ? (goal?.level ?? "") : ""}
+                defaultValue={edit ? (edit?.level ?? "") : ""}
                 placeholder="예: N3 학습 완료 / 처음 시작해요"
               />
             </Field>
@@ -473,7 +571,7 @@ export function Goals({
                 <input
                   name="targetDate"
                   type="date"
-                  defaultValue={edit ? (goal?.targetDate ?? "") : ""}
+                  defaultValue={edit ? (edit?.targetDate ?? "") : ""}
                 />
               </Field>
               <Field label="하루 공부 시간 (분)">
@@ -482,7 +580,7 @@ export function Goals({
                   type="number"
                   min={1}
                   max={1440}
-                  defaultValue={edit ? (goal?.minutesPerDay ?? "") : 30}
+                  defaultValue={edit ? (edit?.minutesPerDay ?? "") : 30}
                 />
               </Field>
             </div>

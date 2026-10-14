@@ -438,6 +438,84 @@
             "description": "외부 작업 시간 초과"
           }
         }
+      },
+      "delete": {
+        "summary": "목표와 학습 기록 삭제",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "confirmation": {
+                    "type": "string",
+                    "minLength": 64,
+                    "maxLength": 64
+                  }
+                },
+                "required": [
+                  "title",
+                  "confirmation"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
       }
     },
     "/api/goals/{id}/archive": {
@@ -468,6 +546,58 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/goals/{id}/deletion-preview": {
+      "get": {
+        "summary": "목표 삭제 범위",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
