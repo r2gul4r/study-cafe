@@ -534,27 +534,53 @@ test("passage groups are selected atomically", async (t) => {
 });
 test("rubrics without required criteria need all criteria satisfied to pass", async (t) => {
   const f = await fixture(t, 0);
-  const q = f.catalog.createQuestion(f.make(1, "short", {
-    rubric: [{ id: "r", description: "반복 설명", points: 1, required: false }],
-  }));
+  const q = f.catalog.createQuestion(
+    f.make(1, "short", {
+      rubric: [
+        { id: "r", description: "반복 설명", points: 1, required: false },
+      ],
+    }),
+  );
   f.catalog.review(q.revisionId, "usable", "test");
-  const template = f.exams.template({ name: "short", total: 1, single: 0, short: 1 });
+  const template = f.exams.template({
+    name: "short",
+    total: 1,
+    single: 0,
+    short: 1,
+  });
   const exam = f.exams.create(f.goal.id, template.id);
   f.exams.finalize(exam.id);
   for (const correct of [false, true]) {
     const attempt = f.exams.start(exam.id);
     const slot = attempt.exam.items[0].slot;
     f.exams.saveAnswer(attempt.id, slot, {
-      value: correct ? "repeat" : "unknown", version: 0,
-      flagged: false, uncertain: false, hintUsed: false, recall: null,
+      value: correct ? "repeat" : "unknown",
+      version: 0,
+      flagged: false,
+      uncertain: false,
+      hintUsed: false,
+      recall: null,
     });
     f.learning.submit(attempt.id, `submit-${correct}`);
     const grade = {
-      status: "confirmed", passed: correct,
-      criteria: [{ id: "r", score: correct ? 1 : 0, evidence: correct ? "repeat" : "", reason: "test" }],
-      explanation: "test", reason: "concept",
+      status: "confirmed",
+      passed: correct,
+      criteria: [
+        {
+          id: "r",
+          score: correct ? 1 : 0,
+          evidence: correct ? "repeat" : "",
+          reason: "test",
+        },
+      ],
+      explanation: "test",
+      reason: "concept",
     };
-    assert.throws(() => f.learning.aiGrade(attempt.id, slot, { ...grade, passed: !correct }, 1), /통과 판정/);
+    assert.throws(
+      () =>
+        f.learning.aiGrade(attempt.id, slot, { ...grade, passed: !correct }, 1),
+      /통과 판정/,
+    );
     const result = f.learning.aiGrade(attempt.id, slot, grade, 1);
     assert.equal(result.passed, correct);
     assert.equal(result.score, correct ? 1 : 0);
@@ -932,8 +958,8 @@ test("research acquires an allowed paper and answer sheet, extracts and reviews 
     const content = url.endsWith("/license")
       ? license.replace("may be", "may\n  be")
       : url.endsWith("/answers")
-        ? "1번 정답 a. 반복문은 반복한다."
-        : "1번 반복문은 무엇인가? a 반복한다 b 반복하지 않는다. 2번은 정답표가 없다.";
+        ? "연습판 1. 1번 정답 a. 반복문은 반복한다."
+        : "연습판 1. 1번 반복문은 무엇인가? a 반복한다 b 반복하지 않는다. 2번은 정답표가 없다.";
     return {
       url,
       bytes: Buffer.from(`<main>${content}</main>`),
@@ -976,8 +1002,36 @@ test("research acquires an allowed paper and answer sheet, extracts and reviews 
                 segmentId: input.segments[0].segmentId,
                 quote: "1번 반복문은 무엇인가?",
               },
-              { segmentId: input.answerSegments[0].id, quote: "1번 정답 a." },
+              {
+                segmentId: input.answerSegments[0].segmentId,
+                quote: "1번 정답 a.",
+              },
+              { segmentId: input.segments[0].segmentId, quote: "연습판 1" },
+              {
+                segmentId: input.answerSegments[0].segmentId,
+                quote: "연습판 1",
+              },
             ],
+            sourceMatch: {
+              questionReference: "1번",
+              answerReference: "1번",
+              edition: "연습판 1",
+              questionEvidence: {
+                segmentId: input.segments[0].segmentId,
+                quote: "1번 반복문은 무엇인가?",
+              },
+              answerEvidence: {
+                segmentId: input.answerSegments[0].segmentId,
+                quote: "1번 정답 a.",
+              },
+              editionEvidence: [
+                { segmentId: input.segments[0].segmentId, quote: "연습판 1" },
+                {
+                  segmentId: input.answerSegments[0].segmentId,
+                  quote: "연습판 1",
+                },
+              ],
+            },
           },
         ],
         unresolved: [{ reference: "2번", reason: "정답표 없음" }],
@@ -1003,7 +1057,7 @@ test("research acquires an allowed paper and answer sheet, extracts and reviews 
     result.result.extracted[0].questionIds[0],
   );
   assert.equal(question.status, "usable");
-  assert.equal(question.evidence.length, 2);
+  assert.equal(question.evidence.length, 4);
   assert.deepEqual(downloaded, [
     "https://example.com/license",
     "https://example.com/paper",

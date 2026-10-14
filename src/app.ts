@@ -487,6 +487,18 @@ export async function createApp(options: AppOptions) {
   route("GET", "/api/questions/:id", "문항 상세·정답", (req) =>
     catalog.readQuestion(req.params.id),
   );
+  route(
+    "GET",
+    "/api/questions/:id/evidence",
+    "문항 버전의 원문 근거 대조",
+    (req) => {
+      const query = z
+        .object({ revisionId: key.optional() })
+        .strict()
+        .parse(req.query);
+      return catalog.questionEvidence(req.params.id, query.revisionId);
+    },
+  );
   route("GET", "/api/questions/:id/revisions", "문항 수정 이력", (req) =>
     catalog.questionRevisions(req.params.id),
   );

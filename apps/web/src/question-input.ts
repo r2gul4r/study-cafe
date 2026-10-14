@@ -22,6 +22,7 @@ export function revisionInput(q: Question) {
     conceptIds: q.conceptIds,
     difficulty: q.difficulty,
     evidence: q.evidence ?? [],
+    sourceMatch: q.sourceMatch ?? null,
     requiredAssetIds: q.requiredAssetIds,
     points: q.points,
   };

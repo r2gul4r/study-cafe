@@ -116,6 +116,18 @@ export const questionInput = z
     conceptIds: z.array(key).min(1).max(20),
     difficulty: z.enum(["easy", "medium", "hard"]).default("medium"),
     evidence: z.array(evidence).max(30).default([]),
+    sourceMatch: z
+      .object({
+        questionReference: text.max(200),
+        answerReference: text.max(200),
+        questionEvidence: evidence,
+        answerEvidence: evidence,
+        edition: text.max(200).nullable(),
+        editionEvidence: z.array(evidence).max(6),
+      })
+      .strict()
+      .nullable()
+      .default(null),
     requiredAssetIds: z.array(key).max(20).default([]),
     points: z.number().positive().max(100).default(1),
   })

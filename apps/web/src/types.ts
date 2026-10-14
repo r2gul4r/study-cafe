@@ -65,6 +65,14 @@ export type Question = {
   explanation?: string;
   requiredAssetIds: string[];
   evidence?: { segmentId: string; quote: string }[];
+  sourceMatch?: {
+    questionReference: string;
+    answerReference: string;
+    edition: string | null;
+    questionEvidence: { segmentId: string; quote: string };
+    answerEvidence: { segmentId: string; quote: string };
+    editionEvidence: { segmentId: string; quote: string }[];
+  } | null;
   rubric?: {
     id: string;
     description: string;

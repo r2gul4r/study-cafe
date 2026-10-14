@@ -2170,6 +2170,114 @@
                       "additionalProperties": false
                     }
                   },
+                  "sourceMatch": {
+                    "default": null,
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "questionReference": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          },
+                          "answerReference": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          },
+                          "questionEvidence": {
+                            "type": "object",
+                            "properties": {
+                              "segmentId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                              },
+                              "quote": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100000
+                              }
+                            },
+                            "required": [
+                              "segmentId",
+                              "quote"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "answerEvidence": {
+                            "type": "object",
+                            "properties": {
+                              "segmentId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                              },
+                              "quote": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100000
+                              }
+                            },
+                            "required": [
+                              "segmentId",
+                              "quote"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "edition": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 200
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "editionEvidence": {
+                            "maxItems": 6,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "segmentId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100
+                                },
+                                "quote": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100000
+                                }
+                              },
+                              "required": [
+                                "segmentId",
+                                "quote"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "questionReference",
+                          "answerReference",
+                          "questionEvidence",
+                          "answerEvidence",
+                          "edition",
+                          "editionEvidence"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
                   "requiredAssetIds": {
                     "default": [],
                     "maxItems": 20,
@@ -2205,6 +2313,7 @@
                   "conceptIds",
                   "difficulty",
                   "evidence",
+                  "sourceMatch",
                   "requiredAssetIds",
                   "points"
                 ],
@@ -2292,6 +2401,58 @@
     "/api/questions/{id}": {
       "get": {
         "summary": "문항 상세·정답",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/questions/{id}/evidence": {
+      "get": {
+        "summary": "문항 버전의 원문 근거 대조",
         "security": [
           {
             "localToken": []
@@ -2628,6 +2789,114 @@
                       "additionalProperties": false
                     }
                   },
+                  "sourceMatch": {
+                    "default": null,
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "questionReference": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          },
+                          "answerReference": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 200
+                          },
+                          "questionEvidence": {
+                            "type": "object",
+                            "properties": {
+                              "segmentId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                              },
+                              "quote": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100000
+                              }
+                            },
+                            "required": [
+                              "segmentId",
+                              "quote"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "answerEvidence": {
+                            "type": "object",
+                            "properties": {
+                              "segmentId": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100
+                              },
+                              "quote": {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 100000
+                              }
+                            },
+                            "required": [
+                              "segmentId",
+                              "quote"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "edition": {
+                            "anyOf": [
+                              {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 200
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "editionEvidence": {
+                            "maxItems": 6,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "segmentId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100
+                                },
+                                "quote": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100000
+                                }
+                              },
+                              "required": [
+                                "segmentId",
+                                "quote"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "questionReference",
+                          "answerReference",
+                          "questionEvidence",
+                          "answerEvidence",
+                          "edition",
+                          "editionEvidence"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
                   "requiredAssetIds": {
                     "default": [],
                     "maxItems": 20,
@@ -2668,6 +2937,7 @@
                   "conceptIds",
                   "difficulty",
                   "evidence",
+                  "sourceMatch",
                   "requiredAssetIds",
                   "points"
                 ],

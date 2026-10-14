@@ -1,5 +1,12 @@
 import { z } from "zod";
 import { containsVerbatimQuote } from "./evidence.js";
+import {
+  latestMaterials,
+  selectMaterials,
+  validateExtraction,
+  validateSuppliedEvidence,
+  type Material,
+} from "./materials.js";
 import type { AgentPort } from "./agent.js";
 import { Jobs, Waiting, type JobContext } from "./jobs.js";
 import { Catalog } from "./catalog.js";
@@ -84,7 +91,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 2,
+          promptVersion: 3,
           startedAt: started,
         }),
         now(),
@@ -99,7 +106,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 2,
+            promptVersion: 3,
             startedAt: started,
           }),
           now(),
@@ -122,29 +129,19 @@ export function registerWorkflows(
       scope: { id: scope.id, version: scope.version, ...decode(scope.data) },
     };
   };
-  const sourceContext = (goalId: string) =>
-    s
-      .all(
-        "SELECT seg.id,seg.text,seg.locator FROM segments seg JOIN source_revisions r ON r.id=seg.revision_id JOIN sources src ON src.id=r.source_id WHERE src.goal_id=? AND r.rowid=(SELECT MAX(latest.rowid) FROM source_revisions latest WHERE latest.source_id=src.id) ORDER BY src.created_at,seg.ordinal LIMIT 40",
-        goalId,
-      )
-      .map((r) => ({
-        segmentId: r.id,
-        text: r.text,
-        locator: decode(r.locator),
-      }));
   const verify = async (q: any, ctx: JobContext) =>
     ask(
       ctx,
       "verify_question",
       {
+        goal: goalAtScope(q.goalId, q.scopeId),
         question: q,
         materials: q.evidence.map((e: any) => ({
           segmentId: e.segmentId,
           text: s.get("segments", e.segmentId).text,
         })),
         instruction:
-          "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty.",
+          "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. An exact quote alone is not proof: the material must support the correct answer and requested concept. For extracted questions, independently check sourceMatch: the question number, choice-to-answer mapping, edition and passage must agree with the quoted question and answer sheet; never accept a match just because the numbers look similar. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty.",
       },
       verifyOutput,
     );
@@ -424,27 +421,46 @@ export function registerWorkflows(
     const src = catalog.readSource(input.sourceId);
     const scope = catalog.latestScope(src.goalId);
     requireThat(scope, "SCOPE_REQUIRED", "목표 범위가 필요합니다.");
-    const segments = catalog.segments(input.sourceId);
-    const latest = src.revisions.at(-1)?.id;
-    const relevant = segments.filter((s) => s.revision_id === latest);
+    const pool = latestMaterials(catalog, src.goalId);
+    const relevant = pool.filter((m) => m.sourceId === src.id);
+    const latest = relevant[0]?.revisionId;
     requireThat(relevant.length, "NO_TEXT", "먼저 원문을 추출하세요.", 409);
-    const answerSegments = src.answerSourceIds.flatMap((sourceId: string) => {
-      const other = catalog.readSource(sourceId);
-      requireThat(
-        other.goalId === src.goalId,
-        "ANSWER_SOURCE",
-        "정답표의 목표가 다릅니다.",
-      );
-      return catalog
-        .segments(sourceId)
-        .filter(
-          (segment) => segment.revision_id === other.revisions.at(-1)?.id,
+    const answerSegments: Material[] = src.answerSourceIds.flatMap(
+      (sourceId: string) => {
+        const other = catalog.readSource(sourceId);
+        requireThat(
+          other.goalId === src.goalId,
+          "ANSWER_SOURCE",
+          "정답표의 목표가 다릅니다.",
         );
-    });
+        return pool.filter((m) => m.sourceId === sourceId);
+      },
+    );
     const created: string[] = [];
     const unresolved: { reference: string; reason: string }[] = [];
-    for (let offset = 0; offset < relevant.length; offset += 3) {
+    // Overlap batches so a question split across adjacent chunks can be read.
+    for (let offset = 0; offset < relevant.length; offset += 2) {
       const batch = relevant.slice(offset, offset + 3);
+      const body = offset ? [relevant[0]!, ...batch] : batch;
+      const answerHeaders = answerSegments
+        .filter(
+          (m, index) =>
+            answerSegments.findIndex((v) => v.sourceId === m.sourceId) ===
+            index,
+        )
+        .slice(0, 5);
+      const selectedAnswers = [
+        ...new Map(
+          [
+            ...answerHeaders,
+            ...selectMaterials(
+              answerSegments,
+              batch.map((m) => m.text).join("\n"),
+              { maxSegments: 7, maxChars: 56_000 },
+            ),
+          ].map((m) => [m.segmentId, m]),
+        ).values(),
+      ];
       const result = await ctx.step(
         `extract:${latest}:${offset}`,
         () =>
@@ -455,14 +471,11 @@ export function registerWorkflows(
               goal: goalAtScope(src.goalId, scope.id),
               source: src,
               scope,
-              segments: batch.map((r) => ({
-                segmentId: r.id,
-                text: r.text,
-                locator: r.locator,
-              })),
-              answerSegments: answerSegments.slice(0, 12),
+              segments: batch,
+              sourceHeader: relevant[0],
+              answerSegments: selectedAnswers,
               instruction:
-                "Extract only existing complete questions, not new ones. Keep exact wording. Match answer sheet edition and question number. Every question requires exact source evidence. Missing answers/assets go in unresolved. Use source kind for origin; user_material and reference map to external_practice only when actual questions exist. Keep linked passage groups together. Never invent unavailable question text.",
+                "Extract only existing complete questions from segments, not new ones or questions appearing only in sourceHeader. Keep exact stem, choices and passage wording. sourceMatch is required: use the identical printed questionReference/answerReference, cite questionEvidence and answerEvidence with their numbers and original answer. If the answer comes from a separate document, edition must be a common verbatim edition/session identifier and editionEvidence must quote it from BOTH documents. Include all match citations in evidence. Never infer a matching edition from a shared website or URL alone. For answers printed with the question, edition may be null and editionEvidence=[]. Missing or ambiguous answers, edition, passages or assets go in unresolved. Use source kind for origin; user_material and reference map to external_practice only when actual questions exist. Keep linked passage groups together. Never invent unavailable question text.",
             },
             z
               .object({
@@ -476,15 +489,35 @@ export function registerWorkflows(
               .strict(),
           ),
         (output) => {
-          const ids = output.questions.map((q) => {
-            requireThat(
-              q.goalId === src.goalId && q.scopeId === scope.id,
-              "AGENT_SCOPE",
-              "추출 결과 범위가 다릅니다.",
-            );
-            return catalog.createQuestion(q).id;
-          });
-          return { ids, unresolved: output.unresolved };
+          const ids: string[] = [];
+          const issues = [...output.unresolved];
+          for (const q of output.questions) {
+            try {
+              requireThat(
+                q.goalId === src.goalId && q.scopeId === scope.id,
+                "AGENT_SCOPE",
+                "추출 결과 범위가 다릅니다.",
+              );
+              validateExtraction(q, src, body, selectedAnswers);
+              requireThat(
+                batch.some(
+                  (m) =>
+                    m.segmentId === q.sourceMatch!.questionEvidence.segmentId,
+                ),
+                "SOURCE_BATCH",
+                "이번 원문 구간의 문항이 아닙니다.",
+              );
+              ids.push(catalog.createQuestion(q).id);
+            } catch (error) {
+              if (!(error instanceof Fault)) throw error;
+              issues.push({
+                reference:
+                  q.sourceMatch?.questionReference ?? q.stem.slice(0, 100),
+                reason: error.message,
+              });
+            }
+          }
+          return { ids, unresolved: issues };
         },
       );
       created.push(...result.ids);
@@ -506,9 +539,16 @@ export function registerWorkflows(
           ),
       );
     }
+    const questionIds = [...new Set(created)];
     return {
-      questionIds: [...new Set(created)],
-      count: new Set(created).size,
+      questionIds,
+      count: questionIds.length,
+      usable: questionIds.filter(
+        (qid) => catalog.readQuestion(qid).status === "usable",
+      ).length,
+      needsReview: questionIds.filter(
+        (qid) => catalog.readQuestion(qid).status !== "usable",
+      ).length,
       unresolved,
     };
   });
@@ -543,13 +583,35 @@ export function registerWorkflows(
         slots: empty,
         choices: ["추가 자료 수집 후 재개", "다른 구성으로 새 시험 생성"],
       });
-    const materials = sourceContext(exam.goalId);
-    if (empty.length && !materials.length)
+    const pool = latestMaterials(catalog, exam.goalId);
+    if (empty.length && !pool.length)
       throw new Waiting({
         code: "SOURCE_REQUIRED",
         message: "문항 생성에 사용할 근거 자료를 먼저 등록하세요.",
       });
     for (const slot of empty) {
+      const goal = goalAtScope(exam.goalId, exam.scopeId);
+      const concept = goal.scope.concepts.find(
+        (c: any) => c.id === slot.conceptId,
+      );
+      const matched = selectMaterials(pool, concept.name);
+      const materials = matched.length
+        ? matched
+        : selectMaterials(pool, concept.name, { allowFallback: true });
+      if (!materials.length)
+        throw new Waiting({
+          code: "RELEVANT_SOURCE_REQUIRED",
+          slot: slot.slot,
+          conceptId: slot.conceptId,
+          message: `‘${concept.name}’에 연결할 근거 구간을 찾지 못했습니다. 관련 자료를 추가하거나 범위의 개념명을 확인한 뒤 다시 진행하세요.`,
+        });
+      ctx.event({
+        type: "materials_selected",
+        slot: slot.slot,
+        conceptId: slot.conceptId,
+        segmentIds: materials.map((m) => m.segmentId),
+        method: matched.length ? "local_lexical" : "bounded_fallback",
+      });
       await ctx.step(
         `slot:${slot.slot}`,
         async () => {
@@ -561,12 +623,13 @@ export function registerWorkflows(
                 ctx,
                 "generate_question",
                 {
-                  goal: goalAtScope(exam.goalId, exam.scopeId),
+                  goal,
                   scopeId: exam.scopeId,
                   slot,
                   materials,
                   previousFailure: feedback,
                   exclude: current.items.map((q: any) => q.stem),
+                  sourceMatch: null,
                   instruction:
                     "Create exactly one original grounded question for this slot. origin=ai_generated. Set goalId, scopeId, type and conceptIds exactly from the input. Use human-readable choice/rubric IDs. familyId, parentId and groupId must be null for a new independent question. No unsupported image/audio assets. Use exact supplied evidence quotes. For short answers choices=[] and answer=[], provide modelAnswer and rubric whose points sum to points. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above. Correct previousFailure if present.",
                 },
@@ -582,6 +645,12 @@ export function registerWorkflows(
                     q.difficulty === slot.difficulty),
                 "AGENT_SCOPE",
                 "생성 결과 범위가 다릅니다.",
+              );
+              validateSuppliedEvidence(q, materials);
+              requireThat(
+                q.sourceMatch === null,
+                "SOURCE_MATCH",
+                "AI 생성 문제에 기존 문항의 정답표 연결을 붙일 수 없습니다.",
               );
               catalog.validateQuestion(q);
               requireThat(
@@ -617,11 +686,13 @@ export function registerWorkflows(
               reason: feedback,
             });
           }
-          throw new Fault(
-            422,
-            "GENERATION_REVIEW_FAILED",
-            `${slot.slot}번 문항 검토 실패: ${feedback}`,
-          );
+          throw new Waiting({
+            code: "GENERATION_REVIEW_REQUIRED",
+            slot: slot.slot,
+            conceptId: slot.conceptId,
+            message: `${slot.slot}번 문항의 근거·정답을 확정하지 못했습니다: ${feedback}`,
+            choices: ["관련 자료 보완 후 다시 진행", "범위와 자료의 연결 확인"],
+          });
         },
         (value) => {
           const q = catalog.createQuestion(value.q);
@@ -756,6 +827,7 @@ export function registerWorkflows(
             goal: goalAtScope(parent.goalId, parent.scopeId),
             parent,
             materials,
+            sourceMatch: null,
             instruction:
               "Test the same concept with a meaningfully different situation. origin=ai_variant and parentId must equal the original ID. Preserve goal/scope and family. Cite exact source evidence. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above.",
           },
@@ -769,7 +841,13 @@ export function registerWorkflows(
           "VARIANT",
           "변형 관계가 다릅니다.",
         );
+        validateSuppliedEvidence(q, materials);
         catalog.validateQuestion(q);
+        requireThat(
+          q.sourceMatch === null,
+          "SOURCE_MATCH",
+          "AI 변형 문제에 기존 문항의 정답표 연결을 붙일 수 없습니다.",
+        );
         requireThat(
           canonicalQuestion(q) !== canonicalQuestion(parent),
           "VARIANT_UNCHANGED",

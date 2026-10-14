@@ -34,6 +34,7 @@ import {
   type Assessment,
 } from "./types";
 import { QuestionEditor } from "./question-editor";
+import { QuestionEvidence } from "./question-evidence";
 export function SourcesPage({ goal }: { goal: Goal }) {
   const q = useQuery<Source[]>(`/sources?goalId=${goal.id}`, 10000);
   const [add, setAdd] = useState(false),
@@ -759,12 +760,7 @@ function QuestionDetail({
                 ))}
               </div>
             )}
-            {q.evidence?.map((e, i) => (
-              <blockquote key={i}>
-                {e.quote}
-                <small>원문 근거 · {e.segmentId.slice(0, 8)}</small>
-              </blockquote>
-            ))}
+            <QuestionEvidence key={q.revisionId} question={q} />
             {!historical && (
               <>
                 <div className="row wrap spaced">

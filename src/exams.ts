@@ -461,6 +461,7 @@ export function publicQuestion(q: any) {
     rubric,
     explanation,
     evidence,
+    sourceMatch,
     review,
     pastExamEvidence,
     ...publicData

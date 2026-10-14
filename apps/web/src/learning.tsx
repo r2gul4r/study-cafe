@@ -374,6 +374,12 @@ export function JobsPage({ refresh }: { refresh: () => void }) {
   );
 }
 function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
+  const extractionResults =
+    j.kind === "extract_questions" && j.result
+      ? [j.result]
+      : Array.isArray(j.result?.extracted)
+        ? j.result.extracted
+        : [];
   const events = useQuery<any[]>(`/jobs/${j.id}/events`, 3000);
   const goal = useQuery<Goal>(
     j.input.goalId ? `/goals/${j.input.goalId}` : null,
@@ -423,7 +429,7 @@ function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
             <p className="small">
               {typeof j.error.details === "string"
                 ? j.error.details
-                : JSON.stringify(j.error.details)}
+                : (j.error.details.message ?? JSON.stringify(j.error.details))}
             </p>
           )}
         </Notice>
@@ -455,6 +461,33 @@ function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
           추가로 필요한 자료: {j.result.uncovered.join(", ")}
         </Notice>
       )}
+      {extractionResults.map((result: any, index: number) => (
+        <section className="excerpt" key={result.sourceId ?? index}>
+          <h3>
+            문항 추출 결과
+            {extractionResults.length > 1 ? ` · 자료 ${index + 1}` : ""}
+          </h3>
+          <p>
+            저장 {result.count ?? 0}개
+            {typeof result.usable === "number"
+              ? ` · 사용 가능 ${result.usable}개 · 검토 대기 ${result.needsReview}개`
+              : ""}
+          </p>
+          {result.reason && <Notice>{result.reason}</Notice>}
+          {!!result.unresolved?.length && (
+            <>
+              <strong>추가 확인이 필요한 항목</strong>
+              <ul>
+                {result.unresolved.map((issue: any, i: number) => (
+                  <li key={i}>
+                    {issue.reference}: {issue.reason}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      ))}
       {j.result?.scope && goal.data && (
         <Button className="spaced" onClick={() => setScope(true)}>
           제안된 학습 범위 검토 <ArrowRight size={16} />
@@ -516,6 +549,8 @@ function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
   );
 }
 function eventText(e: any) {
+  if (e.type === "materials_selected")
+    return `${e.slot}번 문항 · 근거 후보 ${e.segmentIds?.length ?? 0}개 선택${e.method === "bounded_fallback" ? " (용어 일치 없음 · 검토 필요)" : ""}`;
   if (e.error?.message) return e.error.message;
   if (e.step)
     return `${e.step} · ${e.status === "completed" ? "완료" : e.status === "started" ? "시작" : label(e.status ?? "running")}`;

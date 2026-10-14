@@ -355,6 +355,43 @@ export class Catalog {
         createdAt: revision.created_at,
       }));
   }
+  questionEvidence(questionId: string, revisionId?: string) {
+    const question = this.readQuestion(questionId, revisionId);
+    return question.evidence.map((e: { segmentId: string; quote: string }) => {
+      const row = this.store.one(
+        "SELECT seg.text,seg.locator,src.goal_id,src.id source_id,src.data source_data,r.id revision_id,r.data revision_data,r.created_at FROM segments seg JOIN source_revisions r ON r.id=seg.revision_id JOIN sources src ON src.id=r.source_id WHERE seg.id=?",
+        e.segmentId,
+      );
+      requireThat(
+        row && row.goal_id === question.goalId,
+        "EVIDENCE",
+        "목표에 속한 원문 근거가 아닙니다.",
+      );
+      const source = decode(row.source_data),
+        revision = decode(row.revision_data);
+      const match = question.sourceMatch;
+      const same = (v: any) =>
+        v?.segmentId === e.segmentId && v.quote === e.quote;
+      return {
+        ...e,
+        sourceId: row.source_id,
+        sourceRevisionId: row.revision_id,
+        title: source.title,
+        kind: source.kind,
+        url: revision.url ?? null,
+        acquiredAt: row.created_at,
+        locator: decode(row.locator),
+        text: row.text,
+        role: same(match?.questionEvidence)
+          ? "question"
+          : same(match?.answerEvidence)
+            ? "answer"
+            : match?.editionEvidence.some(same)
+              ? "edition"
+              : "support",
+      };
+    });
+  }
   review(
     revisionId: string,
     status: "usable" | "needs_review" | "retired",
