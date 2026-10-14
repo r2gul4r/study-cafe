@@ -232,12 +232,13 @@ export class Learning {
             "득점에는 답안 근거가 필요합니다.",
           );
       }
-      const meets = q.rubric
-        .filter((r: any) => r.required)
-        .every(
-          (r: any) =>
-            data.criteria.find((c) => c.id === r.id)?.score === r.points,
-        );
+      const required = q.rubric.filter((r: any) => r.required);
+      // An empty required set must not make every answer pass vacuously.
+      const passCriteria = required.length ? required : q.rubric;
+      const meets = passCriteria.every(
+        (r: any) =>
+          data.criteria.find((c) => c.id === r.id)?.score === r.points,
+      );
       requireThat(
         data.passed === meets,
         "GRADE_PASS",
@@ -391,17 +392,30 @@ export class Learning {
       409,
     );
     const exam = this.exams.get(a.exam_id, true);
-    const items = exam.items.map((q: any) => ({
-      ...q,
-      answerGiven: decode(
-        this.store.one(
-          "SELECT data FROM answers WHERE attempt_id=? AND slot=?",
-          attemptId,
-          q.slot,
-        )?.data ?? "null",
-      ),
-      assessment: this.latest(attemptId, q.slot),
-    }));
+    const items = exam.items.map((q: any) => {
+      const assessment = this.latest(attemptId, q.slot);
+      return {
+        ...q,
+        // Read the exact revision that authored the displayed explanation. Never
+        // rewrite prose or mutate the frozen, shuffled exam choices.
+        explanationChoiceOrder: this.exams.catalog
+          .readQuestion(
+            q.id,
+            assessment?.correctedAnswer
+              ? assessment.correctionRevision
+              : q.revisionId,
+          )
+          .choices.map((choice: any) => choice.id),
+        answerGiven: decode(
+          this.store.one(
+            "SELECT data FROM answers WHERE attempt_id=? AND slot=?",
+            attemptId,
+            q.slot,
+          )?.data ?? "null",
+        ),
+        assessment,
+      };
+    });
     const confirmed = items.filter(
       (i: any) => i.assessment?.status === "confirmed",
     );

@@ -57,6 +57,7 @@ export type Question = {
   status: string;
   conceptIds: string[];
   choices: { id: string; text: string }[];
+  explanationChoiceOrder?: string[];
   passage: string | null;
   points: number;
   answer?: string[];

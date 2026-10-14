@@ -430,7 +430,28 @@ function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
           )}
         </Notice>
       )}
-      {j.result?.summary && <p className="pre-wrap">{j.result.summary}</p>}
+      {j.kind === "research" && Array.isArray(j.result?.outcomes) ? (
+        <p className="pre-wrap">
+          자료 {j.result.sources?.length ?? j.result.outcomes.length}개 발견 ·
+          본문 수집{" "}
+          {
+            j.result.outcomes.filter((o: any) => o.status === "extracted")
+              .length
+          }
+          개 · 링크만 보관{" "}
+          {
+            j.result.outcomes.filter((o: any) => o.status === "link_only")
+              .length
+          }
+          개 · 수집 실패{" "}
+          {j.result.outcomes.filter((o: any) => o.status === "blocked").length}
+          개.
+          {"\n"}실제로 수집된 본문을 기준으로 문제를 준비합니다. 참고 자료와
+          실제 기출·연습문제는 구분해 보관합니다.
+        </p>
+      ) : j.result?.summary ? (
+        <p className="pre-wrap">{j.result.summary}</p>
+      ) : null}
       {j.result?.uncovered?.length > 0 && (
         <Notice tone="info">
           추가로 필요한 자료: {j.result.uncovered.join(", ")}

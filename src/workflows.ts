@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { containsVerbatimQuote } from "./evidence.js";
 import type { AgentPort } from "./agent.js";
 import { Jobs, Waiting, type JobContext } from "./jobs.js";
 import { Catalog } from "./catalog.js";
@@ -128,31 +129,51 @@ export function registerWorkflows(
           text: s.get("segments", e.segmentId).text,
         })),
         instruction:
-          "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. Set usable=false on uncertainty.",
+          "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty.",
       },
       verifyOutput,
     );
   jobs.handlers.set("plan_goal", async (input, ctx) =>
-    ctx.step("plan", () =>
-      ask(
-        ctx,
-        "plan_goal",
-        {
-          goal: catalog.readGoal(input.goalId),
-          answers: input.answers ?? {},
-          instruction:
-            "Propose a scope and necessary clarification questions. Do not claim current exam rules without searching official sources.",
-        },
-        z
-          .object({
-            scope: scopeInput,
-            questions: z.array(z.string()),
-            summary: z.string(),
-          })
-          .strict(),
-        true,
-      ),
-    ),
+    ctx.step("plan", async () => {
+      let previousFailure: string | null = null;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        try {
+          return await ask(
+            ctx,
+            "plan_goal",
+            {
+              goal: catalog.readGoal(input.goalId),
+              answers: input.answers ?? {},
+              previousFailure,
+              instruction:
+                "Propose a scope and necessary clarification questions. Do not claim current exam rules without searching official sources. scope.references must contain only absolute http/https URL strings, not titles, Markdown links or citation markers; use [] if none verified. Set examFormat=null for a non-exam learning goal. Fix the reported previousFailure when present.",
+            },
+            z
+              .object({
+                scope: scopeInput,
+                questions: z.array(z.string()),
+                summary: z.string(),
+              })
+              .strict(),
+            true,
+          );
+        } catch (error) {
+          if (
+            attempt ||
+            ctx.signal.aborted ||
+            !(error instanceof Fault) ||
+            error.code !== "AGENT_OUTPUT_INVALID"
+          )
+            throw error;
+          previousFailure = error.message;
+          ctx.event({
+            type: "schema_retry",
+            message: "목표 초안 형식을 한 번 다시 확인합니다.",
+          });
+        }
+      }
+      throw new Error("Unreachable plan retry state");
+    }),
   );
   jobs.handlers.set("research", async (input, ctx) => {
     const goal = catalog.readGoal(input.goalId);
@@ -169,7 +190,7 @@ export function registerWorkflows(
               .all("SELECT data FROM sources WHERE goal_id=?", input.goalId)
               .map((r) => decode(r.data)),
             instruction:
-              "Search official scope, public past papers, official exercises and reputable practice material. Open original pages; never treat search snippets as verified past-paper evidence. Return actual URLs. reuseEvidence only for explicit permission/license text and its page. Maximum 30 candidate URLs. Report uncovered scope.",
+              "Search official scope, public past papers, official exercises and reputable practice material relevant to the goal. Open original pages; never treat search snippets as verified past-paper evidence. Return actual absolute URLs. reuseEvidence only for an exact verbatim permission/license quote and its page. Set reuseEvidence=null if relevant reuse or AI-use restrictions require additional permission; do not quote a permissive fragment while ignoring a restriction. Maximum 30 candidate URLs. Report uncovered scope. Discovery does not mean the app has downloaded the source: do not claim acquisition in the discovery summary.",
           },
           researchOutput,
           true,
@@ -213,7 +234,7 @@ export function registerWorkflows(
               const { extract } = await import("./sources.js");
               const extracted = await extract(r.bytes, r.mime, r.url);
               return extracted.pages.some((p) =>
-                p.text.includes(candidate.reuseEvidence!.quote),
+                containsVerbatimQuote(p.text, candidate.reuseEvidence!.quote),
               );
             } catch (e) {
               ctx.signal.throwIfAborted();
@@ -275,7 +296,7 @@ export function registerWorkflows(
     for (let i = 0; i < research.sources.length; i++) {
       const sourceId = research.sources[i]!;
       const src = catalog.readSource(sourceId);
-      if (src.status !== "extracted") continue;
+      if (src.status !== "extracted" || src.kind === "reference") continue;
       const candidate = research.candidates[i]!;
       const answerIds: string[] = [];
       for (const url of candidate.answerUrls.slice(0, 5)) {
@@ -357,7 +378,20 @@ export function registerWorkflows(
         });
       }
     }
-    return { ...research, outcomes, extracted, coverage: "bounded_search" };
+    const acquired = outcomes.filter(
+      (outcome) => outcome.status === "extracted",
+    ).length;
+    const links = outcomes.filter(
+      (outcome) => outcome.status === "link_only",
+    ).length;
+    return {
+      ...research,
+      discoverySummary: research.summary,
+      summary: `자료 ${research.sources.length}개 발견 · 본문 수집 ${acquired}개 · 링크만 보관 ${links}개 · 수집 실패 ${outcomes.length - acquired - links}개. 참고 자료는 출제 근거로 보관하고, 기존 문제가 있는 자료만 문항 추출을 진행합니다.`,
+      outcomes,
+      extracted,
+      coverage: "bounded_search",
+    };
   });
   jobs.handlers.set("ingest_source", async (input, ctx) =>
     ctx.step(
@@ -513,7 +547,7 @@ export function registerWorkflows(
                   previousFailure: feedback,
                   exclude: current.items.map((q: any) => q.stem),
                   instruction:
-                    "Create exactly one original grounded question for this slot. origin=ai_generated. Set goalId, scopeId, type and conceptIds exactly from the input. Use human-readable choice/rubric IDs. familyId, parentId and groupId must be null for a new independent question. No unsupported image/audio assets. Use exact supplied evidence quotes. For short answers choices=[] and answer=[], provide modelAnswer and rubric whose points sum to points. Correct previousFailure if present.",
+                    "Create exactly one original grounded question for this slot. origin=ai_generated. Set goalId, scopeId, type and conceptIds exactly from the input. Use human-readable choice/rubric IDs. familyId, parentId and groupId must be null for a new independent question. No unsupported image/audio assets. Use exact supplied evidence quotes. For short answers choices=[] and answer=[], provide modelAnswer and rubric whose points sum to points. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above. Correct previousFailure if present.",
                 },
                 questionInput,
               );
@@ -609,7 +643,7 @@ export function registerWorkflows(
               },
               answer: item.answerGiven?.value ?? "",
               instruction:
-                "Evaluate only this submitted answer against each frozen rubric criterion. Evidence must quote exact answer text. Required criteria must be fully satisfied to pass. Use pending if ambiguous. Never assign fallback partial credit for an error.",
+                "Evaluate only this submitted answer against each frozen rubric criterion. Evidence must quote exact answer text. Set passed=true only when every required criterion receives full points; if no criterion is marked required, every rubric criterion must receive full points to pass. Otherwise passed=false. Use pending if ambiguous. Never assign fallback partial credit for an error.",
             },
             gradeOutput,
           ),
@@ -696,7 +730,7 @@ export function registerWorkflows(
             parent,
             materials,
             instruction:
-              "Test the same concept with a meaningfully different situation. origin=ai_variant and parentId must equal the original ID. Preserve goal/scope and family. Cite exact source evidence.",
+              "Test the same concept with a meaningfully different situation. origin=ai_variant and parentId must equal the original ID. Preserve goal/scope and family. Cite exact source evidence. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above.",
           },
           questionInput,
         );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { reviewChoices } from "./review-choices";
 import {
   FileText,
   ExternalLink,
@@ -581,6 +582,12 @@ export function QuestionBody({
   q: Question & { assessment?: Assessment };
   answer?: boolean;
 }) {
+  const choices = answer
+    ? reviewChoices(q.choices ?? [], q.explanationChoiceOrder)
+    : q.choices;
+  const reordered = choices?.some(
+    (choice, index) => choice.id !== q.choices[index]?.id,
+  );
   return (
     <>
       {answer && q.assessment?.correctionRevision && (
@@ -599,9 +606,15 @@ export function QuestionBody({
       </div>
       {q.passage && <div className="passage pre-wrap">{q.passage}</div>}
       <h3 className="question-stem pre-wrap">{q.stem}</h3>
+      {reordered && (
+        <Notice tone="info">
+          해설의 보기 기호와 맞추기 위해 원문 순서로 표시합니다. 시험에서 본
+          순서와 다를 수 있으며, 제출한 답안과 점수는 그대로입니다.
+        </Notice>
+      )}
       {q.choices?.length > 0 && (
-        <ol className="answer-choices">
-          {q.choices.map((c) => (
+        <ol className="answer-choices" type="A">
+          {choices.map((c) => (
             <li
               key={c.id}
               className={

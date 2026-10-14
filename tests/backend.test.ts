@@ -532,6 +532,35 @@ test("passage groups are selected atomically", async (t) => {
   const t2 = f.exams.template({ name: "two", total: 2, single: 2, short: 0 });
   assert.equal(f.exams.create(f.goal.id, t2.id).items.length, 2);
 });
+test("rubrics without required criteria need all criteria satisfied to pass", async (t) => {
+  const f = await fixture(t, 0);
+  const q = f.catalog.createQuestion(f.make(1, "short", {
+    rubric: [{ id: "r", description: "반복 설명", points: 1, required: false }],
+  }));
+  f.catalog.review(q.revisionId, "usable", "test");
+  const template = f.exams.template({ name: "short", total: 1, single: 0, short: 1 });
+  const exam = f.exams.create(f.goal.id, template.id);
+  f.exams.finalize(exam.id);
+  for (const correct of [false, true]) {
+    const attempt = f.exams.start(exam.id);
+    const slot = attempt.exam.items[0].slot;
+    f.exams.saveAnswer(attempt.id, slot, {
+      value: correct ? "repeat" : "unknown", version: 0,
+      flagged: false, uncertain: false, hintUsed: false, recall: null,
+    });
+    f.learning.submit(attempt.id, `submit-${correct}`);
+    const grade = {
+      status: "confirmed", passed: correct,
+      criteria: [{ id: "r", score: correct ? 1 : 0, evidence: correct ? "repeat" : "", reason: "test" }],
+      explanation: "test", reason: "concept",
+    };
+    assert.throws(() => f.learning.aiGrade(attempt.id, slot, { ...grade, passed: !correct }, 1), /통과 판정/);
+    const result = f.learning.aiGrade(attempt.id, slot, grade, 1);
+    assert.equal(result.passed, correct);
+    assert.equal(result.score, correct ? 1 : 0);
+  }
+});
+
 test("question and rubric validation rejects broken counts and references", async (t) => {
   const f = await fixture(t, 0);
   assert.throws(() =>
@@ -901,7 +930,7 @@ test("research acquires an allowed paper and answer sheet, extracts and reviews 
   const fetcher: typeof fetchPublic = async (url) => {
     downloaded.push(url);
     const content = url.endsWith("/license")
-      ? license
+      ? license.replace("may be", "may\n  be")
       : url.endsWith("/answers")
         ? "1번 정답 a. 반복문은 반복한다."
         : "1번 반복문은 무엇인가? a 반복한다 b 반복하지 않는다. 2번은 정답표가 없다.";
