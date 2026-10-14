@@ -215,7 +215,11 @@ export class Catalog {
   }
   createQuestion(
     input: unknown,
-    options: { questionId?: string; transaction?: boolean } = {},
+    options: {
+      questionId?: string;
+      transaction?: boolean;
+      expectedRevisionId?: string;
+    } = {},
   ) {
     const q = questionInput.parse(input);
     this.validateQuestion(q);
@@ -242,6 +246,13 @@ export class Catalog {
       let version = 1;
       if (options.questionId) {
         const old = this.store.get("questions", questionId);
+        requireThat(
+          !options.expectedRevisionId ||
+            old.current_revision === options.expectedRevisionId,
+          "REVISION_CONFLICT",
+          "다른 곳에서 문항이 수정되었습니다. 입력한 내용을 보존한 뒤 최신 버전을 확인하세요.",
+          409,
+        );
         requireThat(
           old.goal_id === q.goalId,
           "GOAL",
@@ -331,6 +342,18 @@ export class Catalog {
       review: decode(state.review),
       archived: !!r.archived,
     };
+  }
+  questionRevisions(questionId: string) {
+    this.store.get("questions", questionId);
+    return this.store
+      .all(
+        "SELECT id,created_at FROM question_revisions WHERE question_id=? ORDER BY version DESC",
+        questionId,
+      )
+      .map((revision) => ({
+        ...this.readQuestion(questionId, revision.id),
+        createdAt: revision.created_at,
+      }));
   }
   review(
     revisionId: string,

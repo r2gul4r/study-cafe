@@ -276,10 +276,22 @@ export class Learning {
   ) {
     const r = this.store.get("attempts", attemptId);
     return this.store.tx(() => {
+      const previous = this.latest(attemptId, slot);
       const result = this.assess(
         attemptId,
         slot,
-        { ...input, actor: "user", criteria: [] },
+        {
+          ...input,
+          actor: "user",
+          criteria: [],
+          ...(previous?.correctionRevision
+            ? {
+                correctionRevision: previous.correctionRevision,
+                correctedAnswer: previous.correctedAnswer,
+                correctedExplanation: previous.correctedExplanation,
+              }
+            : {}),
+        },
         input.expectedVersion,
       );
       this.rebuild(this.store.get("exams", r.exam_id).goal_id);
@@ -288,6 +300,12 @@ export class Learning {
   }
   regradeQuestion(questionId: string, revisionId: string, reason: string) {
     const correction = this.exams.catalog.readQuestion(questionId, revisionId);
+    requireThat(
+      this.exams.catalog.readQuestion(questionId).revisionId === revisionId,
+      "REVISION_CONFLICT",
+      "최신 문항 버전을 확인한 뒤 재채점하세요.",
+      409,
+    );
     requireThat(
       correction.status === "usable",
       "REVIEW_REQUIRED",
@@ -302,6 +320,7 @@ export class Learning {
       for (const row of rows) {
         const original = decode(row.data);
         if (original.id !== questionId) continue;
+        if (original.revisionId === revisionId) continue;
         const previous = this.latest(row.attempt_id, row.slot);
         if (previous?.correctionRevision === revisionId) continue;
         const compatible =
@@ -347,6 +366,7 @@ export class Learning {
             score: correct ? correction.points : 0,
             passed: !!correct,
             correctedAnswer: correction.answer,
+            correctedExplanation: correction.explanation,
           };
         } else
           assessment.explanation =

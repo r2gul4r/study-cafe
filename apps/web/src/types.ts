@@ -42,6 +42,12 @@ export type Template = {
 export type Question = {
   id: string;
   revisionId: string;
+  version?: number;
+  createdAt?: string;
+  familyId?: string;
+  parentId?: string | null;
+  groupId?: string | null;
+  pastExamEvidence?: string | null;
   goalId: string;
   scopeId: string;
   stem: string;
@@ -54,11 +60,16 @@ export type Question = {
   passage: string | null;
   points: number;
   answer?: string[];
-  modelAnswer?: string;
+  modelAnswer?: string | null;
   explanation?: string;
   requiredAssetIds: string[];
   evidence?: { segmentId: string; quote: string }[];
-  rubric?: { id: string; description: string; points: number }[];
+  rubric?: {
+    id: string;
+    description: string;
+    points: number;
+    required?: boolean;
+  }[];
 };
 export type Exam = {
   id: string;
@@ -90,6 +101,9 @@ export type Attempt = {
   answers: Answer[];
 };
 export type Assessment = {
+  correctionRevision?: string;
+  correctedAnswer?: string[];
+  correctedExplanation?: string;
   version: number;
   score: number | null;
   passed: boolean;
@@ -201,6 +215,7 @@ export const labels: Record<string, string> = {
   user_provided: "직접 제공",
   discovered: "발견",
   ingested: "내용 확보",
+  extracted: "본문 추출 완료",
   blocked: "수집 보류",
 };
 export const label = (v: string) => labels[v] ?? v;

@@ -1,6 +1,6 @@
 # 백엔드 API와 운영
 
-백엔드 기본 주소: `http://127.0.0.1:4317`. 모든 `/api/*` 요청은 `Authorization: Bearer <session-token>` 헤더가 필요하다. 미래 프론트 주소는 `STUDY_CAFE_ALLOWED_ORIGINS`에 정확한 origin으로 등록한다. 브라우저 인증 토큰을 URL query에 넣지 않는다.
+백엔드 기본 주소: `http://127.0.0.1:4317`. 모든 `/api/*` 요청은 `Authorization: Bearer <session-token>` 헤더가 필요하다. 기본 Origin은 서버 포트와 개발용 5173의 localhost·127.0.0.1을 포함한다. 다른 프론트 주소를 사용하면 `STUDY_CAFE_ALLOWED_ORIGINS`에 정확한 origin으로 등록한다. 브라우저 인증 토큰을 URL query에 넣지 않는다.
 
 ## 처음부터 공부 한 회차까지
 
@@ -38,6 +38,17 @@
 `GET /api/exams/:id`와 응시 조회는 정답·루브릭·해설을 제외한다. 개인용 문제은행 관리 API에서는 정답을 볼 수 있다. 학습용 앱이며 PC 소유자에게 문제은행 접근을 막는 시험 보안 제품은 아니다.
 
 ## 작업과 이벤트
+
+### 문항 수정·정정 API
+
+- `GET /api/questions/:id/revisions`: 최신순 전체 수정 이력. 각 버전의 본문·정답·근거·검토 상태와 `createdAt`을 반환한다. 인증이 필요하다.
+- `POST /api/questions/:id/revisions`: 문항 입력 필드와 `expectedRevisionId`를 보낸다. 읽기 응답의 `id`, `revisionId`, `version`, `status`, `review`, `createdAt`을 그대로 보내지 않는다. 기대 버전과 현재 버전이 다르면 409 `REVISION_CONFLICT`다. 기존 API 호환을 위해 기대 버전은 선택 필드지만 편집 UI는 항상 전송한다.
+- 새 버전의 초기 상태는 `needs_review`. 원문·계열·근거를 보존하고 별도 `/review`로 검토를 확정한다.
+- `/regrade`는 최신·`usable` 버전에만 허용한다. 이미 해당 버전으로 응시했거나 정정을 적용한 문항은 건너뛴다. 반환 `affected`의 `slot`은 1부터 시작한다.
+- 수동 채점 이후에도 `correctionRevision`을 보존하여 같은 정정 재실행으로 사용자 결과를 덮어쓰지 않는다. 정정된 주관식의 보류 상태에는 예전 시험 기준의 AI 채점을 재적용하지 않는다.
+- 결과의 `assessment.correctedAnswer`, `correctedExplanation`은 정정 후 표시용이다. 불변 시험 스냅샷과 구분해서 사용한다.
+
+### 비동기 작업
 
 AI·수집 작업은 HTTP 202와 job ID를 반환한다. `Idempotency-Key` 헤더를 사용하면 같은 요청의 중복 작업 생성을 방지한다. 같은 키로 다른 입력을 보내면 409다.
 

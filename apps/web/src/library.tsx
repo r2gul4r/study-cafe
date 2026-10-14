@@ -24,7 +24,14 @@ import {
   Select,
   SubmitForm,
 } from "./ui";
-import { label, type Goal, type Source, type Question } from "./types";
+import {
+  label,
+  type Goal,
+  type Source,
+  type Question,
+  type Assessment,
+} from "./types";
+import { QuestionEditor } from "./question-editor";
 export function SourcesPage({ goal }: { goal: Goal }) {
   const q = useQuery<Source[]>(`/sources?goalId=${goal.id}`, 10000);
   const [add, setAdd] = useState(false),
@@ -137,6 +144,8 @@ export function SourcesPage({ goal }: { goal: Goal }) {
                 if (file.size > 20 * 1024 * 1024)
                   throw new Error("20MB 이하 PDF를 선택해 주세요.");
                 const bytes = new Uint8Array(await file.arrayBuffer());
+                if (new TextDecoder().decode(bytes.subarray(0, 5)) !== "%PDF-")
+                  throw new Error("PDF 형식의 파일을 선택해 주세요.");
                 let binary = "";
                 for (let i = 0; i < bytes.length; i += 8192)
                   binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
@@ -157,9 +166,10 @@ export function SourcesPage({ goal }: { goal: Goal }) {
                 await api(`/sources/${s.id}/ingest`, "POST", payload);
               return s;
             }}
-            onDone={() => {
+            onDone={(source) => {
               setAdd(false);
               q.reload();
+              setDetail(source);
             }}
           >
             <Field label="자료 제목">
@@ -286,6 +296,16 @@ function SourceDetail({
           )}
         </div>
         <p className="muted">{s.rightsBasis || "링크만 보관 중입니다."}</p>
+        {latest.error && <Notice>{latest.error}</Notice>}
+        <Button
+          variant="ghost"
+          onClick={() => {
+            onClose();
+            go("/jobs");
+          }}
+        >
+          자료 처리 진행·실패 이유 확인
+        </Button>
         <div className="row wrap">
           <Action
             variant="secondary"
@@ -548,7 +568,6 @@ export function Bank({ goal, search }: { goal: Goal; search: string }) {
           onClose={() => setSelected(null)}
           refresh={() => {
             q.reload();
-            setSelected(null);
           }}
         />
       )}
@@ -559,11 +578,20 @@ export function QuestionBody({
   q,
   answer = false,
 }: {
-  q: Question;
+  q: Question & { assessment?: Assessment };
   answer?: boolean;
 }) {
   return (
     <>
+      {answer && q.assessment?.correctionRevision && (
+        <Notice tone="info">
+          {q.assessment.correctedAnswer
+            ? "정정된 정답과 해설을 표시합니다. 문제 본문은 응시 당시 내용입니다."
+            : q.assessment.status === "pending"
+              ? "문항 또는 채점 기준이 정정되었습니다. 아래는 응시 당시 문제이며 수동 검토가 필요합니다."
+              : "정정된 문항을 수동 검토한 결과입니다. 아래는 응시 당시 문제입니다."}
+        </Notice>
+      )}
       <div className="row wrap">
         <Badge value={q.type} />
         <Badge value={q.origin} />
@@ -576,10 +604,18 @@ export function QuestionBody({
           {q.choices.map((c) => (
             <li
               key={c.id}
-              className={answer && q.answer?.includes(c.id) ? "correct" : ""}
+              className={
+                answer &&
+                (q.assessment?.correctedAnswer ?? q.answer)?.includes(c.id)
+                  ? "correct"
+                  : ""
+              }
             >
               {c.text}
-              {answer && q.answer?.includes(c.id) && <Badge>정답</Badge>}
+              {answer &&
+                (q.assessment?.correctedAnswer ?? q.answer)?.includes(c.id) && (
+                  <Badge>정답</Badge>
+                )}
             </li>
           ))}
         </ol>
@@ -588,7 +624,9 @@ export function QuestionBody({
         <div className="explanation">
           <h4>정답과 해설</h4>
           <p className="pre-wrap">
-            {q.modelAnswer || q.explanation || "등록된 해설이 없어요."}
+            {q.modelAnswer ||
+              (q.assessment?.correctedExplanation ?? q.explanation) ||
+              "등록된 해설이 없어요."}
           </p>
           {q.modelAnswer && q.explanation && (
             <p className="pre-wrap">{q.explanation}</p>
@@ -606,7 +644,7 @@ export function QuestionBody({
   );
 }
 function QuestionDetail({
-  question: q,
+  question: initial,
   onClose,
   refresh,
 }: {
@@ -614,62 +652,242 @@ function QuestionDetail({
   onClose: () => void;
   refresh: () => void;
 }) {
+  const latest = useQuery<Question>(`/questions/${initial.id}`);
+  const history = useQuery<Question[]>(`/questions/${initial.id}/revisions`);
+  const [editing, setEditing] = useState(false);
+  const [revisionId, setRevisionId] = useState("");
+  const [saved, setSaved] = useState("");
+  const [regraded, setRegraded] = useState<{
+    affected: { attemptId: string; slot: number; status: string }[];
+  }>();
+  const current = latest.data ?? initial;
+  const q = history.data?.find((r) => r.revisionId === revisionId) ?? current;
+  const historical = q.revisionId !== current.revisionId;
+  const updated = (question: Question) => {
+    latest.setData(question);
+    history.reload();
+    setRevisionId("");
+    setRegraded(undefined);
+    refresh();
+  };
   return (
     <Modal title="문제 상세" wide onClose={onClose}>
       <div className="modal-body">
-        <QuestionBody q={q} answer />
-        {q.evidence?.map((e, i) => (
-          <blockquote key={i}>
-            {e.quote}
-            <small>원문 근거 · {e.segmentId.slice(0, 8)}</small>
-          </blockquote>
-        ))}
-        <div className="row wrap spaced">
-          <Action
-            variant="secondary"
-            run={() => api(`/questions/${q.id}/verify`, "POST", {})}
-            onDone={() => {
-              go("/jobs");
-              onClose();
+        {latest.error && <Notice>{latest.error}</Notice>}
+        {saved && <Notice tone="info">{saved}</Notice>}
+        {editing ? (
+          <QuestionEditor
+            question={current}
+            onCancel={() => setEditing(false)}
+            onSaved={(question) => {
+              updated(question);
+              setEditing(false);
+              setSaved(
+                `새 버전 ${question.version} 저장 완료. 검토 후 사용 가능으로 변경하면 새 시험에 사용할 수 있어요.`,
+              );
             }}
-          >
-            <Sparkles size={16} /> AI 검토
-          </Action>
-          <Action
-            variant="secondary"
-            run={() => api(`/questions/${q.id}/variant`, "POST", {})}
-            onDone={() => {
-              go("/jobs");
-              onClose();
-            }}
-          >
-            변형 문제 만들기
-          </Action>
-        </div>
-        <details>
-          <summary>검토 상태 직접 변경</summary>
-          <SubmitForm
-            onSubmit={(f) =>
-              api(`/questions/${q.id}/review`, "POST", {
-                revisionId: q.revisionId,
-                status: f.get("status"),
-                reason: f.get("reason"),
-              })
-            }
-            onDone={refresh}
-          >
-            <Field label="검토 결과">
-              <Select
-                name="status"
-                defaultValue={q.status}
-                options={["usable", "needs_review", "retired"]}
-              />
+          />
+        ) : (
+          <>
+            <div className="row between wrap spaced">
+              <div className="row wrap">
+                <Badge>버전 {q.version}</Badge>
+                <Badge value={q.status} />
+                {q.createdAt && (
+                  <span className="muted small">
+                    {new Date(q.createdAt).toLocaleString("ko-KR")}
+                  </span>
+                )}
+              </div>
+              <Button
+                disabled={latest.loading || !!latest.error || historical}
+                onClick={() => {
+                  setEditing(true);
+                  setSaved("");
+                  setRegraded(undefined);
+                }}
+              >
+                문제 수정
+              </Button>
+            </div>
+            <Field label="수정 이력">
+              <select
+                value={revisionId || current.revisionId}
+                onChange={(e) => {
+                  setRevisionId(e.target.value);
+                  setRegraded(undefined);
+                }}
+              >
+                {(history.data ?? [current]).map((r) => (
+                  <option key={r.revisionId} value={r.revisionId}>
+                    버전 {r.version} · {label(r.status)}
+                    {r.revisionId === current.revisionId ? " · 최신" : ""}
+                  </option>
+                ))}
+              </select>
             </Field>
-            <Field label="검토 사유">
-              <textarea name="reason" required rows={2} />
-            </Field>
-          </SubmitForm>
-        </details>
+            {history.error && <Notice>{history.error}</Notice>}
+            {historical && (
+              <Notice tone="info">
+                이전 버전을 보고 있어요. 수정·검토·재채점은 최신 버전에서 진행해
+                주세요.
+              </Notice>
+            )}
+            <QuestionBody q={q} answer />
+            {q.type === "short" && (
+              <div className="excerpt">
+                <h4>채점 기준</h4>
+                {q.rubric?.map((r) => (
+                  <p key={r.id}>
+                    {r.description} · {r.points}점 ·{" "}
+                    {r.required === false ? "선택" : "필수"}
+                  </p>
+                ))}
+              </div>
+            )}
+            {q.evidence?.map((e, i) => (
+              <blockquote key={i}>
+                {e.quote}
+                <small>원문 근거 · {e.segmentId.slice(0, 8)}</small>
+              </blockquote>
+            ))}
+            {!historical && (
+              <>
+                <div className="row wrap spaced">
+                  <Action
+                    variant="secondary"
+                    run={() => api(`/questions/${q.id}/verify`, "POST", {})}
+                    onDone={() => {
+                      go("/jobs");
+                      onClose();
+                    }}
+                  >
+                    <Sparkles size={16} /> AI 검토
+                  </Action>
+                  <Action
+                    variant="secondary"
+                    run={() => api(`/questions/${q.id}/variant`, "POST", {})}
+                    onDone={() => {
+                      go("/jobs");
+                      onClose();
+                    }}
+                  >
+                    변형 문제 만들기
+                  </Action>
+                </div>
+                <details>
+                  <summary>검토 상태 직접 변경</summary>
+                  <SubmitForm
+                    onSubmit={(f) =>
+                      api(`/questions/${q.id}/review`, "POST", {
+                        revisionId: q.revisionId,
+                        status: f.get("status"),
+                        reason: f.get("reason"),
+                      })
+                    }
+                    onDone={(question) => {
+                      updated(question);
+                      setSaved("검토 상태를 저장했어요.");
+                    }}
+                  >
+                    <Field label="검토 결과">
+                      <Select
+                        name="status"
+                        defaultValue={q.status}
+                        options={["usable", "needs_review", "retired"]}
+                      />
+                    </Field>
+                    <Field label="검토 사유">
+                      <textarea name="reason" required rows={2} />
+                    </Field>
+                  </SubmitForm>
+                </details>
+                <details className="spaced">
+                  <summary>과거 응시 재채점</summary>
+                  <Notice tone="info">
+                    사용 가능으로 검토된 최신 정답을 제출 완료된 과거 응시에
+                    적용합니다. 본문·보기·배점이 같은 객관식은 자동 재채점하고,
+                    내용이 달라졌거나 주관식이면 수동 검토 대기로 변경됩니다.
+                    기존 시험 원문은 유지됩니다.
+                  </Notice>
+                  {q.status !== "usable" ? (
+                    <p className="muted">
+                      먼저 위에서 최신 버전을 검토하고 ‘사용 가능’으로 변경해
+                      주세요.
+                    </p>
+                  ) : (
+                    <SubmitForm
+                      key={q.revisionId}
+                      submit="확인한 정답으로 과거 응시 재채점"
+                      onSubmit={(f) => {
+                        const reason = String(f.get("reason") ?? "").trim();
+                        if (!reason)
+                          throw new Error("정정 사유를 입력해 주세요.");
+                        return api(`/questions/${q.id}/regrade`, "POST", {
+                          revisionId: q.revisionId,
+                          reason,
+                        });
+                      }}
+                      onDone={setRegraded}
+                    >
+                      <Field label="정정 사유">
+                        <textarea
+                          name="reason"
+                          required
+                          maxLength={5000}
+                          rows={2}
+                          placeholder="예: 원문 정답표를 확인하여 정답을 수정했습니다."
+                        />
+                      </Field>
+                      <label className="editor-check">
+                        <input type="checkbox" required />
+                        과거 점수와 복습 일정이 다시 계산되는 것을 확인했어요.
+                      </label>
+                    </SubmitForm>
+                  )}
+                  {regraded && (
+                    <section className="excerpt" role="status">
+                      <strong>
+                        {regraded.affected.length
+                          ? `${regraded.affected.length}개 응시 문항에 정정을 적용했어요.`
+                          : "새로 정정할 과거 응시가 없어요."}
+                      </strong>
+                      {!!regraded.affected.length && (
+                        <p>
+                          자동 확정{" "}
+                          {
+                            regraded.affected.filter(
+                              (r) => r.status === "confirmed",
+                            ).length
+                          }
+                          개 · 수동 검토{" "}
+                          {
+                            regraded.affected.filter(
+                              (r) => r.status === "pending",
+                            ).length
+                          }
+                          개
+                        </p>
+                      )}
+                      {regraded.affected.map((r) => (
+                        <p key={`${r.attemptId}-${r.slot}`}>
+                          <a
+                            className="text-link"
+                            href={`#/result/${r.attemptId}`}
+                            onClick={onClose}
+                          >
+                            응시 {r.attemptId.slice(0, 8)} · {r.slot}번 결과
+                            확인
+                          </a>
+                        </p>
+                      ))}
+                    </section>
+                  )}
+                </details>
+              </>
+            )}
+          </>
+        )}
       </div>
     </Modal>
   );

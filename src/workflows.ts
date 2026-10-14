@@ -589,7 +589,8 @@ export function registerWorkflows(
       if (
         item.type !== "short" ||
         item.assessment.status !== "pending" ||
-        item.assessment.actor === "correction"
+        item.assessment.actor === "correction" ||
+        item.assessment.correctionRevision
       )
         continue;
       const expectedVersion = item.assessment.version;

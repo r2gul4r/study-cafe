@@ -2513,3 +2513,38 @@ blockquote small {
     scroll-behavior: auto !important;
   }
 }
+.editor-section {
+  min-width: 0;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 12px;
+  padding: 16px;
+}
+.editor-section legend {
+  padding: 0 8px;
+  font-weight: 600;
+}
+.choice-editor {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.editor-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.editor-check input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+.rubric-editor {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+.rubric-editor input[type="number"] {
+  max-width: 110px;
+}

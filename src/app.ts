@@ -474,12 +474,21 @@ export async function createApp(options: AppOptions) {
   route("GET", "/api/questions/:id", "문항 상세·정답", (req) =>
     catalog.readQuestion(req.params.id),
   );
+  route("GET", "/api/questions/:id/revisions", "문항 수정 이력", (req) =>
+    catalog.questionRevisions(req.params.id),
+  );
   route(
     "POST",
     "/api/questions/:id/revisions",
     "문항 수정 버전",
-    (req) => catalog.createQuestion(req.body, { questionId: req.params.id }),
-    questionInput,
+    (req) => {
+      const { expectedRevisionId, ...input } = req.body;
+      return catalog.createQuestion(input, {
+        questionId: req.params.id,
+        expectedRevisionId,
+      });
+    },
+    questionInput.safeExtend({ expectedRevisionId: key.optional() }),
   );
   route(
     "POST",
