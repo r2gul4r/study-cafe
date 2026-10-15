@@ -53,6 +53,7 @@ pnpm codex:probe --live
 - 웹 조사, 직접 URL·텍스트·PDF 등록, 다운로드·본문 추출, 정답표 연결, 출처·페이지·문단 근거 보존.
 - 기존 문항 추출·독립 검토, 문제은행 검색·필터·수정 버전·보관, 중복 원문·문항 처리.
 - 텍스트 PDF의 원본 페이지 이미지로 그래프·수식 보완, 여러 페이지 정답 연결, 독립 이미지 검토와 응시 화면 원본 미리보기. [실제 검증 범위와 한계](docs/LIVE_PDF_VISUALS.md).
+- 긴 정답표의 전체 구간 검색·추가 근거 요청, PDF 문항별 표시 영역 선택·새 버전 검토, 추출 요청의 중복 원문 제거. [정답표 검색](docs/ANSWER_RETRIEVAL.md) · [PDF 표시 영역](docs/PDF_REGIONS.md).
 - 20·25·30문항 및 사용자 지정 템플릿, 영역별 구성표, 일반·약점·복습·실전 모드, 출처 정책, 부족분 출제.
 - 불변 시험 스냅샷, 답안 버전 충돌 방지, 이어 풀기, 일반 학습 일시정지, 제한 시간·만료 제출.
 - 객관식 채점, 기준별 주관식 평가, 보류·수동 정정, 정답표 수정에 따른 과거 응시 재채점.
@@ -77,6 +78,8 @@ Windows에서는 `.\scripts\start.ps1 -Test`로 빌드와 테스트를 실행할
 - [프론트 화면·실행·검증 안내](docs/FRONTEND.md)
 - [OpenAPI 명세](openapi.json) / 실행 중 `/api/openapi.json`
 - [검증 기록](docs/VERIFICATION.md)
+- [백업 내용 확인과 다른 컴퓨터 복원](docs/BACKUP_RESTORE.md)
+- [다음 PDF 이미지 전달 작업 설계](docs/PDF_IMAGE_DELIVERY_PLAN.md) — 설계 단계
 - [프로젝트 설계](docs/PROJECT_DESIGN.md)
 - [학습 워크플로우](docs/WORKFLOWS.md)
 - [원래 구현 계획](docs/IMPLEMENTATION_PLAN.md)
