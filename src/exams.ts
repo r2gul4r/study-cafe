@@ -462,6 +462,7 @@ export function publicQuestion(q: any) {
     explanation,
     evidence,
     sourceMatch,
+    visualEvidence,
     review,
     pastExamEvidence,
     ...publicData

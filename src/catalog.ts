@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Store } from "./store.js";
+import { validateVisualEvidence } from "./pdf-visuals.js";
 import {
   id,
   now,
@@ -195,6 +196,7 @@ export class Catalog {
       );
     }
     for (const a of q.requiredAssetIds) this.store.get("assets", a);
+    validateVisualEvidence(this.store, q);
     requireThat(
       q.evidence.length > 0,
       "EVIDENCE_REQUIRED",
@@ -258,6 +260,8 @@ export class Catalog {
             return (
               old.type === q.type &&
               old.origin === q.origin &&
+              JSON.stringify([...(old.requiredAssetIds ?? [])].sort()) ===
+                JSON.stringify([...q.requiredAssetIds].sort()) &&
               normalize(old.stem) === stem &&
               old.sourceMatch?.questionReference ===
                 q.sourceMatch!.questionReference
@@ -419,7 +423,8 @@ export class Catalog {
         text: row.text,
         role: same(match?.questionEvidence)
           ? "question"
-          : same(match?.answerEvidence)
+          : same(match?.answerEvidence) ||
+              match?.answerContinuationEvidence?.some(same)
             ? "answer"
             : match?.editionEvidence.some(same)
               ? "edition"

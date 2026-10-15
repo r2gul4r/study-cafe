@@ -450,8 +450,21 @@ export async function createApp(options: AppOptions) {
     "/api/sources/:id/extract-questions",
     "원문에서 문제 추출·검토",
     (req, reply) =>
-      enqueue("extract_questions", { sourceId: req.params.id }, req, reply),
-    z.object({}).strict(),
+      enqueue(
+        "extract_questions",
+        { sourceId: req.params.id, ...req.body },
+        req,
+        reply,
+      ),
+    z
+      .object({
+        pdfPages: z
+          .array(z.number().int().min(1).max(300))
+          .min(1)
+          .max(50)
+          .optional(),
+      })
+      .strict(),
   );
   route("GET", "/api/assets/:id", "자료 원본 다운로드", (req, reply) => {
     const a = store.assetBytes(req.params.id);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { reviewChoices } from "./review-choices";
 import { StudyText } from "./study-content";
 import {
@@ -608,6 +608,12 @@ export function QuestionBody({
       </div>
       {q.passage && <StudyText className="passage" text={q.passage} />}
       <StudyText className="question-stem" text={q.stem} headingLevel="h3" />
+      {q.visualTranscription && (
+        <p className="muted small">
+          원본 이미지에서 수식·배치를 읽어 옮긴 문항이에요. 아래 원본도 함께
+          확인할 수 있어요.
+        </p>
+      )}
       {reordered && (
         <Notice tone="info">
           해설의 보기 기호와 맞추기 위해 원문 순서로 표시합니다. 시험에서 본
@@ -911,26 +917,81 @@ export function safeUrl(url: string) {
   }
 }
 export function AssetLink({ id }: { id: string }) {
-  return (
-    <Action
-      variant="secondary"
-      run={async () => {
-        const res = await fetch("/api/assets/" + encodeURIComponent(id), {
-          headers: {
-            Authorization: "Bearer " + sessionStorage.getItem(TOKEN_KEY),
-          },
-        });
-        if (!res.ok) throw new Error("첨부파일을 가져오지 못했어요.");
-        const blob = await res.blob(),
+  const [preview, setPreview] = useState<string>();
+  const [error, setError] = useState("");
+  const [reload, setReload] = useState(0);
+  useEffect(() => {
+    let live = true,
+      url: string | undefined;
+    const controller = new AbortController();
+    setPreview(undefined);
+    setError("");
+    void fetch("/api/assets/" + encodeURIComponent(id), {
+      signal: controller.signal,
+      headers: { Authorization: "Bearer " + sessionStorage.getItem(TOKEN_KEY) },
+    })
+      .then(async (res) => {
+        if (!res.ok) throw new Error("원본 자료를 불러오지 못했어요.");
+        if (res.headers.get("Content-Type")?.split(";")[0] !== "image/png") {
+          await res.body?.cancel();
+          return;
+        }
+        const blob = await res.blob();
+        if (live) {
           url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = id + (blob.type === "application/pdf" ? ".pdf" : "");
-        a.click();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-      }}
-    >
-      <Download size={15} /> 첨부 자료
-    </Action>
+          setPreview(url);
+        }
+      })
+      .catch((e) => {
+        if (live && e.name !== "AbortError") setError(e.message);
+      });
+    return () => {
+      live = false;
+      controller.abort();
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [id, reload]);
+  return (
+    <div className="source-page-asset">
+      {preview && (
+        <figure>
+          <a href={preview} target="_blank" rel="noreferrer">
+            <img
+              src={preview}
+              alt="문제 원본 PDF 페이지: 그래프와 수식을 확인하세요"
+            />
+          </a>
+          <figcaption>문제 원본 · 누르면 크게 볼 수 있어요.</figcaption>
+        </figure>
+      )}
+      {error && (
+        <p role="alert">
+          {error}{" "}
+          <button type="button" onClick={() => setReload((n) => n + 1)}>
+            다시 불러오기
+          </button>
+        </p>
+      )}
+      <Action
+        variant="secondary"
+        run={async () => {
+          const res = await fetch("/api/assets/" + encodeURIComponent(id), {
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem(TOKEN_KEY),
+            },
+          });
+          if (!res.ok) throw new Error("첨부파일을 가져오지 못했어요.");
+          const blob = await res.blob(),
+            url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = id + (blob.type === "application/pdf" ? ".pdf" : "");
+          a.click();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }}
+      >
+        <Download size={15} /> 첨부 자료
+      </Action>
+    </div>
   );
 }

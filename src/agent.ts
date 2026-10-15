@@ -9,6 +9,7 @@ import { Fault, requireThat } from "./core.js";
 export type AskOptions = {
   signal?: AbortSignal;
   search?: boolean;
+  images?: { path: string; label: string }[];
   onProgress?: (event: any) => void;
 };
 export interface AgentPort {
@@ -446,7 +447,13 @@ export class CodexAgent extends EventEmitter implements AgentPort {
       void this.rpc("turn/start", {
         threadId,
         effort: this.options.effort ?? "medium",
-        input: [{ type: "text", text: JSON.stringify(input) }],
+        input: [
+          { type: "text", text: JSON.stringify(input) },
+          ...(options.images ?? []).flatMap((image) => [
+            { type: "text", text: image.label },
+            { type: "localImage", path: image.path, detail: "original" },
+          ]),
+        ],
         outputSchema: jsonSchema,
       })
         .then((r) => {

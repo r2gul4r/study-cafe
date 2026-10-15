@@ -2786,3 +2786,23 @@ blockquote small {
   color: #865322;
   margin: 0;
 }
+.source-page-asset {
+  margin: 1rem 0;
+}
+.source-page-asset figure {
+  margin: 0 0 0.75rem;
+}
+.source-page-asset img {
+  display: block;
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  border: 1px solid #dce5df;
+  border-radius: 8px;
+  background: white;
+}
+.source-page-asset figcaption {
+  color: #64756e;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

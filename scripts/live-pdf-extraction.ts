@@ -17,7 +17,7 @@ const option = (name: string) =>
   process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
 if (!process.argv.includes("--live")) {
   console.log(
-    "No network or AI calls. Use --live [--phase=ingest|extract|recheck|audit|all] [--resume=<evaluation-directory>] [--new-extraction] [--max-calls=30]. audit is local only; recheck replays saved real outputs through evidence assembly then calls Codex review.",
+    "No network or AI calls. Use --live [--phase=ingest|extract|recheck|audit|all] [--resume=<evaluation-directory>] [--new-extraction] [--pages=2,6,7,8] [--max-calls=30]. audit is local only; recheck replays saved real outputs through evidence assembly then calls Codex review.",
   );
   process.exit(0);
 }
@@ -57,6 +57,7 @@ const session: any = {
   phase,
   maxCalls,
   calls: 0,
+  pdfPages: option("pages")?.split(",").map(Number) ?? null,
   workflowHash: createHash("sha256")
     .update(readFileSync(new URL("../src/workflows.ts", import.meta.url)))
     .digest("hex"),
@@ -91,6 +92,12 @@ const agent: AgentPort = {
       inputBytes: Buffer.byteLength(JSON.stringify(input)),
       questionId: input.question?.id ?? null,
       questionRevisionId: input.question?.revisionId ?? null,
+      images: (options?.images ?? []).map((image) => ({
+        ...JSON.parse(image.label),
+        sha256: createHash("sha256")
+          .update(readFileSync(image.path))
+          .digest("hex"),
+      })),
     };
     for (const name of [
       "segments",
@@ -317,6 +324,9 @@ try {
     }
     const result = await job("extract", "extract_questions", {
       sourceId: report.sources.paper.id,
+      ...(option("pages")
+        ? { pdfPages: option("pages")!.split(",").map(Number) }
+        : {}),
     });
     report.questions = f.catalog.listQuestions(report.goalId, {
       limit: 300,
@@ -462,6 +472,14 @@ try {
         revisionId: q.revisionId,
         status: q.status,
         reference: q.sourceMatch.questionReference,
+        visualTranscription: q.visualTranscription ?? false,
+        visualEvidence: q.visualEvidence ?? [],
+        answerContinuationEvidence: (
+          q.sourceMatch.answerContinuationEvidence ?? []
+        ).map((e: any) => ({
+          segmentId: e.segmentId,
+          quoteHash: createHash("sha256").update(e.quote).digest("hex"),
+        })),
         review: q.review,
         evidence: citations.map((e: any) => ({
           sourceId: e.sourceId,

@@ -10,6 +10,12 @@ import {
   type Material,
 } from "./materials.js";
 import type { AgentPort } from "./agent.js";
+import {
+  withPageImages,
+  imageInputs,
+  validateVisualEvidence,
+  type ImageInput,
+} from "./pdf-visuals.js";
 import { Jobs, Waiting, type JobContext } from "./jobs.js";
 import { Catalog } from "./catalog.js";
 import { Sources } from "./sources.js";
@@ -70,6 +76,16 @@ const verifyOutput = z
     evidenceValid: z.boolean(),
     answerValid: z.boolean(),
     rubricCheck: rubricAuditOutput.nullable(),
+    visualCheck: z
+      .object({
+        faithful: z.boolean(),
+        complete: z.boolean(),
+        noAnswerLeak: z.boolean(),
+        reason: z.string(),
+      })
+      .strict()
+      .nullable()
+      .default(null),
   })
   .strict();
 const shortAnswerPolicy =
@@ -92,12 +108,14 @@ export function registerWorkflows(
     input: any,
     schema: z.ZodType<T>,
     search = false,
+    images: ImageInput[] = [],
   ) => {
     const started = now();
     try {
       const result = await agent.ask(role, input, schema, {
         signal: ctx.signal,
         search,
+        images,
         onProgress: (e) => ctx.event(e),
       });
       ctx.signal.throwIfAborted();
@@ -108,7 +126,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 9,
+          promptVersion: 11,
           startedAt: started,
         }),
         now(),
@@ -123,7 +141,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 9,
+            promptVersion: 11,
             startedAt: started,
           }),
           now(),
@@ -147,22 +165,68 @@ export function registerWorkflows(
     };
   };
   const verify = async (q: any, ctx: JobContext) => {
+    validateVisualEvidence(s, q);
+    const materials: Material[] = [
+      ...new Set<string>(q.evidence.map((e: any) => e.segmentId)),
+    ].map((segmentId) => {
+      const segment = s.get("segments", segmentId);
+      const revision = s.get("source_revisions", segment.revision_id);
+      const source = catalog.readSource(revision.source_id);
+      const { boxes: _boxes, ...locator } = decode<any>(segment.locator);
+      return {
+        segmentId,
+        sourceId: source.id,
+        revisionId: revision.id,
+        title: source.title,
+        kind: source.kind,
+        url: source.url ?? null,
+        text: segment.text,
+        locator,
+        ordinal: segment.ordinal,
+      };
+    });
+    const visualIds = new Set<string>(
+      (q.visualEvidence ?? []).map((v: any) => v.segmentId),
+    );
+    const rendered = await withPageImages(
+      s,
+      materials.filter((m) => visualIds.has(m.segmentId)),
+      ctx.signal,
+    );
     const review = await ask(
       ctx,
       "verify_question",
       {
         goal: goalAtScope(q.goalId, q.scopeId),
         question: q,
-        materials: q.evidence.map((e: any) => ({
-          segmentId: e.segmentId,
-          text: s.get("segments", e.segmentId).text,
-        })),
+        materials: materials.map(
+          (m) => rendered.find((v) => v.segmentId === m.segmentId) ?? m,
+        ),
+        visualPolicy:
+          "If visualEvidence is nonempty, inspect every attached original page. Return visualCheck: faithful confirms every stem/passage/choice and math symbol agrees with the original question image (not the answer sheet), complete confirms graphs and all necessary context are visible in requiredAssetIds, and noAnswerLeak confirms those learner-facing images contain no solutions/answer keys. Any missing image, changed question, unreadable formula or disagreement makes usable=false. Text-layout loss may be transcribed into readable plain/Unicode math only when visualTranscription=true and the original image is preserved. Independently compute answers; an original solution typo must not be silently corrected or accepted. For answerContinuationEvidence, check consecutive pages and matching parent problem/subpart; adjacency alone is not proof. Include specific reasons for discrepancies.",
         instruction:
           "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. An exact quote alone is not proof: the material must support the correct answer and requested concept. For extracted questions, independently check sourceMatch: the question number, choice-to-answer mapping, edition and passage must agree with the quoted question and answer sheet; never accept a match just because the numbers look similar. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty. For non-short questions rubricCheck=null. For short questions return rubricCheck using this policy: " +
           rubricInstruction,
       },
       verifyOutput,
+      false,
+      imageInputs(s, rendered),
     );
+    if (
+      (q.visualEvidence?.length || q.visualTranscription) &&
+      !(
+        review.visualCheck?.faithful &&
+        review.visualCheck.complete &&
+        review.visualCheck.noAnswerLeak
+      )
+    )
+      return {
+        ...review,
+        usable: false,
+        reason:
+          "원본 이미지 검토 보류: " +
+          (review.visualCheck?.reason ?? "이미지 검토 결과가 없습니다."),
+      };
     if (q.type === "short") {
       const audit = validateRubricAudit(q, review.rubricCheck);
       const mismatches = audit.criteria.filter((c) => !c.aligned);
@@ -471,21 +535,35 @@ export function registerWorkflows(
     const created: string[] = [];
     const unresolved: { reference: string; reason: string }[] = [];
     const sourceContext = documentEdges(relevant);
+    if (input.pdfPages)
+      requireThat(
+        input.pdfPages.length > 0 &&
+          input.pdfPages.every((page: number) =>
+            relevant.some((m) => m.locator.pdfPage === page),
+          ),
+        "PDF_PAGES",
+        "존재하는 PDF 페이지를 선택하세요.",
+      );
     // Extract one segment at a time: multi-page PDF batches can require very
     // large structured answers. Neighbours preserve continuations/context.
     for (let offset = 0; offset < relevant.length; offset++) {
+      if (
+        input.pdfPages &&
+        !input.pdfPages.includes(relevant[offset]!.locator.pdfPage)
+      )
+        continue;
       const batch = relevant.slice(offset, offset + 1);
       const adjacentSegments = relevant
         .slice(Math.max(0, offset - 1), offset + 2)
         .filter((m) => !batch.includes(m));
-      const body = relevant.filter(
+      let body = relevant.filter(
         (m) =>
           batch.includes(m) ||
           adjacentSegments.includes(m) ||
           sourceContext.includes(m),
       );
       const answerHeaders = documentEdges(answerSegments);
-      const selectedAnswers = [
+      let selectedAnswers = [
         ...new Map(
           [
             ...answerHeaders,
@@ -500,7 +578,16 @@ export function registerWorkflows(
             ...answerSegments,
           ].map((m) => [m.segmentId, m]),
         ).values(),
-      ].slice(0, 12);
+      ].slice(0, 10);
+      const rendered = await withPageImages(
+        s,
+        [...body, ...selectedAnswers],
+        ctx.signal,
+      );
+      body = rendered.slice(0, body.length);
+      selectedAnswers = rendered.slice(body.length);
+      const supplied = (items: Material[]) =>
+        items.map((m) => body.find((v) => v.segmentId === m.segmentId) ?? m);
       const processed = new Map<
         string,
         { reference: string; stem?: string; reason?: string }
@@ -519,10 +606,10 @@ export function registerWorkflows(
                     goal: goalAtScope(src.goalId, scope.id),
                     source: src,
                     scope,
-                    segments: batch,
-                    adjacentSegments,
-                    sourceHeader: relevant[0],
-                    sourceContext,
+                    segments: supplied(batch),
+                    adjacentSegments: supplied(adjacentSegments),
+                    sourceHeader: supplied([relevant[0]!])[0],
+                    sourceContext: supplied(sourceContext),
                     answerSegments: selectedAnswers,
                     previousFailure,
                     processed: [...processed.values()],
@@ -532,9 +619,9 @@ export function registerWorkflows(
                       "Put question, answer and edition citations in sourceMatch. The server assembles these into evidence automatically after exact-source validation. evidence only needs additional support such as a parent problem or shared passage; do not repeat sourceMatch citations there. Never invent or paraphrase any quote.",
                     shortAnswerPolicy,
                     referencePolicy:
-                      "questionReference and answerReference must each be a single literal printed marker that occurs inside their respective quote. Do not synthesize composite labels such as 'Problem 2. (a)' if the parent number and subpart are printed separately. Use the actual subpart marker, e.g. '(a)', and also include the parent problem heading and shared passage in evidence so the independent reviewer can disambiguate repeated subpart labels. answerEvidence must include that printed marker AND its answer, not just the solution formula. Keep subquestions separate when a page break or header interrupts their text; preserve their shared passage and groupId. Do not rewrite malformed source math or fill missing assets from the solutions.",
+                      "questionReference and answerReference must be identical single literal printed markers inside their respective exact text quote. Do not synthesize composite labels when parent number and subpart are printed separately. Include the parent problem and shared context in evidence to disambiguate repeated subpart markers. answerEvidence anchors the printed marker. If the answer continues onto later segments/pages, put exact quotations in answerContinuationEvidence, in consecutive segment order from the same revision, including all intervening segments. Keep the original page boundaries. Inspect the page images to distinguish a continued answer from the next subpart. Never link solely because pages are adjacent. Preserve groupId across subquestions.",
                     wordingPolicy:
-                      "Each stem, passage and choice must be one contiguous excerpt of the supplied original question text after whitespace normalization only. Retain printed subpart labels and symbols; do not join separated excerpts, translate, paraphrase, change Unicode math symbols or convert formulas into LaTeX. Include all necessary shared context in passage. If the extracted text has lost essential math/table layout or a required figure, report unresolved instead of silently reconstructing it from the answer sheet or your own knowledge.",
+                      "For PDF questions with supplied pageImage, use visual extraction: set visualTranscription=true for EVERY such question, faithfully transcribe the original printed wording and math into readable plain/Unicode notation (e.g. x^2, explicit fractions), retain language and labels, and attach the original question pages. This explicit mode is necessary even for a punctuation or mathematical glyph difference from the text layer. For sources WITHOUT images, keep contiguous verbatim stem/passage/choices with whitespace normalization only and visualTranscription=false. Do not paraphrase, use LaTeX markup or guess from the answer sheet. For graphs keep the actual original image, not an invented textual replacement. Include visualEvidence {segmentId,assetId,role} for every question/answer page you visually rely on, using supplied pageImage IDs; include a literal text-layer citation for each such segment in evidence. All quote fields MUST remain exact text-layer substrings, never the visual transcription. requiredAssetIds must include ALL question-role image IDs and NO answer-role images. Use no other asset IDs. Never attach a question image containing solutions to learners. If no image resolves the problem, report unresolved. An original answer typo/conflict remains unresolved, not silently repaired.",
                     instruction:
                       "Extract only existing complete questions anchored in segments, not new ones or questions appearing only in sourceHeader/sourceContext/adjacentSegments. adjacentSegments supply shared passages or continuations; the questionEvidence anchor must be in segments. sourceContext supplies the document's front and back matter for edition evidence; it is not extra question content. Keep exact stem, choices and passage wording. For short questions choices=[] and answer=[]; provide a nonempty modelAnswer and unique rubric IDs with positive points whose sum equals the question points. Do not infer extra scoring requirements from worked solutions. Fix previousFailure when supplied. sourceMatch is required: use the identical printed questionReference/answerReference, cite questionEvidence and answerEvidence with their numbers and original answer. If the answer comes from a separate document, edition must be a common verbatim edition/session identifier and editionEvidence must quote it from BOTH documents, including sourceContext when needed. All match citations must be exact; the server adds them to evidence. Never infer a matching edition from a shared website or URL alone. For answers printed with the question, edition may be null and editionEvidence=[]. Missing or ambiguous answers, edition, passages or assets go in unresolved. Use source kind for origin; user_material and reference map to external_practice only when actual questions exist. Keep linked passage groups together. Never invent unavailable question text.",
                   },
@@ -549,6 +636,8 @@ export function registerWorkflows(
                       ),
                     })
                     .strict(),
+                  false,
+                  imageInputs(s, rendered),
                 );
               } catch (error) {
                 ctx.signal.throwIfAborted();

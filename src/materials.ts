@@ -1,6 +1,7 @@
 import { decode, requireThat, type Question } from "./core.js";
 import { containsVerbatimQuote } from "./evidence.js";
 import type { Catalog } from "./catalog.js";
+import type { PageImage } from "./pdf-visuals.js";
 
 export type Material = {
   segmentId: string;
@@ -11,6 +12,8 @@ export type Material = {
   url: string | null;
   text: string;
   locator: any;
+  ordinal?: number;
+  pageImage?: PageImage;
 };
 
 // Edition/copyright pages may be at the end, not just the front. Context is
@@ -115,6 +118,10 @@ export function latestMaterials(catalog: Catalog, goalId: string): Material[] {
         kind: source.kind,
         url: revision.url ?? source.url ?? null,
         text: row.text,
+        ordinal: row.ordinal,
+        ...(revision.pageImagesV1?.[locator.pdfPage]
+          ? { pageImage: revision.pageImagesV1[locator.pdfPage] }
+          : {}),
         // Glyph coordinates are retained in storage for source inspection.
         // They are not visual input and can dwarf the text in AI requests.
         locator,
@@ -152,6 +159,7 @@ export function withExtractionEvidence(q: Question): Question {
         ...q.evidence,
         q.sourceMatch.questionEvidence,
         q.sourceMatch.answerEvidence,
+        ...(q.sourceMatch.answerContinuationEvidence ?? []),
         ...q.sourceMatch.editionEvidence,
       ].map((e) => [JSON.stringify([e.segmentId, e.quote]), e]),
     ).values(),
@@ -208,6 +216,7 @@ export function validateExtraction(
   const citations = [
     match.questionEvidence,
     match.answerEvidence,
+    ...(match.answerContinuationEvidence ?? []),
     ...match.editionEvidence,
   ];
   requireThat(
@@ -228,7 +237,72 @@ export function validateExtraction(
     "ANSWER_REFERENCE",
     "문항/정답 번호가 연결 인용에 없습니다.",
   );
-  // Keep wording; only whitespace normalization is allowed for PDF/HTML layout.
+  // Continuations must follow the numbered answer in the same stored revision.
+  // Exact quotations alone do not establish a semantic link: the independent
+  // reviewer must still check headings, subpart boundaries and the final answer.
+  let previous = answerMaterial;
+  const seen = new Set([previous.segmentId]);
+  for (const e of match.answerContinuationEvidence ?? []) {
+    const next = [...body, ...answers].find((m) => m.segmentId === e.segmentId);
+    requireThat(
+      next &&
+        !seen.has(next.segmentId) &&
+        next.revisionId === previous.revisionId &&
+        (typeof previous.ordinal === "number" &&
+        typeof next.ordinal === "number"
+          ? next.ordinal === previous.ordinal + 1
+          : next.locator.pdfPage === previous.locator.pdfPage + 1),
+      "ANSWER_CONTINUATION",
+      "정답의 이어지는 근거는 같은 판본의 연속 구간이어야 합니다.",
+    );
+    seen.add(next.segmentId);
+    previous = next;
+  }
+  for (const v of q.visualEvidence ?? []) {
+    const material = (
+      v.role === "question" ? body : [...body, ...answers]
+    ).find((m) => m.segmentId === v.segmentId);
+    requireThat(
+      material?.pageImage?.assetId === v.assetId,
+      "VISUAL_SUPPLIED",
+      "이번 요청에 제공된 원본 페이지 이미지만 사용할 수 있습니다.",
+    );
+    requireThat(
+      q.evidence.some((e) => e.segmentId === v.segmentId),
+      "VISUAL_CITATION",
+      "이미지 근거에도 원문 텍스트 인용이 필요합니다.",
+    );
+    requireThat(
+      v.role !== "question" || q.requiredAssetIds.includes(v.assetId),
+      "VISUAL_ASSET_REQUIRED",
+      "문제 원본 이미지를 첨부해야 합니다.",
+    );
+    requireThat(
+      v.role !== "answer" || !q.requiredAssetIds.includes(v.assetId),
+      "ANSWER_IMAGE_LEAK",
+      "정답 이미지를 응시자에게 제공할 수 없습니다.",
+    );
+  }
+  if (q.visualTranscription)
+    requireThat(
+      q.visualEvidence.some(
+        (v) =>
+          v.role === "question" && v.segmentId === questionMaterial.segmentId,
+      ),
+      "VISUAL_ANCHOR",
+      "이미지 복원은 해당 문제의 원본 페이지에 연결해야 합니다.",
+    );
+  requireThat(
+    q.requiredAssetIds.every((assetId) =>
+      q.visualEvidence.some(
+        (v) => v.role === "question" && v.assetId === assetId,
+      ),
+    ),
+    "EXTRACTION_ASSET",
+    "추출 문항에는 검증된 문제 원본 이미지만 첨부할 수 있습니다.",
+  );
+  // Text-only extraction preserves wording. Visual transcription instead needs
+  // the checked original image anchor above and a separate visual review.
   const original = body
     .map((m, index) => {
       const previous = body[index - 1];
@@ -246,7 +320,8 @@ export function validateExtraction(
       q.stem,
       ...q.choices.map((c) => c.text),
       ...(q.passage ? [q.passage] : []),
-    ].every((text) => containsVerbatimQuote(original, text)),
+    ].every((text) => containsVerbatimQuote(original, text)) ||
+      q.visualTranscription,
     "EXTRACTION_WORDING",
     "문제·보기·지문이 원문과 다릅니다.",
   );

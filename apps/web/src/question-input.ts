@@ -24,6 +24,8 @@ export function revisionInput(q: Question) {
     evidence: q.evidence ?? [],
     sourceMatch: q.sourceMatch ?? null,
     requiredAssetIds: q.requiredAssetIds,
+    visualTranscription: q.visualTranscription ?? false,
+    visualEvidence: q.visualEvidence ?? [],
     points: q.points,
   };
 }

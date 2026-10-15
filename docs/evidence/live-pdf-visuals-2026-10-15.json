@@ -1,0 +1,1285 @@
+{
+  "kind": "study-cafe-live-pdf-visuals-v1",
+  "date": "2026-10-15",
+  "scope": "Fresh extraction of stored original MIT exam pages 2,6,7,8. Existing ChatGPT login. No extra paid provider. Not an entire-exam rerun. Only metadata and review findings are published.",
+  "sourceAttribution": "Jeremy Orloff and Jennifer French Kamrin, MIT OpenCourseWare, 18.05 Spring 2022, CC BY-NC-SA 4.0.",
+  "sourceLicense": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+  "protocolDocumentation": "https://learn.chatgpt.com/docs/app-server",
+  "sources": [
+    {
+      "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01.pdf",
+      "pdfSha256": "a613da7596bc236cc996826a4c0034c432643cb6a02ba3077c28a92d27d511ab",
+      "pdfBytes": 95162,
+      "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    },
+    {
+      "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01_sol.pdf",
+      "pdfSha256": "3d387d65226c3db6216671649216190e92a37dcd9312a2ba8179c4cb96d6c053",
+      "pdfBytes": 114615,
+      "pages": [1, 2, 3, 4, 5, 6]
+    }
+  ],
+  "sessions": [
+    {
+      "index": 11,
+      "startedAt": "2026-10-15T01:18:35.867Z",
+      "finishedAt": "2026-10-15T01:24:55.490Z",
+      "phase": "extract",
+      "pdfPages": [2, 6, 7, 8],
+      "workflowHash": "ab59dee0db207495ff11a665631c16d2a9e0e3d79ffe22c10f68752bc1c3d658",
+      "calls": 10,
+      "passed": true
+    },
+    {
+      "index": 12,
+      "startedAt": "2026-10-15T01:26:05.833Z",
+      "finishedAt": "2026-10-15T01:31:40.467Z",
+      "phase": "extract",
+      "pdfPages": [2, 6, 7, 8],
+      "workflowHash": "028b83d191b87006a531117b41fd66adddfed5605e77faaee075cc26274d73a8",
+      "calls": 11,
+      "passed": true
+    }
+  ],
+  "totals": {
+    "calls": 21,
+    "structuredSuccesses": 20,
+    "invalidOutput": 1,
+    "timeouts": 0,
+    "rateLimits": 0,
+    "callMilliseconds": 709465
+  },
+  "images": [
+    {
+      "assetId": "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+      "sha256": "1ec42fa310f5aaf503df4c43489f87c157b2c25dd179c73f12699f0970db32d6"
+    },
+    {
+      "assetId": "7388f956-b7a2-48df-ad90-8bb512aff979",
+      "sha256": "05887745ef106d56f8e47adee0bbc1223ae81a74c06d2babff5291f3e8958f51"
+    },
+    {
+      "assetId": "950d14bd-9a6b-4fbb-b96c-454e898adc5e",
+      "sha256": "e109b28fd3ff013a63acdbcfa73c67fd7a808a138e555cccde877ec75e03f87a"
+    },
+    {
+      "assetId": "acd00acf-72ab-41be-876b-1b880a99371a",
+      "sha256": "8db76ab2323612f8d1bb90623585e2f8bd5074a85a0cb8cb13f698effe780cfd"
+    },
+    {
+      "assetId": "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+      "sha256": "8e9619ed4f79f1c3d20b13662b474765f411dc61260518ce1eebf8c9b1205bb4"
+    },
+    {
+      "assetId": "2b4ad910-d33d-472b-8c75-a4041908c992",
+      "sha256": "daf3695ff598096ae3c3087132d58aa2386477920956ece7a668c34ea3b9ea62"
+    },
+    {
+      "assetId": "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+      "sha256": "ee5292e1e171ae7d3aaec78f038f1987b236f8b6c5e6ce7580e2216b6e81adf1"
+    },
+    {
+      "assetId": "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+      "sha256": "6b693552423dd88e0b45a196c735543854489b7dcd7d51cbf38c750cffcdccf6"
+    },
+    {
+      "assetId": "a1f455d7-a7a6-4b40-a876-c543c1101439",
+      "sha256": "be900307f70ee625d0c22a8bd2cc20328f9a446cc391b3ad0813239754af66e7"
+    },
+    {
+      "assetId": "39e00216-2a0f-488f-bd4f-485b343b6032",
+      "sha256": "1ebf284d12c601d22287688b02f022ede81b191a7afbe5900b1e941ac89cbdfc"
+    },
+    {
+      "assetId": "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+      "sha256": "63e0f1461c82aabab0a616f8d0aa207ab9b15d1824aa13130a5855fcbb27b1cb"
+    },
+    {
+      "assetId": "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+      "sha256": "38b3071206fdf6ffba581396c7560ab0729674c848abbea4da6564badc74b238"
+    },
+    {
+      "assetId": "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+      "sha256": "6efd37e9db0d0a1626c2c624f9e0906d26f3c88d64f3dcc9ab626a4a7abf8fbe"
+    },
+    {
+      "assetId": "17edf7bd-7b04-478f-bc85-76c02d402c31",
+      "sha256": "0ee0e85097084dc8cee3cf560ca64f82ceb733a0ba75ce90843983a5f899d7e1"
+    }
+  ],
+  "firstResult": {
+    "questionIds": [
+      "8b7186be-9dcd-4742-bcad-4fbb6bed5cc3",
+      "e990728e-968e-451e-9097-91b8244e3ba2",
+      "09783aeb-df1e-4e35-a200-e82e803894fd",
+      "e1a13481-6eed-4641-805a-a6adf5b7b235"
+    ],
+    "count": 4,
+    "usable": 4,
+    "needsReview": 0,
+    "unresolved": [
+      {
+        "reference": "(b)",
+        "reason": "문제·보기·지문이 원문과 다릅니다."
+      },
+      {
+        "reference": "(a)",
+        "reason": "문제·보기·지문이 원문과 다릅니다."
+      },
+      {
+        "reference": "(b)",
+        "reason": "문제·보기·지문이 원문과 다릅니다."
+      },
+      {
+        "reference": "Problem 6.",
+        "reason": "공식 해설 원본의 수치 충돌로 미해결입니다. 문제 segment 91c2a1cd-98b3-4264-a652-0dfb63ecafbf는 일일 분산을 5·10^4로 제시하지만, 해설 segment ffba984e-7215-4ac2-96f1-aa43ffe161d5의 5쪽 이미지(assetId: ed0d826e-58e6-49a2-89fe-62a15e6ed338)에는 Var(S) = 20·5·10^4 = 10^5 및 σ_S = 10^3으로 인쇄되어 있습니다. 실제 곱은 10^6이므로 인쇄된 분산과 표준편차가 모순됩니다. 최종 답 0.3085는 표준편차 1000을 사용합니다. 원본 정답의 오타·충돌을 임의로 수정하지 말라는 조건에 따라 추출을 보류합니다."
+      }
+    ]
+  },
+  "finalResult": {
+    "questionIds": [
+      "8b7186be-9dcd-4742-bcad-4fbb6bed5cc3",
+      "4a7b8507-d3b8-4822-9e39-f81f3167bfbb",
+      "cdcd024a-b29d-4c79-964f-f38c0c0f5873",
+      "7a2510c7-ad69-4c10-bc7c-97171d34fd69",
+      "f9f72061-c833-4f5e-89de-d06e9e3e9910",
+      "e1a13481-6eed-4641-805a-a6adf5b7b235"
+    ],
+    "count": 6,
+    "usable": 6,
+    "needsReview": 0,
+    "unresolved": [
+      {
+        "reference": "73ffa777-6dd8-40d7-892f-c0572fa18816: Problem 5 (d)",
+        "reason": "공식 해설 4쪽(9fe21896-9d55-4ff4-b9aa-ffefd1abc864)의 원본 이미지에서 E[XY] 계산의 두 번째 이중적분에 미분요소가 dx만 인쇄되어 있고 dy가 누락되어 있다. 최종 공분산과 상관계수는 각각 −5/(144·4), −5/47로 판독되지만, 원본 정답의 오타를 임의 수정하지 말라는 정책에 따라 미해결로 보고한다."
+      },
+      {
+        "reference": "Problem 6.",
+        "reason": "공식 해설 원본의 수식 충돌로 추출을 보류합니다. 문제 segment 91c2a1cd-98b3-4264-a652-0dfb63ecafbf(PDF 8쪽)는 일일 분산을 5·10^4로 제시합니다. 해설 segment ffba984e-7215-4ac2-96f1-aa43ffe161d5(PDF 5쪽, 이미지 ed0d826e-58e6-49a2-89fe-62a15e6ed338)에는 Var(S) = 20·5·10^4 = 10^5와 σ_S = 10^3이 실제로 인쇄되어 있습니다. 20·5·10^4는 10^6이므로 인쇄된 분산은 곱셈 결과 및 표준편차와 모순됩니다. 최종 근삿값 0.3085는 표준편차 1000을 사용하지만, 원본 정답의 오타·충돌을 임의로 수정하지 말라는 조건에 따라 미해결로 보고합니다."
+      }
+    ]
+  },
+  "calls": [
+    {
+      "session": 11,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:18:38.273Z",
+      "elapsedMs": 54945,
+      "questionId": null,
+      "pages": [2],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "7388f956-b7a2-48df-ad90-8bb512aff979",
+        "950d14bd-9a6b-4fbb-b96c-454e898adc5e",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439"
+      ],
+      "outputSha256": "fb0450dc84ff3ef73114f07aa881d2802b325041b23708b3beda1c60ec376f47"
+    },
+    {
+      "session": 11,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:19:33.623Z",
+      "elapsedMs": 53654,
+      "questionId": null,
+      "pages": [6],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "39e00216-2a0f-488f-bd4f-485b343b6032",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+      ],
+      "outputSha256": "2ea73fc07f59ea2f115365d347548326b715b9767e171f13fc47e62c4cb37b29"
+    },
+    {
+      "session": 11,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:20:27.294Z",
+      "elapsedMs": 61578,
+      "questionId": null,
+      "pages": [6],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "39e00216-2a0f-488f-bd4f-485b343b6032",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+      ],
+      "outputSha256": null,
+      "error": {
+        "code": "AGENT_OUTPUT_INVALID",
+        "message": "에이전트 결과가 요청한 스키마와 일치하지 않습니다: questions.0: 주관식 rubric.points 합계(2.5)가 문항 points(5)와 다릅니다."
+      }
+    },
+    {
+      "session": 11,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:21:28.888Z",
+      "elapsedMs": 40563,
+      "questionId": null,
+      "pages": [6],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "39e00216-2a0f-488f-bd4f-485b343b6032",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+      ],
+      "outputSha256": "e024a2f0b90fa09bd5dddb83182d15a547fc2c66342f0b4eaff26a4df3908703"
+    },
+    {
+      "session": 11,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:22:09.486Z",
+      "elapsedMs": 79946,
+      "questionId": null,
+      "pages": [7],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4"
+      ],
+      "outputSha256": "84ba1d3d1ec52e5117f996ef05eced3aa55b8cc9d9091c8f6296f38d30f479a2"
+    },
+    {
+      "session": 11,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:23:29.697Z",
+      "elapsedMs": 13589,
+      "questionId": null,
+      "pages": [8],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+        "17edf7bd-7b04-478f-bc85-76c02d402c31",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439"
+      ],
+      "outputSha256": "bcd9aa9afed99ba9c92cb7433192415384c0d9ab70e8f8d2f4cfbaf37c697586"
+    },
+    {
+      "session": 11,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:23:43.312Z",
+      "elapsedMs": 13346,
+      "questionId": "8b7186be-9dcd-4742-bcad-4fbb6bed5cc3",
+      "imageAssetIds": [
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "7388f956-b7a2-48df-ad90-8bb512aff979"
+      ],
+      "outputSha256": "1a21563fbe6395ccc7ae88df8e5bd3b1cd2eaaae5fa93220c4025b13f05bc236",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문과 해설의 Problem 1(a), 4점 배점 및 Spring 2022 판본 근거가 일치한다. 원문 그래프에서 평균 주변의 퍼짐을 독립적으로 비교하면 X가 가장 커서 모범답안과 일치한다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "첨부된 원문과 해설 페이지를 모두 확인했다. 원문 segmentId f0b1718f-dfb7-4253-8286-3042d89148e2의 문구·변수·동일 축척 조건이 stem과 일치한다. 필수 assetId 7388f956-b7a2-48df-ad90-8bb512aff979에는 세 곡선과 f_X, f_Y, f_W 표기 및 필요한 문맥이 모두 보이고 정답은 없다. 해설 assetId 7c769751-17dc-46ac-8fae-c9ba346e2daf의 Problem 1(a) 정답 X는 별도 검증 자료이며 학습자용 필수 이미지에 포함되지 않는다."
+        },
+        "criteria": [
+          {
+            "id": "p1a-variable",
+            "aligned": true,
+            "promptQuoteSha256": "9608131417764d3c7c1add202da4b77630daf145e3a50c9c739d6bad557f01a1",
+            "reason": "분산이 가장 큰 확률변수만 답하도록 요구하며 설명은 불필요하다고 명시한다. 채점 기준은 이 요구와 일치한다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 11,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:23:56.686Z",
+      "elapsedMs": 20659,
+      "questionId": "e990728e-968e-451e-9097-91b8244e3ba2",
+      "imageAssetIds": [
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2"
+      ],
+      "outputSha256": "403104a9d944a6e95f0fcfbd5a84f03954fe087c197d39b390d57121878f8bae",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "원문 Problem 5(c), 지문, 판본 근거와 해설 연결이 일치한다. 독립 계산 결과 f_X(x)=5/4−x/2, E[X]=5/8−1/6=11/24, E[X²]=5/12−1/8=7/24, Var(X)=47/576으로 모범답안 및 원본 해설과 일치한다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "첨부된 원본 3쪽을 모두 확인했다. 문제 출처 47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6의 segment e48ac646-2bb7-4958-ad8b-c54734123239와 필수 asset 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2에 영어 지문, 시간 범위, 결합밀도와 (c)의 요구가 온전히 있으며 해답은 없다. 해설 출처 f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc의 segment d42fc6af-5881-41a1-ae56-f552c874d81e에서 Problem 5(c)를 확인했고, 다음 쪽 segment 9fe21896-9d55-4ff4-b9aa-ffefd1abc864의 첫 해설은 같은 주변밀도로 E[X]와 Var(X)를 계산한 뒤 (d)로 넘어가므로 연결이 명확하다. 추출된 해설 수식의 배치 손실은 원본 이미지로 확인했으며 해당 (c) 계산에 오류가 없다."
+        },
+        "criteria": [
+          {
+            "id": "p5c-mean",
+            "aligned": true,
+            "promptQuoteSha256": "2dcd471df907c0c51b163deacfc9dd960a7c0421a17ebab90f9d738c953233c1",
+            "reason": "기댓값과 간소화된 분수를 명시적으로 요구하므로 기준 전체가 요청에 부합한다."
+          },
+          {
+            "id": "p5c-variance",
+            "aligned": true,
+            "promptQuoteSha256": "2dcd471df907c0c51b163deacfc9dd960a7c0421a17ebab90f9d738c953233c1",
+            "reason": "분산과 간소화된 분수를 명시적으로 요구한다. 47/576과 47/24²는 같은 기약분수 값이며 별도 유도 설명을 요구하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 11,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:24:17.371Z",
+      "elapsedMs": 17537,
+      "questionId": "09783aeb-df1e-4e35-a200-e82e803894fd",
+      "imageAssetIds": [
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2"
+      ],
+      "outputSha256": "5abdd7ad0b3e5677b57138102dee76052b31e6029711d7d474481b185d1302fa",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문·해설 이미지에서 Problem 5(d)의 연결과 영문 지문을 확인했다. 독립 계산 결과 E[X]=E[Y]=11/24, Var(X)=Var(Y)=47/576, E[XY]=29/144이므로 공분산 −5/576, 상관계수 −5/47은 정확하다. 해설 원본의 E[XY] 두 번째 이중적분에는 dy가 누락된 표기 오류가 있으나, 최종 답과 문항 수식에는 오류가 없다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "첨부된 세 원본 페이지를 모두 확인했다. 필수 자산 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 19775d7a-0e0c-490f-a876-cd3f40b75fba에 지지구간, 결합밀도 5/4−xy, Problem 5(d)와 힌트가 모두 보이며 지문과 일치한다. 해당 학습자용 이미지에는 해설이나 정답이 없다. 답안 자산 a1f455d7-a7a6-4b40-a876-c543c1101439는 필수 노출 자산에서 제외되어 있다."
+        },
+        "criteria": [
+          {
+            "id": "covariance",
+            "aligned": true,
+            "promptQuoteSha256": "3425dcac6471e4316549dc58b1fddb752118c36d9616ad89fd3ddfcbd500b7e8",
+            "reason": "명시적으로 요구한 공분산 값만 평가하며, 동치인 미정리 식도 허용하므로 분수 정리가 불필요하다는 조건에 부합한다."
+          },
+          {
+            "id": "correlation",
+            "aligned": true,
+            "promptQuoteSha256": "3425dcac6471e4316549dc58b1fddb752118c36d9616ad89fd3ddfcbd500b7e8",
+            "reason": "명시적으로 요구한 상관계수 값만 평가하며, 추가 설명이나 유도를 요구하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 11,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:24:34.937Z",
+      "elapsedMs": 20433,
+      "questionId": "e1a13481-6eed-4641-805a-a6adf5b7b235",
+      "imageAssetIds": [
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+      ],
+      "outputSha256": "2efb8dd6f1d7a1ff09726b15b1176e432526a653822a49db2c378c1d616193b8",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "원문 이미지와 제공된 인용문을 대조한 결과 Problem 5(e)의 지문·수식·정답 연결이 일치합니다. 독립적으로 얻은 영역은 R={(x,y)∈[0,1]²: x<y<x+0.1}이며, x=0.9에서 나눈 모범답안의 적분식이 정확합니다. 경계 포함 여부는 확률에 영향을 주지 않습니다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "첨부된 네 페이지를 모두 확인했습니다. 필수 자산 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 19775d7a-0e0c-490f-a876-cd3f40b75fba에 지문·밀도함수·(e)의 요청이 온전히 보이며 해답은 없습니다. 해설 자산 a1f455d7-a7a6-4b40-a876-c543c1101439의 영역 그림과 ed0d826e-58e6-49a2-89fe-62a15e6ed338의 적분 경계도 일치합니다. 해설 4–5쪽의 연결은 연속 페이지라는 사실뿐 아니라 동일한 사건 X<Y<X+0.1과 피적분함수로 확인했습니다. 두 해설 자산은 학습자용 필수 자산에 포함되지 않습니다."
+        },
+        "criteria": [
+          {
+            "id": "integration-region",
+            "aligned": true,
+            "promptQuoteSha256": "4e36c8c3a5232982f6f6b271355634241725f30c6c54746bdfae88d42178c40e",
+            "reason": "요청된 사건을 단위 정사각형 내의 적분 영역으로 지정하는 기준입니다. 적분 경계 또는 영역 표시를 허용하므로 특정 풀이 형식을 추가로 강제하지 않습니다."
+          },
+          {
+            "id": "probability-integral",
+            "aligned": true,
+            "promptQuoteSha256": "b9d48049e84fba1a649bda33141a4e50a44f04018e5f74cd8a454c0a6942c2c4",
+            "reason": "확률 적분식과 피적분함수의 완전한 명시, 계산하지 말라는 조건을 직접 평가합니다. 지문에 주어진 결합밀도에 따라 h(x,y)=5/4−xy가 됩니다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 12,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:26:06.734Z",
+      "elapsedMs": 50419,
+      "questionId": null,
+      "pages": [2],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "7388f956-b7a2-48df-ad90-8bb512aff979",
+        "950d14bd-9a6b-4fbb-b96c-454e898adc5e",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439"
+      ],
+      "outputSha256": "2b4605d187b74f4a5ec3bc5370e2804c09654544ff317d3ace79a85c69e75ea1"
+    },
+    {
+      "session": 12,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:26:57.192Z",
+      "elapsedMs": 58807,
+      "questionId": null,
+      "pages": [6],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "39e00216-2a0f-488f-bd4f-485b343b6032",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+      ],
+      "outputSha256": "15f6da58fb43c84bb76c7b18a275d947b15b6c518dadac9ad3d2ea8ea38fc10c"
+    },
+    {
+      "session": 12,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:27:56.034Z",
+      "elapsedMs": 40996,
+      "questionId": null,
+      "pages": [6],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "39e00216-2a0f-488f-bd4f-485b343b6032",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+      ],
+      "outputSha256": "71258ca30b3b4b67ac1fc561c2d49ba44a8861161a0bdd931ef6e3a465ab0979"
+    },
+    {
+      "session": 12,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:28:37.054Z",
+      "elapsedMs": 54441,
+      "questionId": null,
+      "pages": [7],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4"
+      ],
+      "outputSha256": "e8a3f606cd01204df41df02308c12a6cfdddf423e97e42a4a31ac3ff11c1a28c"
+    },
+    {
+      "session": 12,
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T01:29:31.522Z",
+      "elapsedMs": 17011,
+      "questionId": null,
+      "pages": [8],
+      "imageAssetIds": [
+        "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+        "17edf7bd-7b04-478f-bc85-76c02d402c31",
+        "acd00acf-72ab-41be-876b-1b880a99371a",
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439"
+      ],
+      "outputSha256": "558c3f08cb7b5cbee825cf8dae59117e01ab278f767c22ffcaa8a342d3d3e8e4"
+    },
+    {
+      "session": 12,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:29:48.555Z",
+      "elapsedMs": 16264,
+      "questionId": "8b7186be-9dcd-4742-bcad-4fbb6bed5cc3",
+      "imageAssetIds": [
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "7388f956-b7a2-48df-ad90-8bb512aff979"
+      ],
+      "outputSha256": "297c20fe41c06bd7ebee7d1b2acabe5c9eb6cd3f1c94265c75629d77ce51334a",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문과 해설의 Problem 1(a), 배점 4점, Spring 2022 판본 및 인용문이 일치한다. 원문 그래프에서 각 평균을 중심으로 퍼짐을 독립적으로 비교하면 X가 가장 크며, 해설과 모범답안도 X로 일치한다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "첨부된 원문과 해설 페이지를 모두 확인했다. 원문 segmentId f0b1718f-dfb7-4253-8286-3042d89148e2의 문구·변수·그래프가 문항과 일치한다. 필수 assetId 7388f956-b7a2-48df-ad90-8bb512aff979에는 세 곡선과 표기, 동일 축척 조건이 온전히 보이며 정답은 없다. 해설 assetId 7c769751-17dc-46ac-8fae-c9ba346e2daf는 정답 검증용이며 학습자용 필수 이미지에 포함되지 않는다."
+        },
+        "criteria": [
+          {
+            "id": "p1a-variable",
+            "aligned": true,
+            "promptQuoteSha256": "9608131417764d3c7c1add202da4b77630daf145e3a50c9c739d6bad557f01a1",
+            "reason": "분산이 가장 큰 확률변수만 답하도록 요구하며 설명은 불필요하다고 명시한다. 해당 기준은 이 요구만 평가한다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 12,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:30:04.842Z",
+      "elapsedMs": 14991,
+      "questionId": "4a7b8507-d3b8-4822-9e39-f81f3167bfbb",
+      "imageAssetIds": [
+        "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+        "7388f956-b7a2-48df-ad90-8bb512aff979"
+      ],
+      "outputSha256": "a53bafde4c6569e50720c133a489a40e85664393b81dd020be1fa2198d39f659",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문·해설 이미지의 Problem 1(b), 조건과 문항 대응이 일치한다. 독립 계산 결과 P(A ∪ B)=0.7+0.3−0.25=0.75, P(A|B)=0.25/0.3=5/6으로 모범답안과 일치한다. Spring 2022 표기는 제공된 두 판본 근거에서 확인된다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "첨부된 두 원본 페이지를 확인했다. 문제 이미지 7388f956-b7a2-48df-ad90-8bb512aff979의 (b) 조건, ∩·∪·조건부 확률 기호와 두 요구 사항이 전사문과 일치하고 모두 보인다. 해당 학습자용 이미지에는 해설이나 정답이 없다. 별도 해설 이미지 7c769751-17dc-46ac-8fae-c9ba346e2daf의 Problem 1(b)와 분수식도 모범답안에 대응한다."
+        },
+        "criteria": [
+          {
+            "id": "p1b-union",
+            "aligned": true,
+            "promptQuoteSha256": "73093e4e6746ff0049af5015e5933b17227795619fd896fe53886f06ee1656fa",
+            "reason": "요청한 합집합의 확률값만 평가하며, 추가 설명이나 유도를 요구하지 않는다."
+          },
+          {
+            "id": "p1b-conditional",
+            "aligned": true,
+            "promptQuoteSha256": "5d5a4242c0f61fda0db86142429b72a7a3f55eaf6f5e829a90712921c21672d3",
+            "reason": "요청한 조건부 확률값 또는 동치 표현만 평가하므로 문항 요구와 일치한다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 12,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:30:19.855Z",
+      "elapsedMs": 17233,
+      "questionId": "cdcd024a-b29d-4c79-964f-f38c0c0f5873",
+      "imageAssetIds": [
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2"
+      ],
+      "outputSha256": "277e404e11218067670548d570f78a90ad797e62d930fe4b859beae825d0765b",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문·해설 이미지에서 Problem 5(a)의 지문과 수식 및 정답 연결이 일치한다. 독립 적분 결과도 모범답안과 일치하며, 제공된 판본 근거는 Spring 2022로 일치한다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "문제 이미지 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 해설 이미지 2b4ad910-d33d-472b-8c75-a4041908c992를 모두 확인했다. 문제의 영어 지문, 0~1시간 조건, f(x,y)=5/4−xy 및 (a)가 전사와 일치한다. 필수 문제 이미지에 (a)의 모든 조건이 있으며 해설은 없다. 해설 segmentId d42fc6af-5881-41a1-ae56-f552c874d81e의 Problem 5(a)는 문제 segmentId e48ac646-2bb7-4958-ad8b-c54734123239와 대응한다."
+        },
+        "criteria": [
+          {
+            "id": "5a-marginal-x",
+            "aligned": true,
+            "promptQuoteSha256": "31ceea612190b547b4234b7223b2b3f4cc8ce82a92e150771608f5cc7ffbee3b",
+            "reason": "두 주변밀도 중 X의 밀도를 요구하므로 해당 식과 지지구간을 평가하는 기준은 요청에 부합한다. 유도 과정은 요구하지 않는다."
+          },
+          {
+            "id": "5a-marginal-y",
+            "aligned": true,
+            "promptQuoteSha256": "31ceea612190b547b4234b7223b2b3f4cc8ce82a92e150771608f5cc7ffbee3b",
+            "reason": "두 주변밀도 중 Y의 밀도를 요구하므로 해당 식과 지지구간을 평가하는 기준은 요청에 부합한다. 추가 설명을 요구하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 12,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:30:37.111Z",
+      "elapsedMs": 13602,
+      "questionId": "7a2510c7-ad69-4c10-bc7c-97171d34fd69",
+      "imageAssetIds": [
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2"
+      ],
+      "outputSha256": "4b7ab7d688e20ca6f8ab30592c24b8490bd4a55d71bb05bdea34b3f04546b7ee",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문과 해설의 Problem 5(b), 지문, 수식 및 Spring 2022 표기가 일치한다. 독립 계산에서도 주변밀도는 f_X(x)=5/4−x/2, f_Y(y)=5/4−y/2이며 결합밀도가 그 곱과 같지 않으므로 비독립이라는 정답이 타당하다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "문제 이미지 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2에서 영어 지문, 0~1시간 범위, f(x,y)=5/4−xy 및 (b)를 확인했다. 필요한 조건이 모두 보이며 해답은 없다. 별도 해설 이미지 2b4ad910-d33d-472b-8c75-a4041908c992의 Problem 5(b)도 대조했으며, 이는 학습자용 필수 이미지에 포함되지 않는다."
+        },
+        "criteria": [
+          {
+            "id": "5b-independence",
+            "aligned": true,
+            "promptQuoteSha256": "7f659a87485211058690f0a957f950a25a6e43a5e9c0a1bd8dbc6404a1e6453b",
+            "reason": "독립 여부를 묻는 요청에 대해 비독립이라는 판단만 평가하며, 요구되지 않은 유도나 설명을 강제하지 않는다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 12,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:30:50.737Z",
+      "elapsedMs": 24101,
+      "questionId": "f9f72061-c833-4f5e-89de-d06e9e3e9910",
+      "imageAssetIds": [
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "2b4ad910-d33d-472b-8c75-a4041908c992",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2"
+      ],
+      "outputSha256": "88529e7c43bf954989f0701848751386b02a5c903a32de61c2ea3d8dafeadeb3",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문 이미지 3장을 확인했다. 시험 sourceId 47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6의 Problem 5(c)와 해설 sourceId f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc의 동일 지문·소문항이 일치한다. 해설 3쪽 끝의 (c)는 4쪽의 기댓값·분산 계산으로 이어지며, 주변밀도와 다음 (d)의 경계까지 확인되어 연결이 명확하다. 제공된 판본 근거는 양쪽 모두 Spring 2022이다. 단, explanation의 '주변밀도를 적분하면'은 정확히 'x 또는 x²를 곱해 적분하면'으로 표현하는 것이 좋다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "문제 이미지 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2에서 영어 지문, 0~1시간 범위, f(x,y)=5/4−xy, (c)의 분수 단순화 요구가 모두 전사와 일치한다. 이 소문항에 필요한 조건이 전부 보이고 별도 그래프는 필요하지 않다. 학습자용 필수 이미지에는 해답이 없다. 해설 이미지 2b4ad910-d33d-472b-8c75-a4041908c992와 a1f455d7-a7a6-4b40-a876-c543c1101439는 검증용으로 확인했으며 requiredAssetIds에는 포함되지 않는다."
+        },
+        "criteria": [
+          {
+            "id": "p5c-expectation",
+            "aligned": true,
+            "promptQuoteSha256": "eabbed39d6b451340ebcd9332e83ff47d944ca879174d803c10605e2dc4a81af",
+            "reason": "기댓값과 약분된 분수 표현을 명시적으로 요구한다. 이 기준은 요청된 결과만 평가하며 풀이 설명을 추가로 요구하지 않는다."
+          },
+          {
+            "id": "p5c-variance",
+            "aligned": true,
+            "promptQuoteSha256": "eabbed39d6b451340ebcd9332e83ff47d944ca879174d803c10605e2dc4a81af",
+            "reason": "분산과 약분된 분수 표현을 명시적으로 요구한다. 47/576과 47/24²는 동등한 기약 표현이다."
+          }
+        ]
+      }
+    },
+    {
+      "session": 12,
+      "role": "verify_question",
+      "startedAt": "2026-10-15T01:31:14.872Z",
+      "elapsedMs": 25350,
+      "questionId": "e1a13481-6eed-4641-805a-a6adf5b7b235",
+      "imageAssetIds": [
+        "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+        "a1f455d7-a7a6-4b40-a876-c543c1101439",
+        "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+        "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+      ],
+      "outputSha256": "e1327af4d92c30092534ae9461b905d3882eb60b7fc225fa302b1832563c94d4",
+      "review": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제공된 원문 이미지 4장을 대조했습니다. 문제 출처 47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6의 Problem 5(e)와 해설 출처 f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc의 (e)는 지문과 사건 조건이 일치하며, 제공된 판본 인용은 모두 Spring   2022입니다. 독립적으로 얻은 영역은 R={(x,y)∈[0,1]²: x<y<x+0.1}입니다. 상한 min(x+0.1,1)이 x=0.9에서 바뀌므로 모범답안이 정확합니다. 해설 5쪽의 연속 적분도 동일한 사건과 피적분함수를 명시하므로 4쪽 (e)의 후속 답안으로 확인됩니다.",
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "필수 이미지 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 19775d7a-0e0c-490f-a876-cd3f40b75fba에서 전체 공통 지문, f(x,y)=5/4−xy, 시간 범위 및 (e)의 요구를 확인했습니다. 영어와 수학 기호의 전사가 일치하며 필요한 문맥이 누락되지 않았습니다. 두 학습자용 이미지에는 해설이나 정답이 없습니다. 별도 해설 이미지 a1f455d7-a7a6-4b40-a876-c543c1101439와 ed0d826e-58e6-49a2-89fe-62a15e6ed338의 영역 그림 및 후속 적분식도 확인했습니다."
+        },
+        "criteria": [
+          {
+            "id": "integration-region",
+            "aligned": true,
+            "promptQuoteSha256": "cc8cc9d33a8d3c0bb1329df049bb069e4db29945f30ce7e461dfa09feb461a98",
+            "reason": "요구된 사건을 단위 정사각형 안의 적분 영역으로 지정하는 기준입니다. 적분 경계 또는 영역 표시를 허용하므로 불필요한 도출 과정이나 그림을 강제하지 않습니다. 연속분포이므로 경계 포함 여부는 확률에 영향을 주지 않습니다."
+          },
+          {
+            "id": "probability-integral",
+            "aligned": true,
+            "promptQuoteSha256": "ef0f227039551496c0c74ef3a10372d3034b54814f4c5999ae2176be5fb48701",
+            "reason": "적분식을 세우되 계산하지 않고 피적분함수를 완전히 명시하라는 요구에 부합합니다. 지문에 주어진 결합밀도 5/4−xy를 사용하며 동치 표현도 인정합니다."
+          }
+        ]
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "8b7186be-9dcd-4742-bcad-4fbb6bed5cc3",
+      "revisionId": "5e57da1b-b1a4-4178-aa9c-f8c7cafdd01f",
+      "status": "usable",
+      "reference": "(a)",
+      "visualTranscription": true,
+      "visualEvidence": [
+        {
+          "segmentId": "f0b1718f-dfb7-4253-8286-3042d89148e2",
+          "assetId": "7388f956-b7a2-48df-ad90-8bb512aff979",
+          "role": "question"
+        },
+        {
+          "segmentId": "d0563a78-1475-4e33-9c42-a6571eb49716",
+          "assetId": "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+          "role": "answer"
+        }
+      ],
+      "answerContinuationEvidence": [],
+      "review": {
+        "actor": "codex",
+        "reason": "제공된 원문과 해설의 Problem 1(a), 배점 4점, Spring 2022 판본 및 인용문이 일치한다. 원문 그래프에서 각 평균을 중심으로 퍼짐을 독립적으로 비교하면 X가 가장 크며, 해설과 모범답안도 X로 일치한다.",
+        "at": "2026-10-15T01:30:04.838Z"
+      },
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 1,
+          "role": "answer",
+          "quoteHash": "5837fefbd8b048d4277a87182afc55e88b3828b49b8c4a9e76e3e2707921ac5a",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 1,
+          "role": "support",
+          "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 2,
+          "role": "question",
+          "quoteHash": "fc9effeed28014d406327fbbf9b658cee0a0a823c378f42b7579a1954ce26ffd",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 2,
+          "role": "support",
+          "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+          "exactQuote": true
+        }
+      ]
+    },
+    {
+      "id": "e1a13481-6eed-4641-805a-a6adf5b7b235",
+      "revisionId": "53b9f9fb-b06f-4b9b-aa07-5d30f1a2126a",
+      "status": "usable",
+      "reference": "(e)",
+      "visualTranscription": true,
+      "visualEvidence": [
+        {
+          "segmentId": "e48ac646-2bb7-4958-ad8b-c54734123239",
+          "assetId": "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "role": "question"
+        },
+        {
+          "segmentId": "73ffa777-6dd8-40d7-892f-c0572fa18816",
+          "assetId": "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "role": "question"
+        },
+        {
+          "segmentId": "9fe21896-9d55-4ff4-b9aa-ffefd1abc864",
+          "assetId": "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "role": "answer"
+        },
+        {
+          "segmentId": "ffba984e-7215-4ac2-96f1-aa43ffe161d5",
+          "assetId": "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+          "role": "answer"
+        }
+      ],
+      "answerContinuationEvidence": [
+        {
+          "segmentId": "ffba984e-7215-4ac2-96f1-aa43ffe161d5",
+          "quoteHash": "14103c9f71ef31e74d6848de08df8653674d59d3cb1f38e77b4c7366367a958b"
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "제공된 원문 이미지 4장을 대조했습니다. 문제 출처 47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6의 Problem 5(e)와 해설 출처 f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc의 (e)는 지문과 사건 조건이 일치하며, 제공된 판본 인용은 모두 Spring   2022입니다. 독립적으로 얻은 영역은 R={(x,y)∈[0,1]²: x<y<x+0.1}입니다. 상한 min(x+0.1,1)이 x=0.9에서 바뀌므로 모범답안이 정확합니다. 해설 5쪽의 연속 적분도 동일한 사건과 피적분함수를 명시하므로 4쪽 (e)의 후속 답안으로 확인됩니다.",
+        "at": "2026-10-15T01:31:40.243Z"
+      },
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 7,
+          "role": "support",
+          "quoteHash": "fca971e7d9ea85dac19e63f6d2509df815b3da6ae251f6c7cc4ace1401f8fd96",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 7,
+          "role": "question",
+          "quoteHash": "a5903a891fc21db5c3585b1cb5b99dc4ccb988918499a39d2fade5f5c5364111",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 4,
+          "role": "answer",
+          "quoteHash": "165d7568c4e7913ed6e6d813134d746506e22ef2fcf66fe52a57719a85b446c9",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 5,
+          "role": "answer",
+          "quoteHash": "14103c9f71ef31e74d6848de08df8653674d59d3cb1f38e77b4c7366367a958b",
+          "exactQuote": true
+        }
+      ]
+    },
+    {
+      "id": "4a7b8507-d3b8-4822-9e39-f81f3167bfbb",
+      "revisionId": "3f11dadc-4a43-485a-b930-d659b09cda3a",
+      "status": "usable",
+      "reference": "(b)",
+      "visualTranscription": true,
+      "visualEvidence": [
+        {
+          "segmentId": "f0b1718f-dfb7-4253-8286-3042d89148e2",
+          "assetId": "7388f956-b7a2-48df-ad90-8bb512aff979",
+          "role": "question"
+        },
+        {
+          "segmentId": "d0563a78-1475-4e33-9c42-a6571eb49716",
+          "assetId": "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+          "role": "answer"
+        }
+      ],
+      "answerContinuationEvidence": [],
+      "review": {
+        "actor": "codex",
+        "reason": "제공된 원문·해설 이미지의 Problem 1(b), 조건과 문항 대응이 일치한다. 독립 계산 결과 P(A ∪ B)=0.7+0.3−0.25=0.75, P(A|B)=0.25/0.3=5/6으로 모범답안과 일치한다. Spring 2022 표기는 제공된 두 판본 근거에서 확인된다.",
+        "at": "2026-10-15T01:30:19.851Z"
+      },
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 1,
+          "role": "answer",
+          "quoteHash": "46bb3e7f39f68ad353cb955dd107c09fdf90df32ff45dd07893aeaf4869f13ac",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 1,
+          "role": "support",
+          "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 2,
+          "role": "question",
+          "quoteHash": "ddb7d4db1aa77979fbaef236ffe5a10375186fd5bd069203fa1993b6f9a8cbd9",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 2,
+          "role": "support",
+          "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+          "exactQuote": true
+        }
+      ]
+    },
+    {
+      "id": "cdcd024a-b29d-4c79-964f-f38c0c0f5873",
+      "revisionId": "2c9e8e52-1e55-4b5b-8a69-64d3b16ff843",
+      "status": "usable",
+      "reference": "(a)",
+      "visualTranscription": true,
+      "visualEvidence": [
+        {
+          "segmentId": "e48ac646-2bb7-4958-ad8b-c54734123239",
+          "assetId": "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "role": "question"
+        },
+        {
+          "segmentId": "d42fc6af-5881-41a1-ae56-f552c874d81e",
+          "assetId": "2b4ad910-d33d-472b-8c75-a4041908c992",
+          "role": "answer"
+        }
+      ],
+      "answerContinuationEvidence": [],
+      "review": {
+        "actor": "codex",
+        "reason": "제공된 원문·해설 이미지에서 Problem 5(a)의 지문과 수식 및 정답 연결이 일치한다. 독립 적분 결과도 모범답안과 일치하며, 제공된 판본 근거는 Spring 2022로 일치한다.",
+        "at": "2026-10-15T01:30:37.105Z"
+      },
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "answer",
+          "quoteHash": "9cbee2622e04dc6e2e909b1812649c6c190fd6a354b8caf858b8a7abb74e03f3",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "support",
+          "quoteHash": "f1462a1244e9653349c848f17728aba73092da8b9db8c6e9e38f4cde4bac71bf",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "question",
+          "quoteHash": "7347ac7cb1446bf981a7951adf8bbde07fe999e83ecf9114f97d29e9e23a5373",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+          "exactQuote": true
+        }
+      ]
+    },
+    {
+      "id": "7a2510c7-ad69-4c10-bc7c-97171d34fd69",
+      "revisionId": "f64606d7-d3ae-4bdd-9884-89679818a0a4",
+      "status": "usable",
+      "reference": "(b)",
+      "visualTranscription": true,
+      "visualEvidence": [
+        {
+          "segmentId": "e48ac646-2bb7-4958-ad8b-c54734123239",
+          "assetId": "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "role": "question"
+        },
+        {
+          "segmentId": "d42fc6af-5881-41a1-ae56-f552c874d81e",
+          "assetId": "2b4ad910-d33d-472b-8c75-a4041908c992",
+          "role": "answer"
+        }
+      ],
+      "answerContinuationEvidence": [],
+      "review": {
+        "actor": "codex",
+        "reason": "제공된 원문과 해설의 Problem 5(b), 지문, 수식 및 Spring 2022 표기가 일치한다. 독립 계산에서도 주변밀도는 f_X(x)=5/4−x/2, f_Y(y)=5/4−y/2이며 결합밀도가 그 곱과 같지 않으므로 비독립이라는 정답이 타당하다.",
+        "at": "2026-10-15T01:30:50.729Z"
+      },
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "answer",
+          "quoteHash": "601ad0cb7218b20b597cdc76d21aab08025d7a1afeae62625547dc8e4333cd14",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "support",
+          "quoteHash": "f1462a1244e9653349c848f17728aba73092da8b9db8c6e9e38f4cde4bac71bf",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "question",
+          "quoteHash": "5efe72392f5d08f318a8aef532c189d234d91cdc7486fc94b71f0eb937b21bbf",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+          "exactQuote": true
+        }
+      ]
+    },
+    {
+      "id": "f9f72061-c833-4f5e-89de-d06e9e3e9910",
+      "revisionId": "f03df610-d208-48ba-b6cf-f94f958a6690",
+      "status": "usable",
+      "reference": "(c)",
+      "visualTranscription": true,
+      "visualEvidence": [
+        {
+          "segmentId": "e48ac646-2bb7-4958-ad8b-c54734123239",
+          "assetId": "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "role": "question"
+        },
+        {
+          "segmentId": "d42fc6af-5881-41a1-ae56-f552c874d81e",
+          "assetId": "2b4ad910-d33d-472b-8c75-a4041908c992",
+          "role": "answer"
+        },
+        {
+          "segmentId": "9fe21896-9d55-4ff4-b9aa-ffefd1abc864",
+          "assetId": "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "role": "answer"
+        }
+      ],
+      "answerContinuationEvidence": [
+        {
+          "segmentId": "9fe21896-9d55-4ff4-b9aa-ffefd1abc864",
+          "quoteHash": "2c60659f13b986985694e8b57e7bd355b3270746c8316daf48b63b0215c3c6ca"
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "제공된 원문 이미지 3장을 확인했다. 시험 sourceId 47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6의 Problem 5(c)와 해설 sourceId f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc의 동일 지문·소문항이 일치한다. 해설 3쪽 끝의 (c)는 4쪽의 기댓값·분산 계산으로 이어지며, 주변밀도와 다음 (d)의 경계까지 확인되어 연결이 명확하다. 제공된 판본 근거는 양쪽 모두 Spring 2022이다. 단, explanation의 '주변밀도를 적분하면'은 정확히 'x 또는 x²를 곱해 적분하면'으로 표현하는 것이 좋다.",
+        "at": "2026-10-15T01:31:14.861Z"
+      },
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 4,
+          "role": "answer",
+          "quoteHash": "2c60659f13b986985694e8b57e7bd355b3270746c8316daf48b63b0215c3c6ca",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "answer",
+          "quoteHash": "484b1922a02d76bd34662a9cad49d44b4731f4d95c2d14e230d03d603e22ace0",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "support",
+          "quoteHash": "f1462a1244e9653349c848f17728aba73092da8b9db8c6e9e38f4cde4bac71bf",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "question",
+          "quoteHash": "484b1922a02d76bd34662a9cad49d44b4731f4d95c2d14e230d03d603e22ace0",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+          "exactQuote": true
+        }
+      ]
+    }
+  ],
+  "regressions": {
+    "tests": 92,
+    "typecheck": true,
+    "build": true,
+    "existingStudyRoom": {
+      "items": 25,
+      "earned": 34,
+      "totalPossible": 39,
+      "pending": 0
+    }
+  },
+  "browserCheck": {
+    "isolatedSnapshot": true,
+    "graphImageLoaded": true,
+    "formulaImagesLoaded": 2,
+    "width": 1530,
+    "height": 1980
+  },
+  "limits": [
+    "Six usable questions and two unresolved in final selected-page run, not fourteen freshly re-extracted questions.",
+    "Problem 5(d) passed first review but the final extractor withheld it for missing dy in an intermediate printed integral; all histories preserved.",
+    "Problem 6 original variance typo remains unresolved.",
+    "No full-scan OCR, crop extraction, long answer-key benchmark or universal vision accuracy claim."
+  ]
+}

@@ -451,6 +451,12 @@ function ExamRunner({ initial }: { initial: Attempt }) {
             text={item.stem}
             headingLevel="h2"
           />
+          {item.visualTranscription && (
+            <p className="muted small">
+              원본 이미지에서 수식·배치를 읽어 옮긴 문항이에요. 아래 원본도 함께
+              확인할 수 있어요.
+            </p>
+          )}
           {item.requiredAssetIds?.map((id) => (
             <AssetLink key={id} id={id} />
           ))}

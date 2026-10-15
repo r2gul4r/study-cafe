@@ -122,6 +122,7 @@ export const questionInput = z
         answerReference: text.max(200),
         questionEvidence: evidence,
         answerEvidence: evidence,
+        answerContinuationEvidence: z.array(evidence).max(4).default([]),
         edition: text.max(200).nullable(),
         editionEvidence: z.array(evidence).max(6),
       })
@@ -129,6 +130,19 @@ export const questionInput = z
       .nullable()
       .default(null),
     requiredAssetIds: z.array(key).max(20).default([]),
+    visualEvidence: z
+      .array(
+        z
+          .object({
+            segmentId: key,
+            assetId: key,
+            role: z.enum(["question", "answer"]),
+          })
+          .strict(),
+      )
+      .max(16)
+      .default([]),
+    visualTranscription: z.boolean().default(false),
     points: z.number().positive().max(100).default(1),
   })
   .strict()
@@ -208,6 +222,7 @@ export function canonicalQuestion(q: Question) {
       q.stem.normalize("NFKC").replace(/\s+/g, " ").trim(),
       q.passage?.normalize("NFKC").replace(/\s+/g, " "),
       q.choices.map((c) => c.text.normalize("NFKC").trim()).sort(),
+      ...(q.requiredAssetIds.length ? [[...q.requiredAssetIds].sort()] : []),
     ]),
   );
 }

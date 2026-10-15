@@ -19,6 +19,17 @@ createInterface({ input: process.stdin }).on("line", (line) => {
     result = { thread: { id: "thread-1" } };
   }
   if (msg.method === "turn/start") {
+    if (mode === "images") {
+      const input = msg.params.input;
+      if (
+        input.length !== 3 ||
+        input[1].text !== "segment: one" ||
+        input[2].type !== "localImage" ||
+        input[2].path !== "/fixture/page.png" ||
+        input[2].detail !== "original"
+      )
+        throw new Error("Image input contract mismatch");
+    }
     send({
       method: "turn/started",
       params: { threadId: "thread-1", turn: { id: "turn-1" } },

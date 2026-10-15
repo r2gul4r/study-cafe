@@ -64,6 +64,12 @@ export type Question = {
   modelAnswer?: string | null;
   explanation?: string;
   requiredAssetIds: string[];
+  visualTranscription?: boolean;
+  visualEvidence?: {
+    segmentId: string;
+    assetId: string;
+    role: "question" | "answer";
+  }[];
   evidence?: { segmentId: string; quote: string }[];
   sourceMatch?: {
     questionReference: string;
@@ -71,6 +77,7 @@ export type Question = {
     edition: string | null;
     questionEvidence: { segmentId: string; quote: string };
     answerEvidence: { segmentId: string; quote: string };
+    answerContinuationEvidence?: { segmentId: string; quote: string }[];
     editionEvidence: { segmentId: string; quote: string }[];
   } | null;
   rubric?: {
