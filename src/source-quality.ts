@@ -2,6 +2,7 @@ import { z } from "zod";
 import { evidence, type Question } from "./core.js";
 import { containsVerbatimQuote } from "./evidence.js";
 import type { Material } from "./materials.js";
+import type { Correction, CorrectionCheck } from "./corrections.js";
 
 export const sourceCheckOutput = z
   .object({
@@ -45,11 +46,37 @@ export function sourceCheckFailure(
   q: Question,
   audit: SourceCheck | null | undefined,
   materials: Material[],
+  correction?: Correction,
+  correctionCheck?: CorrectionCheck | null,
 ): string | null {
   if (!q.sourceMatch) return null;
   if (!audit) return "원본 표기·정답 구분 검토 결과가 없습니다.";
-  if (!audit.questionUnambiguous || !audit.finalAnswerMatches)
+  if (
+    correction &&
+    !(
+      correctionCheck?.correctedAnswerValid &&
+      correctionCheck.allIssuesAddressed
+    )
+  )
+    return "정정안의 정답·해설 또는 오류 해결 근거가 검증되지 않았습니다.";
+  if (!audit.questionUnambiguous || (!audit.finalAnswerMatches && !correction))
     return "원본 문제의 의미 또는 정답이 독립 풀이와 일치하지 않습니다.";
+  if (
+    correction &&
+    !correction.originalAudit.issues
+      .filter((i) => i.kind === "answer_error")
+      .every((original) =>
+        audit.issues.some(
+          (i) =>
+            i.kind === "answer_error" &&
+            i.location === original.location &&
+            i.evidence.segmentId === original.evidence.segmentId &&
+            (containsVerbatimQuote(i.evidence.quote, original.evidence.quote) ||
+              containsVerbatimQuote(original.evidence.quote, i.evidence.quote)),
+        ),
+      )
+  )
+    return "정정 검토에서 기존 원본 오류의 위치와 근거가 누락되었습니다.";
   for (const issue of audit.issues) {
     const material = materials.find(
       (m) => m.segmentId === issue.evidence.segmentId,
@@ -67,6 +94,17 @@ export function sourceCheckFailure(
       !containsVerbatimQuote(material.text, issue.evidence.quote)
     )
       return "원본 오류의 위치·인용 근거를 확인할 수 없습니다.";
+    if (
+      correction &&
+      issue.kind === "answer_error" &&
+      issue.location !== "question" &&
+      correction.evidence.some(
+        (e) =>
+          e.segmentId === issue.evidence.segmentId &&
+          containsVerbatimQuote(e.quote, issue.evidence.quote),
+      )
+    )
+      continue;
     if (
       issue.kind !== "notation_only" ||
       issue.location !== "worked_solution" ||

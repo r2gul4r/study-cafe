@@ -9,10 +9,12 @@ export function QuestionEditor({
   question,
   onSaved,
   onCancel,
+  correctionMode = false,
 }: {
   question: Question;
   onSaved: (question: Question) => void;
   onCancel: () => void;
+  correctionMode?: boolean;
 }) {
   const [draft, setDraft] = useState(() => structuredClone(question));
   const [conflict, setConflict] = useState(false);
@@ -21,6 +23,9 @@ export function QuestionEditor({
   const update = (patch: Partial<Question>) =>
     setDraft((q) => ({ ...q, ...patch }));
   const rubric = draft.rubric ?? [];
+  const [reason, setReason] = useState(
+    question.review?.answerCorrection?.reason ?? "",
+  );
   return (
     <>
       <Notice tone="info">
@@ -28,7 +33,7 @@ export function QuestionEditor({
         생성됩니다. 기존 시험의 문제와 점수는 자동으로 바뀌지 않아요.
       </Notice>
       <SubmitForm
-        submit="새 버전 저장"
+        submit={correctionMode ? "정정안 저장" : "새 버전 저장"}
         onSubmit={async () => {
           if (conflict)
             throw new Error("최신 버전을 확인하고 수정 기준을 갱신해 주세요.");
@@ -41,9 +46,31 @@ export function QuestionEditor({
             throw new Error("채점 기준의 점수 합계를 문항 배점과 맞춰 주세요.");
           try {
             return await api<Question>(
-              `/questions/${question.id}/revisions`,
+              `/questions/${question.id}/${correctionMode ? "corrections" : "revisions"}`,
               "POST",
-              revisionInput(draft),
+              correctionMode
+                ? {
+                    expectedRevisionId: draft.revisionId,
+                    reason,
+                    evidence: (
+                      draft.review?.answerCorrection?.originalAudit ??
+                      draft.review?.sourceCheck
+                    )?.issues
+                      .filter((i) => i.kind === "answer_error")
+                      .map(
+                        (i) =>
+                          draft.evidence?.find(
+                            (e) =>
+                              e.segmentId === i.evidence.segmentId &&
+                              e.quote.includes(i.evidence.quote),
+                          ) ?? i.evidence,
+                      ),
+                    answer: draft.answer ?? [],
+                    modelAnswer: draft.modelAnswer ?? null,
+                    rubric,
+                    explanation: draft.explanation ?? "",
+                  }
+                : revisionInput(draft),
             );
           } catch (error) {
             if (error instanceof ApiError && error.code === "REVISION_CONFLICT")
@@ -61,12 +88,25 @@ export function QuestionEditor({
             수정 취소
           </Button>
         </div>
+        {correctionMode && (
+          <Field label="정정 사유와 풀이 근거">
+            <textarea
+              required
+              rows={3}
+              maxLength={5000}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="원본의 어느 계산·정답이 왜 틀렸고 어떻게 바로잡았는지 적어 주세요."
+            />
+          </Field>
+        )}
         <Field label="문제 본문">
           <textarea
             required
             rows={4}
             maxLength={100000}
             value={draft.stem}
+            readOnly={correctionMode}
             onChange={(e) => update({ stem: e.target.value })}
           />
         </Field>
@@ -75,6 +115,7 @@ export function QuestionEditor({
             rows={3}
             maxLength={50000}
             value={draft.passage ?? ""}
+            readOnly={correctionMode}
             onChange={(e) => update({ passage: e.target.value || null })}
           />
         </Field>
@@ -87,6 +128,7 @@ export function QuestionEditor({
               step="any"
               required
               value={draft.points}
+              readOnly={correctionMode}
               onChange={(e) => update({ points: Number(e.target.value) })}
             />
           </Field>
@@ -94,6 +136,7 @@ export function QuestionEditor({
             <Select
               options={["easy", "medium", "hard"]}
               value={draft.difficulty}
+              disabled={correctionMode}
               onChange={(e) => update({ difficulty: e.target.value })}
             />
           </Field>
@@ -132,6 +175,7 @@ export function QuestionEditor({
                   required
                   rows={2}
                   value={choice.text}
+                  readOnly={correctionMode}
                   onChange={(e) =>
                     update({
                       choices: draft.choices.map((c) =>
@@ -144,7 +188,7 @@ export function QuestionEditor({
                   type="button"
                   variant="ghost"
                   aria-label={`보기 ${index + 1} 삭제`}
-                  disabled={draft.choices.length <= 2}
+                  disabled={correctionMode || draft.choices.length <= 2}
                   onClick={() =>
                     update({
                       choices: draft.choices.filter((c) => c.id !== choice.id),
@@ -159,7 +203,7 @@ export function QuestionEditor({
             <Button
               type="button"
               variant="secondary"
-              disabled={draft.choices.length >= 10}
+              disabled={correctionMode || draft.choices.length >= 10}
               onClick={() =>
                 update({
                   choices: [
@@ -282,6 +326,7 @@ export function QuestionEditor({
         <Field label="해설">
           <textarea
             rows={5}
+            required={correctionMode}
             maxLength={30000}
             value={draft.explanation ?? ""}
             onChange={(e) => update({ explanation: e.target.value })}

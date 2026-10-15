@@ -116,4 +116,6 @@ pnpm restore <backup-directory> <target-data-directory>
 
 ## 프론트 작업 전 확인
 
+원본 오류 정정은 `POST /api/questions/:id/corrections` → 기존 `/verify` → `/corrections/confirm` 순서다. 정정 검토 통과만으로 사용 가능이 되지 않는다. 확정에는 최신 `revisionId`와 `correctionReviewToken`, 사유가 필요하다. 원본 오류 문항의 일반 수정/수동 승인 우회는 차단한다. 자세한 요청 필드와 상태 전이는 [정정 안내](ANSWER_CORRECTIONS.md)를 참고한다.
+
 `/api/openapi.json`, 저장 충돌 409, 채점 보류 null, 작업 waiting_user·failed, 코덱스 미연결 상태를 화면에서 각각 처리해야 한다. 서버 종료 중에는 동작하지 않으며, 다시 시작하면 체크포인트에서 이어간다. 서버의 공식 학습 기록과 브라우저의 임시 미저장 답안은 저장 버전으로 구분한다.

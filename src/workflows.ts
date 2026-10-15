@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { containsVerbatimQuote } from "./evidence.js";
+import { correctionCheckOutput, correctionPolicy } from "./corrections.js";
 import {
   sourceCheckOutput,
   sourceCheckFailure,
@@ -83,6 +84,7 @@ const verifyOutput = z
     answerValid: z.boolean(),
     rubricCheck: rubricAuditOutput.nullable(),
     sourceCheck: sourceCheckOutput.nullable().default(null),
+    correctionCheck: correctionCheckOutput.nullable().default(null),
     visualCheck: z
       .object({
         faithful: z.boolean(),
@@ -133,7 +135,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 13,
+          promptVersion: 14,
           startedAt: started,
         }),
         now(),
@@ -148,7 +150,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 13,
+            promptVersion: 14,
             startedAt: started,
           }),
           now(),
@@ -201,7 +203,13 @@ export function registerWorkflows(
       ctx.signal,
     );
     // Do not bias a new independent review with an earlier approval/hold.
-    const { review: _priorReview, status: _priorStatus, ...candidate } = q;
+    const correction = q.review?.answerCorrection;
+    const {
+      review: _priorReview,
+      status: _priorStatus,
+      correctionReviewToken: _token,
+      ...candidate
+    } = q;
     const review = await ask(
       ctx,
       "verify_question",
@@ -214,6 +222,25 @@ export function registerWorkflows(
         visualPolicy:
           "If visualEvidence is nonempty, inspect every attached original page. Return visualCheck: faithful confirms every stem/passage/choice and math symbol agrees with the original question image (not the answer sheet), complete confirms graphs and all necessary context are visible in requiredAssetIds, and noAnswerLeak confirms those learner-facing images contain no solutions/answer keys. Any missing image, changed question or unreadable question formula makes usable=false. Text-layout loss may be transcribed into readable plain/Unicode math only when visualTranscription=true and the original image is preserved. Classify worked-solution notation separately with sourceQualityPolicy; a harmless intermediate omission does not make a faithful question image invalid. For answerContinuationEvidence, check consecutive pages and matching parent problem/subpart; adjacency alone is not proof. Include specific reasons for discrepancies.",
         sourceQualityPolicy,
+        ...(correction
+          ? {
+              correction: {
+                originalRevisionId: correction.originalRevisionId,
+                reason: correction.reason,
+                evidence: correction.evidence,
+                originalAudit: correction.originalAudit,
+              },
+              correctionPolicy,
+              originalQuestion: questionInput
+                .strip()
+                .parse(
+                  catalog.readQuestion(q.id, correction.originalRevisionId),
+                ),
+            }
+          : {
+              correctionPolicy:
+                "No correction draft: correctionCheck must be null.",
+            }),
         instruction:
           "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. An exact quote alone is not proof: the material must support the correct answer and requested concept. For extracted questions, independently check sourceMatch: the question number, choice-to-answer mapping, edition and passage must agree with the quoted question and answer sheet; never accept a match just because the numbers look similar. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty. For non-short questions rubricCheck=null. For short questions return rubricCheck using this policy: " +
           rubricInstruction,
@@ -222,7 +249,13 @@ export function registerWorkflows(
       false,
       imageInputs(s, rendered),
     );
-    const sourceFailure = sourceCheckFailure(q, review.sourceCheck, materials);
+    const sourceFailure = sourceCheckFailure(
+      q,
+      review.sourceCheck,
+      materials,
+      correction,
+      review.correctionCheck,
+    );
     if (sourceFailure)
       return { ...review, usable: false, reason: sourceFailure };
     if (
@@ -252,9 +285,11 @@ export function registerWorkflows(
             mismatches.map((c) => c.reason).join(" "),
         };
     }
-    const notice = q.sourceMatch
-      ? sourceNotationNotice(review.sourceCheck)
-      : "";
+    const notice = correction
+      ? "원본 정답 오류를 별도 정정안으로 검토했습니다. 사용자의 최종 확정이 필요합니다."
+      : q.sourceMatch
+        ? sourceNotationNotice(review.sourceCheck)
+        : "";
     return {
       ...review,
       reason: notice ? `${review.reason}\n${notice}` : review.reason,
@@ -639,7 +674,7 @@ export function registerWorkflows(
                     shortAnswerPolicy,
                     sourceQualityPolicy:
                       sourceQualityPolicy +
-                      " At extraction time, return complete questions with harmless notation omissions for independent review. Do not mark them unresolved solely for that omission. If the original final answer or a numeric equality conflicts, keep it unresolved; never substitute a repaired key.",
+                      " At extraction time, return complete questions with harmless notation omissions for independent review. Also retain COMPLETE questions with an identifiable original answer error as candidates: preserve the original answer and explicitly document the conflicting source equation in explanation, so independent review will hold them for user correction. Do not silently substitute a repaired key. Only missing/ambiguous question text, answer mapping, source identity or essential assets belong in unresolved. Never infer missing original answers.",
                     referencePolicy:
                       "questionReference and answerReference must be identical single literal printed markers inside their respective exact text quote. Do not synthesize composite labels when parent number and subpart are printed separately. Include the parent problem and shared context in evidence to disambiguate repeated subpart markers. answerEvidence anchors the printed marker. If the answer continues onto later segments/pages, put exact quotations in answerContinuationEvidence, in consecutive segment order from the same revision, including all intervening segments. Keep the original page boundaries. Inspect the page images to distinguish a continued answer from the next subpart. Never link solely because pages are adjacent. Preserve groupId across subquestions.",
                     wordingPolicy:
@@ -755,6 +790,7 @@ export function registerWorkflows(
             v.reason,
             "codex",
             v.sourceCheck,
+            v.correctionCheck,
           ),
       );
     }
@@ -785,6 +821,7 @@ export function registerWorkflows(
           v.reason,
           "codex",
           v.sourceCheck,
+          v.correctionCheck,
         ),
     );
   });

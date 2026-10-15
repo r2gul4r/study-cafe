@@ -334,7 +334,9 @@ try {
     session.result = result;
     console.log(`Extraction: ${JSON.stringify(result)}`);
     assert.ok(
-      result.usable > 0,
+      process.argv.includes("--allow-held")
+        ? result.count > 0
+        : result.usable > 0,
       "No usable question; inspect unresolved reasons before claiming success",
     );
   }
@@ -492,7 +494,9 @@ try {
       };
     });
     assert.ok(
-      audited.some((q) => q.status === "usable"),
+      process.argv.includes("--allow-held")
+        ? audited.length > 0
+        : audited.some((q) => q.status === "usable"),
       "No usable question for the structural audit",
     );
     report.audit = {

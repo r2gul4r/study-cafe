@@ -1,6 +1,13 @@
 import { z } from "zod";
 import { Store } from "./store.js";
 import type { SourceCheck } from "./source-quality.js";
+import {
+  sameCorrectionQuestion,
+  hasAnswerError,
+  correctionToken,
+  type Correction,
+  type CorrectionCheck,
+} from "./corrections.js";
 import { validateVisualEvidence } from "./pdf-visuals.js";
 import {
   id,
@@ -222,9 +229,34 @@ export class Catalog {
       questionId?: string;
       transaction?: boolean;
       expectedRevisionId?: string;
+      correction?: Correction;
     } = {},
   ) {
     const q = questionInput.parse(input);
+    const previous = options.questionId
+      ? this.readQuestion(options.questionId)
+      : null;
+    requireThat(
+      !previous ||
+        !hasAnswerError(previous) ||
+        !!options.correction ||
+        !!previous.review?.answerCorrection,
+      "CORRECTION_REQUIRED",
+      "원본 정답 오류가 있는 문항은 원본 정답 정정 기능을 이용하세요.",
+    );
+    const inherited: Correction | undefined =
+      options.correction ?? previous?.review?.answerCorrection;
+    if (inherited) {
+      const original = this.readQuestion(
+        options.questionId!,
+        inherited.originalRevisionId,
+      );
+      requireThat(
+        sameCorrectionQuestion(original, q),
+        "CORRECTION_QUESTION_CHANGED",
+        "원본 정답 정정에서는 문제·보기·배점·출처를 변경할 수 없습니다.",
+      );
+    }
     this.validateQuestion(q);
     const fingerprint = canonicalQuestion(q);
     let duplicate = this.store.one(
@@ -332,7 +364,20 @@ export class Catalog {
         "INSERT INTO question_status VALUES(?,?,?)",
         revisionId,
         "needs_review",
-        JSON.stringify({ reason: "검토 대기" }),
+        JSON.stringify({
+          reason: "검토 대기",
+          ...(inherited
+            ? {
+                answerCorrection: {
+                  originalRevisionId: inherited.originalRevisionId,
+                  reason: inherited.reason,
+                  originalAudit: inherited.originalAudit,
+                  evidence: inherited.evidence,
+                  createdAt: now(),
+                },
+              }
+            : {}),
+        }),
       );
       for (const e of q.evidence)
         this.store.run(
@@ -369,6 +414,7 @@ export class Catalog {
       "SELECT * FROM question_status WHERE revision_id=?",
       rev.id,
     );
+    const review = decode(state.review);
     return {
       id: questionId,
       revisionId: rev.id,
@@ -379,7 +425,15 @@ export class Catalog {
         rev.id,
       ),
       status: state.status,
-      review: decode(state.review),
+      review,
+      ...(review.answerCorrection
+        ? {
+            correctionReviewToken: correctionToken({
+              revisionId: rev.id,
+              review,
+            }),
+          }
+        : {}),
       archived: !!r.archived,
     };
   }
@@ -439,8 +493,33 @@ export class Catalog {
     reason: string,
     actor = "user",
     sourceCheck?: SourceCheck | null,
+    correctionCheck?: CorrectionCheck | null,
   ) {
     const rev = this.store.get("question_revisions", revisionId);
+    const q = this.readQuestion(rev.question_id, revisionId);
+    const correction: Correction | undefined = q.review?.answerCorrection;
+    if (
+      actor === "codex" &&
+      q.review.actor === "user" &&
+      (correction?.confirmedAt || q.status === "retired")
+    )
+      return q;
+    if (actor === "user" && status === "usable")
+      requireThat(
+        !correction && !hasAnswerError(q),
+        "CORRECTION_CONFIRM_REQUIRED",
+        "원본 정답 오류는 정정안을 저장하고 독립 검토한 뒤 정정 확정 버튼으로 확정하세요.",
+      );
+    // A new verdict or manual state change must not erase a known source error.
+    if (!correction && hasAnswerError(q)) {
+      sourceCheck = q.review.sourceCheck;
+      if (status === "usable") status = "needs_review";
+    }
+    const correctionPassed =
+      status === "usable" &&
+      !!correctionCheck?.correctedAnswerValid &&
+      !!correctionCheck.allIssuesAddressed;
+    if (correction && actor === "codex") status = "needs_review";
     requireThat(reason.trim(), "REASON", "검토 근거가 필요합니다.");
     if (status === "usable")
       this.validateQuestion(questionInput.parse(decode(rev.data)));
@@ -452,6 +531,28 @@ export class Catalog {
         reason,
         at: now(),
         ...(sourceCheck ? { sourceCheck, sourcePolicyVersion: 1 } : {}),
+        ...(correction
+          ? {
+              answerCorrection: {
+                ...correction,
+                confirmedAt: undefined,
+                verification: undefined,
+                ...(actor === "codex"
+                  ? {
+                      verification: {
+                        ...(correctionCheck ?? {
+                          correctedAnswerValid: false,
+                          allIssuesAddressed: false,
+                          reason: "정정 검토 결과 없음",
+                        }),
+                        passed: correctionPassed,
+                        at: now(),
+                      },
+                    }
+                  : {}),
+              },
+            }
+          : {}),
       }),
       revisionId,
     );

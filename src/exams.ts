@@ -464,6 +464,7 @@ export function publicQuestion(q: any) {
     sourceMatch,
     visualEvidence,
     review,
+    correctionReviewToken,
     pastExamEvidence,
     ...publicData
   } = q;

@@ -35,6 +35,7 @@ import {
 } from "./types";
 import { QuestionEditor } from "./question-editor";
 import { QuestionEvidence } from "./question-evidence";
+import { AnswerCorrection, needsCorrection } from "./answer-correction";
 export function SourcesPage({ goal }: { goal: Goal }) {
   const q = useQuery<Source[]>(`/sources?goalId=${goal.id}`, 10000);
   const [add, setAdd] = useState(false),
@@ -696,15 +697,52 @@ function QuestionDetail({
       <div className="modal-body">
         {latest.error && <Notice>{latest.error}</Notice>}
         {saved && <Notice tone="info">{saved}</Notice>}
+        {needsCorrection(q) && (
+          <>
+            <AnswerCorrection
+              question={q}
+              canConfirm={!historical && !editing}
+              original={history.data?.find(
+                (r) =>
+                  r.revisionId ===
+                  q.review?.answerCorrection?.originalRevisionId,
+              )}
+              onUpdated={(question) => {
+                updated(question);
+                setSaved(
+                  "정정을 확정했어요. 새 시험부터 이 버전을 사용합니다.",
+                );
+              }}
+            />
+            <details className="spaced">
+              <summary>원본 근거와 PDF 페이지 대조</summary>
+              <QuestionEvidence key={q.revisionId} question={q} />
+              {(q.visualEvidence ?? []).map((v) => (
+                <div key={`${v.role}:${v.assetId}`}>
+                  <strong>
+                    {v.role === "answer" ? "원본 정답표" : "원본 문제"}
+                  </strong>
+                  <AssetLink
+                    id={v.assetId}
+                    title={v.role === "answer" ? "정답표 원본" : "문제 원본"}
+                  />
+                </div>
+              ))}
+            </details>
+          </>
+        )}
         {editing ? (
           <QuestionEditor
             question={current}
+            correctionMode={needsCorrection(current)}
             onCancel={() => setEditing(false)}
             onSaved={(question) => {
               updated(question);
               setEditing(false);
               setSaved(
-                `새 버전 ${question.version} 저장 완료. 검토 후 사용 가능으로 변경하면 새 시험에 사용할 수 있어요.`,
+                needsCorrection(question)
+                  ? `정정 버전 ${question.version} 저장 완료. AI 검토를 실행한 뒤 원본과 비교하고 정정 확정해 주세요.`
+                  : `새 버전 ${question.version} 저장 완료. 검토 후 사용 가능으로 변경하면 새 시험에 사용할 수 있어요.`,
               );
             }}
           />
@@ -728,7 +766,11 @@ function QuestionDetail({
                   setRegraded(undefined);
                 }}
               >
-                문제 수정
+                {needsCorrection(q)
+                  ? q.review?.answerCorrection
+                    ? "정정안 수정"
+                    : "원본 정답 정정"
+                  : "문제 수정"}
               </Button>
             </div>
             <Field label="수정 이력">
@@ -772,7 +814,9 @@ function QuestionDetail({
                 ))}
               </div>
             )}
-            <QuestionEvidence key={q.revisionId} question={q} />
+            {!needsCorrection(q) && (
+              <QuestionEvidence key={q.revisionId} question={q} />
+            )}
             {!historical && (
               <>
                 <div className="row wrap spaced">
@@ -815,8 +859,14 @@ function QuestionDetail({
                     <Field label="검토 결과">
                       <Select
                         name="status"
-                        defaultValue={q.status}
-                        options={["usable", "needs_review", "retired"]}
+                        defaultValue={
+                          needsCorrection(q) ? "needs_review" : q.status
+                        }
+                        options={
+                          needsCorrection(q)
+                            ? ["needs_review", "retired"]
+                            : ["usable", "needs_review", "retired"]
+                        }
                       />
                     </Field>
                     <Field label="검토 사유">
@@ -922,7 +972,13 @@ export function safeUrl(url: string) {
     return undefined;
   }
 }
-export function AssetLink({ id }: { id: string }) {
+export function AssetLink({
+  id,
+  title = "문제 원본",
+}: {
+  id: string;
+  title?: string;
+}) {
   const [preview, setPreview] = useState<string>();
   const [error, setError] = useState("");
   const [reload, setReload] = useState(0);
@@ -964,10 +1020,10 @@ export function AssetLink({ id }: { id: string }) {
           <a href={preview} target="_blank" rel="noreferrer">
             <img
               src={preview}
-              alt="문제 원본 PDF 페이지: 그래프와 수식을 확인하세요"
+              alt={`${title} PDF 페이지: 그래프와 수식을 확인하세요`}
             />
           </a>
-          <figcaption>문제 원본 · 누르면 크게 볼 수 있어요.</figcaption>
+          <figcaption>{title} · 누르면 크게 볼 수 있어요.</figcaption>
         </figure>
       )}
       {error && (

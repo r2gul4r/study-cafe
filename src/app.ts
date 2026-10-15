@@ -1,6 +1,11 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import fastifyStatic from "@fastify/static";
 import { z } from "zod";
+import {
+  correctionInput,
+  saveCorrection,
+  confirmCorrection,
+} from "./corrections.js";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -514,6 +519,26 @@ export async function createApp(options: AppOptions) {
   );
   route("GET", "/api/questions/:id/revisions", "문항 수정 이력", (req) =>
     catalog.questionRevisions(req.params.id),
+  );
+  route(
+    "POST",
+    "/api/questions/:id/corrections",
+    "원본 정답 정정안 저장",
+    (req) => saveCorrection(catalog, req.params.id, req.body),
+    correctionInput,
+  );
+  route(
+    "POST",
+    "/api/questions/:id/corrections/confirm",
+    "검증된 정정안 사용자 확정",
+    (req) => confirmCorrection(catalog, req.params.id, req.body),
+    z
+      .object({
+        revisionId: key,
+        reviewToken: key,
+        reason: z.string().trim().min(1).max(5000),
+      })
+      .strict(),
   );
   route(
     "POST",

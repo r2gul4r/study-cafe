@@ -58,4 +58,4 @@ pnpm exec tsx scripts/live-source-quality.ts --live
 pnpm exec tsx scripts/live-pdf-extraction.ts --live --phase=extract --resume=<기존-PDF-검증폴더> --new-extraction --pages=7,8 --max-calls=14
 ```
 
-`--live`가 없으면 대조 스크립트는 AI를 호출하지 않는다. 실제 실행은 성공/실패·판정을 로컬 JSON에 저장하며, Git에는 전체 원본 PDF·검증 DB·인증정보를 포함하지 않는다. 긴 정답표·스캔 OCR·다른 과목의 다양한 오류에 대한 일반 정확도, 원본 오류의 수동 정정 확정은 후속 과제다.
+`--live`가 없으면 대조 스크립트는 AI를 호출하지 않는다. 실제 실행은 성공/실패·판정을 로컬 JSON에 저장하며, Git에는 전체 원본 PDF·검증 DB·인증정보를 포함하지 않는다. 긴 정답표·스캔 OCR·다른 과목의 다양한 오류에 대한 일반 정확도는 후속 과제다. 이후 원본 오류의 수동 정정·확정 흐름은 [별도 정정 검증](ANSWER_CORRECTIONS.md)에서 구현·검증했다. 위의 보류 판정은 당시 원본에 대한 결과로 그대로 보존한다.

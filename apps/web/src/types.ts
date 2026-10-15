@@ -58,8 +58,17 @@ export type Question = {
   conceptIds: string[];
   review?: {
     reason: string;
-    sourceCheck?: { issues: { kind: string; description: string }[] };
+    sourceCheck?: SourceAudit;
+    answerCorrection?: {
+      originalRevisionId: string;
+      originalAudit: SourceAudit;
+      reason: string;
+      evidence: { segmentId: string; quote: string }[];
+      verification?: { passed: boolean; reason: string; at: string };
+      confirmedAt?: string;
+    };
   };
+  correctionReviewToken?: string;
   choices: { id: string; text: string }[];
   explanationChoiceOrder?: string[];
   passage: string | null;
@@ -89,6 +98,15 @@ export type Question = {
     description: string;
     points: number;
     required?: boolean;
+  }[];
+};
+export type SourceAudit = {
+  questionUnambiguous: boolean;
+  issues: {
+    kind: string;
+    location: string;
+    description: string;
+    evidence: { segmentId: string; quote: string };
   }[];
 };
 export type Exam = {

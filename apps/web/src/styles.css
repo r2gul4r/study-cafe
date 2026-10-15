@@ -2789,6 +2789,20 @@ blockquote small {
 .source-page-asset {
   margin: 1rem 0;
 }
+.correction-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.correction-comparison > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 640px) {
+  .correction-comparison {
+    grid-template-columns: 1fr;
+  }
+}
 .source-page-asset figure {
   margin: 0 0 0.75rem;
 }
