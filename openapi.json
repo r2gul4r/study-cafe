@@ -1831,7 +1831,18 @@
               "schema": {
                 "$schema": "https://json-schema.org/draft/2020-12/schema",
                 "type": "object",
-                "properties": {},
+                "properties": {
+                  "pdfPages": {
+                    "minItems": 1,
+                    "maxItems": 50,
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 300
+                    }
+                  }
+                },
                 "additionalProperties": false
               }
             }
@@ -2226,6 +2237,31 @@
                             ],
                             "additionalProperties": false
                           },
+                          "answerContinuationEvidence": {
+                            "default": [],
+                            "maxItems": 4,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "segmentId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100
+                                },
+                                "quote": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100000
+                                }
+                              },
+                              "required": [
+                                "segmentId",
+                                "quote"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
                           "edition": {
                             "anyOf": [
                               {
@@ -2268,6 +2304,7 @@
                           "answerReference",
                           "questionEvidence",
                           "answerEvidence",
+                          "answerContinuationEvidence",
                           "edition",
                           "editionEvidence"
                         ],
@@ -2287,6 +2324,107 @@
                       "minLength": 1,
                       "maxLength": 100
                     }
+                  },
+                  "visualEvidence": {
+                    "default": [],
+                    "maxItems": 16,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "segmentId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "assetId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "question",
+                            "answer"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "segmentId",
+                        "assetId",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "learnerRegions": {
+                    "default": [],
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "segmentId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "sourceAssetId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "assetId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "bounds": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "y": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "width": {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 1
+                            },
+                            "height": {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 1
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y",
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "segmentId",
+                        "sourceAssetId",
+                        "assetId",
+                        "bounds"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "visualTranscription": {
+                    "default": false,
+                    "type": "boolean"
                   },
                   "points": {
                     "default": 1,
@@ -2315,6 +2453,9 @@
                   "evidence",
                   "sourceMatch",
                   "requiredAssetIds",
+                  "visualEvidence",
+                  "learnerRegions",
+                  "visualTranscription",
                   "points"
                 ],
                 "additionalProperties": false
@@ -2845,6 +2986,31 @@
                             ],
                             "additionalProperties": false
                           },
+                          "answerContinuationEvidence": {
+                            "default": [],
+                            "maxItems": 4,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "segmentId": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100
+                                },
+                                "quote": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100000
+                                }
+                              },
+                              "required": [
+                                "segmentId",
+                                "quote"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
                           "edition": {
                             "anyOf": [
                               {
@@ -2887,6 +3053,7 @@
                           "answerReference",
                           "questionEvidence",
                           "answerEvidence",
+                          "answerContinuationEvidence",
                           "edition",
                           "editionEvidence"
                         ],
@@ -2906,6 +3073,107 @@
                       "minLength": 1,
                       "maxLength": 100
                     }
+                  },
+                  "visualEvidence": {
+                    "default": [],
+                    "maxItems": 16,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "segmentId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "assetId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "question",
+                            "answer"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "segmentId",
+                        "assetId",
+                        "role"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "learnerRegions": {
+                    "default": [],
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "segmentId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "sourceAssetId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "assetId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "bounds": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "y": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "width": {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 1
+                            },
+                            "height": {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 1
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y",
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "segmentId",
+                        "sourceAssetId",
+                        "assetId",
+                        "bounds"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "visualTranscription": {
+                    "default": false,
+                    "type": "boolean"
                   },
                   "points": {
                     "default": 1,
@@ -2939,7 +3207,393 @@
                   "evidence",
                   "sourceMatch",
                   "requiredAssetIds",
+                  "visualEvidence",
+                  "learnerRegions",
+                  "visualTranscription",
                   "points"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/questions/{id}/regions": {
+      "post": {
+        "summary": "PDF 문제 표시 영역 새 버전",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "expectedRevisionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "regions": {
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "segmentId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "bounds": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "y": {
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
+                            },
+                            "width": {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 1
+                            },
+                            "height": {
+                              "type": "number",
+                              "minimum": 0.01,
+                              "maximum": 1
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y",
+                            "width",
+                            "height"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "segmentId",
+                        "bounds"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "expectedRevisionId",
+                  "regions"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/questions/{id}/corrections": {
+      "post": {
+        "summary": "원본 정답 정정안 저장",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "expectedRevisionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 5000
+                  },
+                  "evidence": {
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "segmentId": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "quote": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100000
+                        }
+                      },
+                      "required": [
+                        "segmentId",
+                        "quote"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "answer": {
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 100
+                    }
+                  },
+                  "modelAnswer": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 20000
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "rubric": {
+                    "default": [],
+                    "maxItems": 20,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "description": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100000
+                        },
+                        "points": {
+                          "type": "number",
+                          "exclusiveMinimum": 0,
+                          "maximum": 100
+                        },
+                        "required": {
+                          "default": true,
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "description",
+                        "points",
+                        "required"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "explanation": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 30000
+                  }
+                },
+                "required": [
+                  "expectedRevisionId",
+                  "reason",
+                  "evidence",
+                  "answer",
+                  "modelAnswer",
+                  "rubric",
+                  "explanation"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/questions/{id}/corrections/confirm": {
+      "post": {
+        "summary": "검증된 정정안 사용자 확정",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "revisionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "reviewToken": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 5000
+                  }
+                },
+                "required": [
+                  "revisionId",
+                  "reviewToken",
+                  "reason"
                 ],
                 "additionalProperties": false
               }
@@ -5240,6 +5894,58 @@
           }
         ],
         "parameters": [],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/backups/{id}/restore-plan": {
+      "get": {
+        "summary": "백업 내용 확인·복원 안내 (읽기 전용)",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "성공"
