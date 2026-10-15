@@ -89,6 +89,7 @@ const agent: AgentPort = {
         pdfPage: m.locator.pdfPage,
       })),
       imageCount: options?.images?.length ?? 0,
+      materialDelivery: input.materialDelivery ?? null,
     };
     report.calls.push(call);
     save();

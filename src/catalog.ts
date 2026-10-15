@@ -494,6 +494,12 @@ export class Catalog {
     actor = "user",
     sourceCheck?: SourceCheck | null,
     correctionCheck?: CorrectionCheck | null,
+    visualCheck?: {
+      faithful: boolean;
+      complete: boolean;
+      noAnswerLeak: boolean;
+      reason: string;
+    } | null,
   ) {
     const rev = this.store.get("question_revisions", revisionId);
     const q = this.readQuestion(rev.question_id, revisionId);
@@ -531,6 +537,7 @@ export class Catalog {
         reason,
         at: now(),
         ...(sourceCheck ? { sourceCheck, sourcePolicyVersion: 1 } : {}),
+        ...(visualCheck ? { visualCheck } : {}),
         ...(correction
           ? {
               answerCorrection: {

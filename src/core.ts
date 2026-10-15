@@ -142,6 +142,30 @@ export const questionInput = z
       )
       .max(16)
       .default([]),
+    learnerRegions: z
+      .array(
+        z
+          .object({
+            segmentId: key,
+            sourceAssetId: key,
+            assetId: key,
+            bounds: z
+              .object({
+                x: z.number().min(0).max(1),
+                y: z.number().min(0).max(1),
+                width: z.number().min(0.01).max(1),
+                height: z.number().min(0.01).max(1),
+              })
+              .strict()
+              .refine(
+                (b) => b.x + b.width <= 1 && b.y + b.height <= 1,
+                "영역은 페이지 안에 있어야 합니다.",
+              ),
+          })
+          .strict(),
+      )
+      .max(8)
+      .default([]),
     visualTranscription: z.boolean().default(false),
     points: z.number().positive().max(100).default(1),
   })

@@ -463,6 +463,7 @@ export function publicQuestion(q: any) {
     evidence,
     sourceMatch,
     visualEvidence,
+    learnerRegions,
     review,
     correctionReviewToken,
     pastExamEvidence,

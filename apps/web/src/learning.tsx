@@ -29,6 +29,7 @@ import {
 import { date, label, type Goal, type ResultItem, type Job } from "./types";
 import { QuestionBody, safeUrl } from "./library";
 import { ScopeEditor } from "./goals";
+import { BackupRestore } from "./backup-restore";
 export function NotesPage({ goal }: { goal: Goal }) {
   const wrong = useQuery<ResultItem[]>(`/goals/${goal.id}/wrong`, 10000),
     notes = useQuery<any[]>(`/goals/${goal.id}/notes`, 10000);
@@ -701,21 +702,26 @@ export function SettingsPage() {
         )}
         {backups.data?.length ? (
           backups.data.map((b) => (
-            <div className="list-row" key={b.id}>
-              <Database size={18} />
-              <div>
-                <strong>{new Date(b.createdAt).toLocaleString("ko-KR")}</strong>
-                <small>
-                  첨부 {b.assets?.length ?? 0}개 · {b.id.slice(0, 8)}
-                </small>
+            <div key={b.id}>
+              <div className="list-row">
+                <Database size={18} />
+                <div>
+                  <strong>
+                    {new Date(b.createdAt).toLocaleString("ko-KR")}
+                  </strong>
+                  <small>
+                    첨부 {b.assets?.length ?? 0}개 · {b.id.slice(0, 8)}
+                  </small>
+                </div>
+                <Action
+                  variant="secondary"
+                  run={() => api(`/backups/${b.id}/verify`, "POST", {})}
+                  onDone={() => setVerified(b.id)}
+                >
+                  백업 검증
+                </Action>
               </div>
-              <Action
-                variant="secondary"
-                run={() => api(`/backups/${b.id}/verify`, "POST", {})}
-                onDone={() => setVerified(b.id)}
-              >
-                백업 검증
-              </Action>
+              <BackupRestore id={b.id} />
             </div>
           ))
         ) : (

@@ -26,6 +26,7 @@ export function revisionInput(q: Question) {
     requiredAssetIds: q.requiredAssetIds,
     visualTranscription: q.visualTranscription ?? false,
     visualEvidence: q.visualEvidence ?? [],
+    learnerRegions: q.learnerRegions ?? [],
     points: q.points,
   };
 }

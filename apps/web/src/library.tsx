@@ -34,6 +34,7 @@ import {
   type Assessment,
 } from "./types";
 import { QuestionEditor } from "./question-editor";
+import { QuestionRegions } from "./question-regions";
 import { QuestionEvidence } from "./question-evidence";
 import { AnswerCorrection, needsCorrection } from "./answer-correction";
 export function SourcesPage({ goal }: { goal: Goal }) {
@@ -658,7 +659,15 @@ export function QuestionBody({
       {!!q.requiredAssetIds?.length && (
         <div className="row wrap">
           {q.requiredAssetIds.map((id) => (
-            <AssetLink key={id} id={id} />
+            <AssetLink
+              key={id}
+              id={id}
+              title={
+                q.learnerRegions?.some((r) => r.assetId === id)
+                  ? "선택한 문제 영역"
+                  : "문제 원본"
+              }
+            />
           ))}
         </div>
       )}
@@ -797,10 +806,39 @@ function QuestionDetail({
               </Notice>
             )}
             <QuestionBody q={q} answer />
+            {!historical &&
+              !needsCorrection(q) &&
+              !q.review?.answerCorrection &&
+              q.visualEvidence?.some((v) => v.role === "question") && (
+                <QuestionRegions
+                  key={`regions:${q.revisionId}`}
+                  question={q}
+                  onSaved={(question) => {
+                    updated(question);
+                    setSaved(
+                      "표시 영역을 새 버전으로 저장했어요. AI 검토에서 잘린 내용과 정답 노출 여부를 확인해 주세요.",
+                    );
+                  }}
+                />
+              )}
             {q.review?.sourceCheck && (
               <Notice tone="info">
                 <strong>원본 표기·정답 검토</strong>
                 <StudyText text={q.review.reason} />
+              </Notice>
+            )}
+            {q.review?.visualCheck && (
+              <Notice tone="info">
+                <strong>문제 이미지 검토</strong>
+                <p>
+                  원본 일치:{" "}
+                  {q.review.visualCheck.faithful ? "확인" : "확인 필요"} · 내용
+                  완전성:{" "}
+                  {q.review.visualCheck.complete ? "확인" : "누락 확인 필요"} ·
+                  정답 노출 없음:{" "}
+                  {q.review.visualCheck.noAnswerLeak ? "확인" : "확인 필요"}
+                </p>
+                <StudyText text={q.review.visualCheck.reason} />
               </Notice>
             )}
             {q.type === "short" && (

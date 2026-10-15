@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-15",
+  "scope": "PDF question regions, source-input deduplication, backup preflight",
+  "account": "existing ChatGPT Codex login; no paid API fallback",
+  "liveCalls": 4,
+  "providerResponseFailures": 0,
+  "regionCases": [
+    {
+      "name": "complete_graph",
+      "bounds": {
+        "x": 0.1,
+        "y": 0.085,
+        "width": 0.75,
+        "height": 0.27
+      },
+      "complete": true,
+      "revisionId": "90b49cc2-3baa-4400-bb66-94f65a72acea",
+      "status": "usable",
+      "jobStatus": "succeeded"
+    },
+    {
+      "name": "graph_cut_off",
+      "bounds": {
+        "x": 0.1,
+        "y": 0.085,
+        "width": 0.75,
+        "height": 0.07
+      },
+      "complete": false,
+      "revisionId": "d82ae3cb-7ecf-4093-8c5e-ccfb8ed1d5cd",
+      "status": "needs_review",
+      "jobStatus": "succeeded"
+    }
+  ],
+  "regionCalls": [
+    {
+      "role": "verify_question",
+      "imageCount": 3,
+      "elapsedMs": 18847,
+      "usable": true,
+      "visualCheck": {
+        "faithful": true,
+        "complete": true,
+        "noAnswerLeak": true,
+        "reason": "원본 문제 이미지 7388f956-b7a2-48df-ad90-8bb512aff979와 해설 이미지 7c769751-17dc-46ac-8fae-c9ba346e2daf를 확인했다. 학습자용 크롭 207eefd4-3a8f-4beb-9a90-e7fb5f56f51f는 원본의 (a) 지시문, 동일 척도 조건, 세 곡선과 f_X·f_Y·f_W 표기, 축 및 질문 전체를 보존한다. 영문 stem은 원문과 일치하며 크롭에 정답이나 해설은 없다."
+      }
+    },
+    {
+      "role": "verify_question",
+      "imageCount": 3,
+      "elapsedMs": 19104,
+      "usable": false,
+      "visualCheck": {
+        "faithful": true,
+        "complete": false,
+        "noAnswerLeak": true,
+        "reason": "원본 문제와 해설 페이지를 모두 확인했으며, 영어 stem은 원본 Problem 1(a)와 일치합니다. 그러나 학습자용 자산 e36faa8c-de29-43b2-a8ad-324938369bc5는 원본 자산 7388f956-b7a2-48df-ad90-8bb512aff979의 머리말 부분만 포함합니다. 동일 척도 조건의 마지막 줄이 잘리고, 세 밀도곡선·축·f_X/f_Y/f_W 표기 및 질문 문장이 모두 빠져 있습니다. stem의 텍스트로 필수 그래프를 대체할 수 없습니다. 크롭에 정답이나 해설은 없습니다."
+      }
+    }
+  ],
+  "harnessIncident": "The first valid crop passed Codex review. The harness then read a visualCheck field not yet persisted on the question; persistence was added and only the remaining case was called on resume.",
+  "extractionSession": {
+    "index": 7,
+    "startedAt": "2026-10-15T03:37:52.083Z",
+    "maxCalls": 4,
+    "calls": 2,
+    "codeHashes": {
+      "answer-retrieval": "46e1eac3a7fa39e88c2a73018c8c987288af983749f0d026e68b392fe868bfb4",
+      "workflows": "4fdc9c145baf855de32160e40991f5e706f4283363244a95b6c211f0c6bb4107"
+    },
+    "passed": true,
+    "endedAt": "2026-10-15T03:39:15.124Z"
+  },
+  "extractionCalls": [
+    {
+      "role": "extract_existing_questions",
+      "elapsedMs": 47571,
+      "imageCount": 10,
+      "materialDelivery": {
+        "version": 1,
+        "fullSegments": 11,
+        "uniqueTextChars": 11472,
+        "duplicateTextCharsRemoved": 1689
+      },
+      "questionCount": 1,
+      "unresolved": [],
+      "usable": null,
+      "evidenceValid": null,
+      "answerValid": null,
+      "reason": null,
+      "visualCheck": null
+    },
+    {
+      "role": "verify_question",
+      "elapsedMs": 34721,
+      "imageCount": 2,
+      "materialDelivery": null,
+      "questionCount": null,
+      "unresolved": null,
+      "usable": false,
+      "evidenceValid": true,
+      "answerValid": false,
+      "reason": "문항·해설의 출처와 이미지는 일치하지만, 빈 그래프를 제외하는 조건이 확인되지 않아 명제의 타당성이 확정되지 않습니다. 해설의 경로 길이 수치에도 문제가 있습니다.",
+      "visualCheck": {
+        "faithful": true,
+        "complete": true,
+        "noAnswerLeak": true,
+        "reason": "첨부 원본 두 페이지를 확인했습니다. 문제 이미지 9949dcd3-b87e-4424-9cff-44e7fcde4580에는 Problem 9의 제목, 배점, 명제, 힌트가 모두 보이며 저장된 stem과 일치합니다. 필요한 별도 도표나 선택지는 없습니다. 학습자용 requiredAssetIds에는 해설이 없는 문제 페이지만 포함되고, 해설 이미지 65c88acb-1dd2-47dc-86b5-239230e9fcb3는 검토용입니다."
+      }
+    }
+  ],
+  "questionAudit": {
+    "id": "733d446a-a6a9-4ab2-884c-86f595676957",
+    "status": "needs_review",
+    "answerAnchorOrdinal": 12,
+    "continuationCount": 0,
+    "answerImageHidden": true,
+    "citationsExact": true
+  },
+  "limits": [
+    "Manual crop selection; no automatic boundary proposal.",
+    "Original page images are still supplied; actual model-token savings are not measured.",
+    "The graph-theory question remains held for source-definition and solution-convention uncertainty.",
+    "Real restoration on another computer was not performed."
+  ]
+}

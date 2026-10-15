@@ -19,7 +19,11 @@ import { Exams } from "./exams.js";
 import { Learning } from "./learning.js";
 import { CodexAgent, type AgentPort } from "./agent.js";
 import { registerWorkflows } from "./workflows.js";
-import { backup, verifyBackup, lockData } from "./backup.js";
+import {
+  questionRegionsInput,
+  saveQuestionRegions,
+} from "./question-regions.js";
+import { backup, verifyBackup, lockData, backupRestorePlan } from "./backup.js";
 import {
   Fault,
   requireThat,
@@ -522,6 +526,13 @@ export async function createApp(options: AppOptions) {
   );
   route(
     "POST",
+    "/api/questions/:id/regions",
+    "PDF 문제 표시 영역 새 버전",
+    (req) => saveQuestionRegions(catalog, req.params.id, req.body),
+    questionRegionsInput,
+  );
+  route(
+    "POST",
     "/api/questions/:id/corrections",
     "원본 정답 정정안 저장",
     (req) => saveCorrection(catalog, req.params.id, req.body),
@@ -917,6 +928,12 @@ export async function createApp(options: AppOptions) {
           )
       : [];
   });
+  route(
+    "GET",
+    "/api/backups/:id/restore-plan",
+    "백업 내용 확인·복원 안내 (읽기 전용)",
+    (req) => backupRestorePlan(store, req.params.id),
+  );
   route(
     "POST",
     "/api/backups/:id/verify",

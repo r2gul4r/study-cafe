@@ -2820,3 +2820,51 @@ blockquote small {
   font-size: 0.85rem;
   margin-top: 0.5rem;
 }
+.region-canvas {
+  position: relative;
+  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+  margin: 1rem auto;
+  outline: 1px solid var(--border, #dce3dd);
+}
+.region-canvas img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: 55vh;
+  height: auto;
+}
+.region-selection {
+  position: absolute;
+  border: 2px solid #2e6e57;
+  background: rgb(46 110 87 / 8%);
+  box-shadow: 0 0 0 2000px rgb(0 0 0 / 30%);
+  pointer-events: none;
+  box-sizing: border-box;
+}
+.region-fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+.region-fields input {
+  width: 100%;
+  min-width: 0;
+}
+.path-text {
+  overflow-wrap: anywhere;
+}
+.restore-guide {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+@media (max-width: 560px) {
+  .region-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

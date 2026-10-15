@@ -146,6 +146,52 @@ export function restoreBackup(backupDir: string, targetDir: string) {
     unlock();
   }
 }
+
+// Read-only preflight. Restoring remains a separate CLI action with the server stopped.
+export function backupRestorePlan(store: Store, backupId: string) {
+  requireThat(/^[a-f0-9-]{36}$/.test(backupId), "BACKUP_ID", "잘못된 백업 ID");
+  const directory = join(store.dir, "backups", backupId);
+  requireThat(
+    existsSync(join(directory, "manifest.json")),
+    "BACKUP_NOT_FOUND",
+    "백업을 찾을 수 없습니다.",
+    404,
+  );
+  const manifest = verifyBackup(directory);
+  requireThat(
+    manifest.id === backupId,
+    "BACKUP_ID",
+    "백업 폴더와 명세의 ID가 다릅니다.",
+  );
+  const db = new DatabaseSync(join(directory, "study-cafe.db"), {
+    readOnly: true,
+  });
+  try {
+    const count = (table: string) =>
+      Number(db.prepare(`SELECT count(*) AS n FROM ${table}`).get()!.n);
+    return {
+      id: backupId,
+      createdAt: manifest.createdAt,
+      verifiedAt: now(),
+      directory: resolve(directory),
+      currentDataDirectory: resolve(store.dir),
+      counts: {
+        goals: count("goals"),
+        sources: count("sources"),
+        questions: count("questions"),
+        questionRevisions: count("question_revisions"),
+        exams: count("exams"),
+        attempts: count("attempts"),
+        assets: count("assets"),
+      },
+      includesCredentials: false,
+      requiresStoppedServer: true,
+      mergesRecords: false,
+    };
+  } finally {
+    db.close();
+  }
+}
 export function lockData(dir: string) {
   mkdirSync(dir, { recursive: true });
   const path = join(dir, "server.lock");

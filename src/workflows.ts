@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { AnswerIndex } from "./answer-retrieval.js";
+import { extractionPayload } from "./extraction-payload.js";
 import { containsVerbatimQuote } from "./evidence.js";
 import { correctionCheckOutput, correctionPolicy } from "./corrections.js";
 import {
@@ -21,6 +22,7 @@ import type { AgentPort } from "./agent.js";
 import {
   withPageImages,
   imageInputs,
+  regionImageInputs,
   validateVisualEvidence,
   type ImageInput,
 } from "./pdf-visuals.js";
@@ -136,7 +138,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 16,
+          promptVersion: 18,
           startedAt: started,
         }),
         now(),
@@ -151,7 +153,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 16,
+            promptVersion: 18,
             startedAt: started,
           }),
           now(),
@@ -221,6 +223,7 @@ export function registerWorkflows(
           (m) => rendered.find((v) => v.segmentId === m.segmentId) ?? m,
         ),
         visualPolicy:
+          "When learnerRegions is nonempty, labelled learner_region images replace the corresponding full pages in requiredAssetIds. Compare EACH crop to its original page: every needed condition, shared passage, axis/legend, formula and choice must remain visible. Text transcribed in the stem is not permission to omit a necessary graph or shared context from a crop. A crop that hides required content or includes an answer must fail complete/noAnswerLeak. Original full pages are reviewer evidence only when replaced by crops. " +
           "If visualEvidence is nonempty, inspect every attached original page. Return visualCheck: faithful confirms every stem/passage/choice and math symbol agrees with the original question image (not the answer sheet), complete confirms graphs and all necessary context are visible in requiredAssetIds, and noAnswerLeak confirms those learner-facing images contain no solutions/answer keys. Any missing image, changed question or unreadable question formula makes usable=false. Text-layout loss may be transcribed into readable plain/Unicode math only when visualTranscription=true and the original image is preserved. Classify worked-solution notation separately with sourceQualityPolicy; a harmless intermediate omission does not make a faithful question image invalid. For answerContinuationEvidence, check consecutive pages and matching parent problem/subpart; adjacency alone is not proof. Include specific reasons for discrepancies.",
         sourceQualityPolicy,
         ...(correction
@@ -248,7 +251,7 @@ export function registerWorkflows(
       },
       verifyOutput,
       false,
-      imageInputs(s, rendered),
+      [...imageInputs(s, rendered), ...regionImageInputs(s, q)],
     );
     const sourceFailure = sourceCheckFailure(
       q,
@@ -678,11 +681,15 @@ export function registerWorkflows(
                     goal: goalAtScope(src.goalId, scope.id),
                     source: src,
                     scope,
-                    segments: supplied(batch),
-                    adjacentSegments: supplied(adjacentSegments),
-                    sourceHeader: supplied([relevant[0]!])[0],
-                    sourceContext: supplied(sourceContext),
-                    answerSegments: selectedAnswers,
+                    ...extractionPayload(
+                      supplied(batch),
+                      supplied(adjacentSegments),
+                      supplied(sourceContext),
+                      selectedAnswers,
+                      supplied([relevant[0]!])[0]!,
+                    ),
+                    materialDeliveryPolicy:
+                      "Each immutable segment appears in full exactly once across segments, adjacentSegments, sourceContext and answerSegments. sourceHeaderId/sourceContextIds/answerSegmentIds refer to those same full materials, including ones in another array. Resolve these IDs across ALL four arrays before declaring missing context. They do not authorize extracting a question anchored outside segments. No original text is shortened by this deduplication.",
                     answerIndex: retrieval.candidates,
                     answerRetrieval: {
                       ...retrieval.diagnostics,
@@ -896,6 +903,7 @@ export function registerWorkflows(
             "codex",
             v.sourceCheck,
             v.correctionCheck,
+            v.visualCheck,
           ),
       );
     }
@@ -927,6 +935,7 @@ export function registerWorkflows(
           "codex",
           v.sourceCheck,
           v.correctionCheck,
+          v.visualCheck,
         ),
     );
   });

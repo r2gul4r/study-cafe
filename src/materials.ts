@@ -258,6 +258,11 @@ export function validateExtraction(
     seen.add(next.segmentId);
     previous = next;
   }
+  requireThat(
+    !q.learnerRegions?.length,
+    "PDF_REGION_SOURCE",
+    "추출 시에는 원본 이미지를 보존하고 표시 영역은 별도 검토로 지정하세요.",
+  );
   for (const v of q.visualEvidence ?? []) {
     const material = (
       v.role === "question" ? body : [...body, ...answers]

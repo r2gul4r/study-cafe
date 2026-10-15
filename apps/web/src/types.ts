@@ -59,6 +59,12 @@ export type Question = {
   review?: {
     reason: string;
     sourceCheck?: SourceAudit;
+    visualCheck?: {
+      faithful: boolean;
+      complete: boolean;
+      noAnswerLeak: boolean;
+      reason: string;
+    };
     answerCorrection?: {
       originalRevisionId: string;
       originalAudit: SourceAudit;
@@ -78,6 +84,12 @@ export type Question = {
   explanation?: string;
   requiredAssetIds: string[];
   visualTranscription?: boolean;
+  learnerRegions?: {
+    segmentId: string;
+    sourceAssetId: string;
+    assetId: string;
+    bounds: { x: number; y: number; width: number; height: number };
+  }[];
   visualEvidence?: {
     segmentId: string;
     assetId: string;

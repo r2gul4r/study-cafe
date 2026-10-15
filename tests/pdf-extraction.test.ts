@@ -246,8 +246,14 @@ test("real PDF ingestion exposes back-matter edition evidence without extracting
           assert.equal(typeof m.locator.pdfPage, "number");
           assert.equal(typeof m.locator.charStart, "number");
         }
-        const paperFooter = raw.sourceContext.find((m: any) =>
-          m.text.includes("Session 2030"),
+        const paperFooter = [
+          ...raw.segments,
+          ...raw.adjacentSegments,
+          ...raw.sourceContext,
+        ].find(
+          (m: any) =>
+            raw.sourceContextIds.includes(m.segmentId) &&
+            m.text.includes("Session 2030"),
         );
         const answerFooter = raw.answerSegments.find((m: any) =>
           m.text.includes("Session 2030"),
