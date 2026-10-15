@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { AnswerIndex } from "./answer-retrieval.js";
 import { containsVerbatimQuote } from "./evidence.js";
 import { correctionCheckOutput, correctionPolicy } from "./corrections.js";
 import {
@@ -135,7 +136,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 14,
+          promptVersion: 16,
           startedAt: started,
         }),
         now(),
@@ -150,7 +151,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 14,
+            promptVersion: 16,
             startedAt: started,
           }),
           now(),
@@ -586,6 +587,22 @@ export function registerWorkflows(
         return pool.filter((m) => m.sourceId === sourceId);
       },
     );
+    const revisionSet = {
+      scopeId: scope.id,
+      paper: latest,
+      answers: [...new Set(answerSegments.map((m) => m.revisionId))],
+    };
+    const pinned = await ctx.step(
+      "extract:source-revisions:v1",
+      async () => revisionSet,
+    );
+    requireThat(
+      JSON.stringify(pinned) === JSON.stringify(revisionSet),
+      "EXTRACTION_SOURCE_CHANGED",
+      "추출 중 범위 또는 원본 판본이 바뀌었습니다. 기존 결과를 보존하고 새 추출 작업을 시작하세요.",
+      409,
+    );
+    const answerIndex = new AnswerIndex(answerSegments);
     const created: string[] = [];
     const unresolved: { reference: string; reason: string }[] = [];
     const sourceContext = documentEdges(relevant);
@@ -616,24 +633,11 @@ export function registerWorkflows(
           adjacentSegments.includes(m) ||
           sourceContext.includes(m),
       );
-      const answerHeaders = documentEdges(answerSegments);
-      let selectedAnswers = [
-        ...new Map(
-          [
-            ...answerHeaders,
-            ...selectMaterials(
-              answerSegments,
-              batch.map((m) => m.text).join("\n"),
-              { maxSegments: 7, maxChars: 56_000 },
-            ),
-            // Short answer keys often contain only numbers and letters, not
-            // the vocabulary of the question. Fill the remaining bounded
-            // context with whole segments instead of dropping those keys.
-            ...answerSegments,
-          ].map((m) => [m.segmentId, m]),
-        ).values(),
-      ].slice(0, 10);
-      const rendered = await withPageImages(
+      const query = batch.map((m) => m.text).join("\n");
+      const context = body.map((m) => m.text).join("\n");
+      let retrieval = answerIndex.search(query, { context });
+      let selectedAnswers = retrieval.materials;
+      let rendered = await withPageImages(
         s,
         [...body, ...selectedAnswers],
         ctx.signal,
@@ -646,6 +650,20 @@ export function registerWorkflows(
         string,
         { reference: string; stem?: string; reason?: string }
       >();
+      let searches = 0;
+      const seenSets = new Set<string>();
+      const answerSet = () =>
+        selectedAnswers
+          .map((m) => m.segmentId)
+          .sort()
+          .join(",");
+      seenSets.add(answerSet());
+      ctx.event({
+        type: "answer_retrieval",
+        segmentId: batch[0]!.segmentId,
+        round: searches,
+        ...retrieval.diagnostics,
+      });
       for (let part = 0; part < 20; part++) {
         const result = await ctx.step(
           `extract:page:${latest}:${offset}:${part}`,
@@ -665,6 +683,13 @@ export function registerWorkflows(
                     sourceHeader: supplied([relevant[0]!])[0],
                     sourceContext: supplied(sourceContext),
                     answerSegments: selectedAnswers,
+                    answerIndex: retrieval.candidates,
+                    answerRetrieval: {
+                      ...retrieval.diagnostics,
+                      searchesRemaining: 2 - searches,
+                    },
+                    answerSearchPolicy:
+                      "answerSegments are bounded search candidates, NOT confirmed matches. Check full question/parent section and edition; repeated numbers alone are insufficient. answerIndex is an incomplete navigation preview, never citable evidence. If the needed answer, edition or continuation is absent, request answerSearch={query: a targeted number/section/rare-phrase query, segmentIds: up to 3 index IDs to open (or [])}. Search runs over ALL linked eligible answer segments, even ones not in the preview. An explicit segment ID opens that segment and nearby context. A search response MUST have questions=[], unresolved=[], hasMore=false; defer extraction until the new full segments arrive. At most two additional searches per question segment. Search again before declaring missing evidence when searchesRemaining>0, but do not repeat an already supplied set. If exhausted or still ambiguous, report unresolved; never infer answers from index previews or matching numbers. Return answerSearch=null when extracting or reporting final unresolved items.",
                     previousFailure,
                     processed: [...processed.values()],
                     pagePolicy:
@@ -686,13 +711,32 @@ export function registerWorkflows(
                     .object({
                       questions: z.array(questionInput).max(2),
                       hasMore: z.boolean().default(false),
+                      answerSearch: z
+                        .object({
+                          query: z.string().max(2000),
+                          segmentIds: z.array(z.string()).max(3),
+                        })
+                        .strict()
+                        .nullable()
+                        .default(null),
                       unresolved: z.array(
                         z
                           .object({ reference: z.string(), reason: z.string() })
                           .strict(),
                       ),
                     })
-                    .strict(),
+                    .strict()
+                    .refine(
+                      (v) =>
+                        !v.answerSearch ||
+                        (!v.questions.length &&
+                          !v.unresolved.length &&
+                          !v.hasMore),
+                      {
+                        message:
+                          "answerSearch must be a search-only response with empty questions/unresolved and hasMore=false",
+                      },
+                    ),
                   false,
                   imageInputs(s, rendered),
                 );
@@ -742,6 +786,7 @@ export function registerWorkflows(
             }
             return {
               ids,
+              answerSearch: output.answerSearch,
               unresolved: issues,
               hasMore: output.hasMore,
               processed: [
@@ -757,6 +802,66 @@ export function registerWorkflows(
             };
           },
         );
+        if (result.answerSearch) {
+          const request = result.answerSearch;
+          const found = answerIndex.search(request.query || query, {
+            context,
+            segmentIds: request.segmentIds,
+          });
+          // A missing edition/continuation search must not evict the answer we
+          // just found. Carry up to three anchor IDs into the replacement window,
+          // prioritising explicit requests and new matches over old candidates.
+          const matches = (plan: typeof retrieval) =>
+            plan.materials
+              .filter((m) => plan.diagnostics.reasons[m.segmentId] === "match")
+              .map((m) => m.segmentId);
+          const next = answerIndex.search(request.query || query, {
+            context,
+            segmentIds: [
+              ...new Set([
+                ...request.segmentIds,
+                ...matches(found),
+                ...matches(retrieval),
+              ]),
+            ].slice(0, 3),
+          });
+          const nextSet = next.materials
+            .map((m) => m.segmentId)
+            .sort()
+            .join(",");
+          if (
+            part === 19 ||
+            searches >= 2 ||
+            next.invalidIds.length ||
+            !next.materials.length ||
+            seenSets.has(nextSet)
+          ) {
+            unresolved.push({
+              reference: `segment:${batch[0]!.segmentId}`,
+              reason: next.invalidIds.length
+                ? "정답 추가 검색이 연결되지 않은 자료 구간을 요청했습니다. 원본 연결을 확인하세요."
+                : "정답 추가 검색 한도에 도달했거나 새로운 근거를 찾지 못했습니다. 원본 정답표를 확인하세요.",
+            });
+            break;
+          }
+          searches++;
+          retrieval = next;
+          rendered = await withPageImages(
+            s,
+            [...body, ...next.materials],
+            ctx.signal,
+          );
+          body = rendered.slice(0, body.length);
+          selectedAnswers = rendered.slice(body.length);
+          seenSets.add(nextSet);
+          ctx.event({
+            type: "answer_retrieval",
+            segmentId: batch[0]!.segmentId,
+            round: searches,
+            ...retrieval.diagnostics,
+          });
+          continue;
+        }
         created.push(...result.ids);
         unresolved.push(...result.unresolved);
         const before = processed.size;

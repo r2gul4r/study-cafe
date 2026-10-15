@@ -1,0 +1,1403 @@
+{
+  "marker": "study-cafe-live-answer-search-v1",
+  "startedAt": "2026-10-15T02:42:30.718Z",
+  "cases": {
+    "numeric": {
+      "goalId": "04d70b38-903e-4878-8796-7fba48d33404",
+      "paperId": "48cd260e-e4b7-4ace-ab25-d67012adc262",
+      "answerId": "9101604a-8190-42f7-9556-e722666319d7",
+      "retrievalComparison": {
+        "totalSegments": 80,
+        "expectedAnchorOrdinal": 65,
+        "oldSelectedOrdinals": [
+          0,
+          79,
+          65,
+          41,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "oldContainsTarget": true,
+        "newSelectedOrdinals": [
+          65,
+          0,
+          79,
+          66,
+          67,
+          64
+        ],
+        "newContainsTarget": true
+      },
+      "jobId": "071a4309-5a41-4500-bf97-7b4f40fdaf40",
+      "result": {
+        "id": "071a4309-5a41-4500-bf97-7b4f40fdaf40",
+        "kind": "extract_questions",
+        "input": {
+          "sourceId": "48cd260e-e4b7-4ace-ab25-d67012adc262"
+        },
+        "status": "succeeded",
+        "generation": 1,
+        "result": {
+          "questionIds": [
+            "7798a153-d079-4189-a014-57339459f911"
+          ],
+          "count": 1,
+          "usable": 1,
+          "needsReview": 0,
+          "unresolved": []
+        },
+        "error": null,
+        "createdAt": "2026-10-15T02:42:31.515Z",
+        "updatedAt": "2026-10-15T02:42:54.096Z"
+      },
+      "questionAudit": {
+        "id": "7798a153-d079-4189-a014-57339459f911",
+        "status": "usable",
+        "answerAnchorOrdinal": 65,
+        "continuationCount": 0,
+        "answerImageHidden": true,
+        "citationsExact": true
+      },
+      "passed": true
+    },
+    "section": {
+      "goalId": "37ecdfac-e20a-4944-8929-e0cb030baa09",
+      "paperId": "6b21baa6-3704-4740-ae65-6abebd492901",
+      "answerId": "33801ea4-717c-4b7d-8a32-28e445e1367a",
+      "retrievalComparison": {
+        "totalSegments": 72,
+        "expectedAnchorOrdinal": 61,
+        "oldSelectedOrdinals": [
+          0,
+          71,
+          61,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "oldContainsTarget": true,
+        "newSelectedOrdinals": [
+          61,
+          1,
+          2,
+          0,
+          71,
+          62,
+          3
+        ],
+        "newContainsTarget": true
+      },
+      "jobId": "9d998b75-6270-4759-88f3-aa39196c3951",
+      "result": {
+        "id": "9d998b75-6270-4759-88f3-aa39196c3951",
+        "kind": "extract_questions",
+        "input": {
+          "sourceId": "6b21baa6-3704-4740-ae65-6abebd492901"
+        },
+        "status": "succeeded",
+        "generation": 1,
+        "result": {
+          "questionIds": [
+            "95c0e446-3e06-4091-845e-1db56c40e93d"
+          ],
+          "count": 1,
+          "usable": 1,
+          "needsReview": 0,
+          "unresolved": []
+        },
+        "error": null,
+        "createdAt": "2026-10-15T02:42:54.115Z",
+        "updatedAt": "2026-10-15T02:43:18.303Z"
+      },
+      "questionAudit": {
+        "id": "95c0e446-3e06-4091-845e-1db56c40e93d",
+        "status": "usable",
+        "answerAnchorOrdinal": 61,
+        "continuationCount": 0,
+        "answerImageHidden": true,
+        "citationsExact": true
+      },
+      "passed": true
+    },
+    "continuation": {
+      "goalId": "cf551e17-075a-423c-8fc5-3000d991997e",
+      "paperId": "4cef8f42-0dc3-4341-8d2b-d55b7ec25eb0",
+      "answerId": "81c9a252-9d9f-4d40-81fb-9ae9f20636aa",
+      "retrievalComparison": {
+        "totalSegments": 96,
+        "expectedAnchorOrdinal": 83,
+        "oldSelectedOrdinals": [
+          0,
+          95,
+          83,
+          84,
+          12,
+          41,
+          43,
+          1,
+          2,
+          3
+        ],
+        "oldContainsTarget": true,
+        "newSelectedOrdinals": [
+          83,
+          0,
+          95,
+          84,
+          85,
+          82
+        ],
+        "newContainsTarget": true
+      },
+      "jobId": "070bb161-696b-445c-96df-8a77bf0d7275",
+      "result": {
+        "id": "070bb161-696b-445c-96df-8a77bf0d7275",
+        "kind": "extract_questions",
+        "input": {
+          "sourceId": "4cef8f42-0dc3-4341-8d2b-d55b7ec25eb0"
+        },
+        "status": "succeeded",
+        "generation": 1,
+        "result": {
+          "questionIds": [
+            "6cddd49d-c7e2-4a85-97b8-0856c2995c12"
+          ],
+          "count": 1,
+          "usable": 1,
+          "needsReview": 0,
+          "unresolved": []
+        },
+        "error": null,
+        "createdAt": "2026-10-15T02:43:18.360Z",
+        "updatedAt": "2026-10-15T02:43:44.468Z"
+      },
+      "questionAudit": {
+        "id": "6cddd49d-c7e2-4a85-97b8-0856c2995c12",
+        "status": "usable",
+        "answerAnchorOrdinal": 83,
+        "continuationCount": 1,
+        "answerImageHidden": true,
+        "citationsExact": true
+      },
+      "passed": true
+    },
+    "single": {
+      "goalId": "e9ab62a9-7c49-4734-800e-01872f07ca70",
+      "paperId": "894ebcef-0988-445c-920c-c2a69c346c17",
+      "answerId": "af75d526-8609-426d-8ea3-d2f685b41732",
+      "retrievalComparison": {
+        "totalSegments": 80,
+        "expectedAnchorOrdinal": 66,
+        "oldSelectedOrdinals": [
+          0,
+          79,
+          44,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "oldContainsTarget": false,
+        "newSelectedOrdinals": [
+          66,
+          0,
+          79,
+          67,
+          68,
+          65
+        ],
+        "newContainsTarget": true
+      },
+      "jobId": "eb4d333f-80a1-40c0-847a-a7543d059635",
+      "result": {
+        "id": "eb4d333f-80a1-40c0-847a-a7543d059635",
+        "kind": "extract_questions",
+        "input": {
+          "sourceId": "894ebcef-0988-445c-920c-c2a69c346c17"
+        },
+        "status": "succeeded",
+        "generation": 1,
+        "result": {
+          "questionIds": [
+            "b4b34c18-8766-491d-b068-9a47f13c02fc"
+          ],
+          "count": 1,
+          "usable": 1,
+          "needsReview": 0,
+          "unresolved": []
+        },
+        "error": null,
+        "createdAt": "2026-10-15T02:44:22.602Z",
+        "updatedAt": "2026-10-15T02:44:47.348Z"
+      },
+      "questionAudit": {
+        "id": "b4b34c18-8766-491d-b068-9a47f13c02fc",
+        "status": "usable",
+        "answerAnchorOrdinal": 66,
+        "continuationCount": 0,
+        "answerImageHidden": true,
+        "citationsExact": true
+      },
+      "passed": true
+    },
+    "pdf": {
+      "goalId": "097a8b91-f7e6-40e1-a9df-741a323dbb75",
+      "paperId": "01fd06dd-90d6-46c2-b147-6a2eda09670d",
+      "answerId": "e7972238-7360-4cdb-bd44-9be6cd49007a",
+      "pdfPages": [
+        17
+      ],
+      "provenance": "MIT OCW 6.042J Fall 2010 exam archive, 2008 final exam, Tom Leighton and Marten van Dijk; https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/pages/exams/",
+      "license": "CC BY-NC-SA 4.0; https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+      "retrievalComparison": {
+        "totalSegments": 16,
+        "expectedAnchorOrdinal": 12,
+        "oldSelectedOrdinals": [
+          0,
+          15,
+          12,
+          9,
+          8,
+          6,
+          5,
+          4,
+          1,
+          2
+        ],
+        "oldContainsTarget": true,
+        "newSelectedOrdinals": [
+          12,
+          0,
+          15,
+          13,
+          14,
+          11
+        ],
+        "newContainsTarget": true
+      },
+      "jobId": "b47e55a9-a1da-4831-9ba9-94702e90b769",
+      "result": {
+        "id": "b47e55a9-a1da-4831-9ba9-94702e90b769",
+        "kind": "extract_questions",
+        "input": {
+          "sourceId": "01fd06dd-90d6-46c2-b147-6a2eda09670d",
+          "pdfPages": [
+            17
+          ]
+        },
+        "status": "succeeded",
+        "generation": 3,
+        "result": {
+          "questionIds": [
+            "733d446a-a6a9-4ab2-884c-86f595676957"
+          ],
+          "count": 1,
+          "usable": 0,
+          "needsReview": 1,
+          "unresolved": []
+        },
+        "error": null,
+        "createdAt": "2026-10-15T02:44:48.786Z",
+        "updatedAt": "2026-10-15T02:53:31.271Z"
+      },
+      "sourceQualityHold": {
+        "reason": "원본 문제의 의미 또는 정답이 독립 풀이와 일치하지 않습니다.",
+        "issues": [
+          {
+            "kind": "ambiguous",
+            "location": "question",
+            "evidence": {
+              "segmentId": "a25ef122-a927-444d-9c4a-50b8a7a7827a",
+              "quote": "Prove that in a finite directed graph, if every node has at least one outgoing edge, then\nthe graph has a cycle."
+            },
+            "description": "비어 있지 않다는 조건이 없습니다. 빈 그래프를 배제하는 강의의 정의나 관례도 제공된 자료에서 확인되지 않습니다. 빈 그래프의 허용 여부에 따라 명제의 진위와 반례 답안의 채점이 달라집니다.",
+            "contextResolves": false,
+            "affectsAnswer": true,
+            "affectsGrading": true
+          },
+          {
+            "kind": "answer_error",
+            "location": "worked_solution",
+            "evidence": {
+              "segmentId": "802e9425-b36e-49df-931c-2a26ce4d7d61",
+              "quote": "is a longer path of length \nh   +   1."
+            },
+            "description": "이미지에도 h+1로 인쇄되어 있습니다. 통상적인 간선 수 정의에서 연장된 경로의 길이는 h이며 h+1은 정점 수입니다. 해당 강의가 다른 길이 정의를 사용했는지는 확인되지 않았습니다. 단순 누락이 아닌 수치 문제이나 사이클 존재 증명에는 이 수치가 필요하지 않습니다.",
+            "contextResolves": false,
+            "affectsAnswer": false,
+            "affectsGrading": false
+          },
+          {
+            "kind": "notation_only",
+            "location": "worked_solution",
+            "evidence": {
+              "segmentId": "802e9425-b36e-49df-931c-2a26ce4d7d61",
+              "quote": "If   v   �   ∈   { v 1 ,   v 2, . . . ,   v h }"
+            },
+            "description": "텍스트층의 깨진 기호는 답안 이미지에서 ∉로 확인됩니다. 경로 밖 정점이면 연장한다는 문맥과도 일치하는 추출 오류이며 답이나 채점을 바꾸지 않습니다.",
+            "contextResolves": true,
+            "affectsAnswer": false,
+            "affectsGrading": false
+          }
+        ]
+      },
+      "questionAudit": {
+        "id": "733d446a-a6a9-4ab2-884c-86f595676957",
+        "status": "needs_review",
+        "answerAnchorOrdinal": 12,
+        "continuationCount": 0,
+        "answerImageHidden": true,
+        "citationsExact": true
+      },
+      "passed": true
+    },
+    "edition": {
+      "goalId": "b29a5fb4-7e6a-4620-87d9-0e6a25fdfe90",
+      "paperId": "b833baa2-80d4-4634-bc00-3b08ad251b33",
+      "answerId": "8f47c3f2-4695-4008-adc4-29e5902e666b",
+      "retrievalComparison": {
+        "totalSegments": 80,
+        "expectedAnchorOrdinal": 66,
+        "oldSelectedOrdinals": [
+          0,
+          79,
+          44,
+          45,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "oldContainsTarget": false,
+        "newSelectedOrdinals": [
+          66,
+          0,
+          79,
+          67,
+          68,
+          65
+        ],
+        "newContainsTarget": true
+      },
+      "jobId": "45c66373-aa37-4e90-b207-77aeb2e0e311",
+      "result": {
+        "id": "45c66373-aa37-4e90-b207-77aeb2e0e311",
+        "kind": "extract_questions",
+        "input": {
+          "sourceId": "b833baa2-80d4-4634-bc00-3b08ad251b33"
+        },
+        "status": "succeeded",
+        "generation": 1,
+        "result": {
+          "questionIds": [
+            "2b83cbec-4418-49e3-ba52-3e5bf9f3c797"
+          ],
+          "count": 1,
+          "usable": 1,
+          "needsReview": 0,
+          "unresolved": []
+        },
+        "error": null,
+        "createdAt": "2026-10-15T02:51:10.918Z",
+        "updatedAt": "2026-10-15T02:51:40.086Z"
+      },
+      "previousRuns": [
+        {
+          "job": {
+            "id": "d8c5f5dd-c2c8-4fc5-bef6-d6270a083457",
+            "kind": "extract_questions",
+            "input": {
+              "sourceId": "b833baa2-80d4-4634-bc00-3b08ad251b33"
+            },
+            "status": "succeeded",
+            "generation": 1,
+            "result": {
+              "questionIds": [],
+              "count": 0,
+              "usable": 0,
+              "needsReview": 0,
+              "unresolved": [
+                {
+                  "reference": "segment:d756c6bf-2465-406a-a5b7-bf722763b76e",
+                  "reason": "정답 추가 검색 한도에 도달했거나 새로운 근거를 찾지 못했습니다. 원본 정답표를 확인하세요."
+                }
+              ]
+            },
+            "error": null,
+            "createdAt": "2026-10-15T02:49:43.939Z",
+            "updatedAt": "2026-10-15T02:49:56.912Z"
+          },
+          "passed": false
+        }
+      ],
+      "questionAudit": {
+        "id": "2b83cbec-4418-49e3-ba52-3e5bf9f3c797",
+        "status": "usable",
+        "answerAnchorOrdinal": 66,
+        "continuationCount": 0,
+        "answerImageHidden": true,
+        "citationsExact": true
+      },
+      "passed": true
+    }
+  },
+  "sessions": [
+    {
+      "index": 0,
+      "startedAt": "2026-10-15T02:42:30.718Z",
+      "maxCalls": 14,
+      "calls": 6,
+      "codeHashes": {
+        "answer-retrieval": "a71504f0e1d295630104cef25d8b9c2cd1506eb4e64051f37d7663abfe9ebdcb",
+        "workflows": "960a49900938fe7b069b0e5c558e41e3427b90626b990eb7f85ef527a4fd5bcf"
+      },
+      "error": "[\n  {\n    \"code\": \"invalid_value\",\n    \"values\": [\n      \"link_only\",\n      \"allowed\",\n      \"user_provided\"\n    ],\n    \"path\": [\n      \"rights\"\n    ],\n    \"message\": \"Invalid option: expected one of \\\"link_only\\\"|\\\"allowed\\\"|\\\"user_provided\\\"\"\n  }\n]",
+      "endedAt": "2026-10-15T02:43:44.476Z"
+    },
+    {
+      "index": 1,
+      "startedAt": "2026-10-15T02:44:21.820Z",
+      "maxCalls": 8,
+      "calls": 3,
+      "codeHashes": {
+        "answer-retrieval": "14f2e4ba6030a37df871c703903ee018c9a8d890f299db8fb13fbd19da7ab342",
+        "workflows": "eafdff6793d67151011d34482f910c9e60116aa36c7b1909b01c222c0eafbf63"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: {\"code\":\"CODEX_TURN_TIMEOUT\",\"message\":\"에이전트 작업 제한 시간을 초과했습니다.\"}\n+ actual - expected\n\n+ 'failed'\n- 'succeeded'\n",
+      "endedAt": "2026-10-15T02:48:50.683Z"
+    },
+    {
+      "index": 2,
+      "startedAt": "2026-10-15T02:49:43.180Z",
+      "maxCalls": 8,
+      "calls": 2,
+      "codeHashes": {
+        "answer-retrieval": "14f2e4ba6030a37df871c703903ee018c9a8d890f299db8fb13fbd19da7ab342",
+        "workflows": "eafdff6793d67151011d34482f910c9e60116aa36c7b1909b01c222c0eafbf63"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: {\"questionIds\":[],\"count\":0,\"usable\":0,\"needsReview\":0,\"unresolved\":[{\"reference\":\"segment:d756c6bf-2465-406a-a5b7-bf722763b76e\",\"reason\":\"정답 추가 검색 한도에 도달했거나 새로운 근거를 찾지 못했습니다. 원본 정답표를 확인하세요.\"}]}\n\n0 !== 1\n",
+      "endedAt": "2026-10-15T02:49:56.916Z"
+    },
+    {
+      "index": 3,
+      "startedAt": "2026-10-15T02:51:10.136Z",
+      "maxCalls": 6,
+      "calls": 3,
+      "codeHashes": {
+        "answer-retrieval": "46e1eac3a7fa39e88c2a73018c8c987288af983749f0d026e68b392fe868bfb4",
+        "workflows": "34dde8e7793f0cdf3897f0086bdf7c22023b8faff795d1d7ea515ab1cbffa7eb"
+      },
+      "passed": true,
+      "endedAt": "2026-10-15T02:51:40.089Z"
+    },
+    {
+      "index": 4,
+      "startedAt": "2026-10-15T02:52:20.823Z",
+      "maxCalls": 4,
+      "calls": 2,
+      "codeHashes": {
+        "answer-retrieval": "46e1eac3a7fa39e88c2a73018c8c987288af983749f0d026e68b392fe868bfb4",
+        "workflows": "34dde8e7793f0cdf3897f0086bdf7c22023b8faff795d1d7ea515ab1cbffa7eb"
+      },
+      "error": "AssertionError [ERR_ASSERTION]: {\"questionIds\":[\"733d446a-a6a9-4ab2-884c-86f595676957\"],\"count\":1,\"usable\":0,\"needsReview\":1,\"unresolved\":[]}\n\n0 !== 1\n",
+      "endedAt": "2026-10-15T02:53:31.277Z"
+    },
+    {
+      "index": 5,
+      "startedAt": "2026-10-15T02:54:20.329Z",
+      "maxCalls": 1,
+      "calls": 0,
+      "codeHashes": {
+        "answer-retrieval": "46e1eac3a7fa39e88c2a73018c8c987288af983749f0d026e68b392fe868bfb4",
+        "workflows": "34dde8e7793f0cdf3897f0086bdf7c22023b8faff795d1d7ea515ab1cbffa7eb"
+      },
+      "passed": true,
+      "endedAt": "2026-10-15T02:54:21.070Z"
+    },
+    {
+      "index": 6,
+      "startedAt": "2026-10-15T02:56:31.407Z",
+      "maxCalls": 1,
+      "calls": 0,
+      "codeHashes": {
+        "answer-retrieval": "46e1eac3a7fa39e88c2a73018c8c987288af983749f0d026e68b392fe868bfb4",
+        "workflows": "34dde8e7793f0cdf3897f0086bdf7c22023b8faff795d1d7ea515ab1cbffa7eb"
+      },
+      "passed": true,
+      "endedAt": "2026-10-15T02:56:32.317Z"
+    }
+  ],
+  "calls": [
+    {
+      "session": 0,
+      "case": "numeric",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:42:31.524Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 80,
+        "selectedSegments": 6,
+        "selectedChars": 48000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "117"
+        ],
+        "reasons": {
+          "6e77ac92-d7bf-4191-bf4e-f776dcf0dc8b": "match",
+          "81efc233-d6b8-4af5-b684-1876943ad881": "document_context",
+          "1c337e58-3cc3-47a6-9dfd-3698d5121c81": "document_context",
+          "c046f7c7-2d33-4461-a471-fdeaf5e498f6": "continuation",
+          "1ff6b671-cdbe-44b8-8573-07d9d3fc651d": "continuation",
+          "758d4dc7-883b-4bc1-a50b-be3aa2ba12fc": "preceding_context"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "6e77ac92-d7bf-4191-bf4e-f776dcf0dc8b",
+          "ordinal": 65
+        },
+        {
+          "segmentId": "81efc233-d6b8-4af5-b684-1876943ad881",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "1c337e58-3cc3-47a6-9dfd-3698d5121c81",
+          "ordinal": 79
+        },
+        {
+          "segmentId": "c046f7c7-2d33-4461-a471-fdeaf5e498f6",
+          "ordinal": 66
+        },
+        {
+          "segmentId": "1ff6b671-cdbe-44b8-8573-07d9d3fc651d",
+          "ordinal": 67
+        },
+        {
+          "segmentId": "758d4dc7-883b-4bc1-a50b-be3aa2ba12fc",
+          "ordinal": 64
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 1,
+        "hasMore": false,
+        "answerSearch": null,
+        "unresolved": []
+      },
+      "elapsedMs": 14285
+    },
+    {
+      "session": 0,
+      "case": "numeric",
+      "role": "verify_question",
+      "startedAt": "2026-10-15T02:42:45.821Z",
+      "answerRetrieval": null,
+      "suppliedAnswers": [],
+      "imageCount": 0,
+      "output": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제시된 선택지 중 파란색의 파장이 가장 짧다. 원문 문항 117과 정답표의 번호·판본이 일치하며, B는 원래 선택지의 Blue에 해당한다. 인용문은 제공 자료와 정확히 일치한다.",
+        "sourceCheck": {
+          "questionUnambiguous": true,
+          "finalAnswerMatches": true,
+          "independentAnswer": "B (Blue). 제시된 색의 파장은 빨간색 > 초록색 > 파란색 순이다.",
+          "issues": []
+        },
+        "visualCheck": null
+      },
+      "elapsedMs": 8243
+    },
+    {
+      "session": 0,
+      "case": "section",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:42:54.122Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 72,
+        "selectedSegments": 7,
+        "selectedChars": 56000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "7"
+        ],
+        "reasons": {
+          "327bb5ea-72d7-4fd1-941a-bf07d0cf32e2": "match",
+          "25550b31-aab1-45da-97a5-c48f42794b74": "match",
+          "bddd40b5-40c1-4819-ae30-5ea822319bde": "match",
+          "12d65baa-e77e-4bd6-9781-0ec49fe658de": "document_context",
+          "a5dd2aaf-34dd-4d0b-9529-76087a9fe1d1": "document_context",
+          "5caef559-082b-4f18-ac57-30ccc1f849ad": "continuation",
+          "215d095d-f742-4bf7-b7c8-7ab21c672eda": "continuation"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "327bb5ea-72d7-4fd1-941a-bf07d0cf32e2",
+          "ordinal": 61
+        },
+        {
+          "segmentId": "25550b31-aab1-45da-97a5-c48f42794b74",
+          "ordinal": 1
+        },
+        {
+          "segmentId": "bddd40b5-40c1-4819-ae30-5ea822319bde",
+          "ordinal": 2
+        },
+        {
+          "segmentId": "12d65baa-e77e-4bd6-9781-0ec49fe658de",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "a5dd2aaf-34dd-4d0b-9529-76087a9fe1d1",
+          "ordinal": 71
+        },
+        {
+          "segmentId": "5caef559-082b-4f18-ac57-30ccc1f849ad",
+          "ordinal": 62
+        },
+        {
+          "segmentId": "215d095d-f742-4bf7-b7c8-7ab21c672eda",
+          "ordinal": 3
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 1,
+        "hasMore": false,
+        "answerSearch": null,
+        "unresolved": []
+      },
+      "elapsedMs": 11779
+    },
+    {
+      "session": 0,
+      "case": "section",
+      "role": "verify_question",
+      "startedAt": "2026-10-15T02:43:05.907Z",
+      "answerRetrieval": null,
+      "suppliedAnswers": [],
+      "imageCount": 0,
+      "output": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "go의 과거형은 went이며 원래 선택지 B와 일치합니다. 제공 자료의 판본 Language Orchid 2042, Section Starlight, 문항 7과 정답 7 | B가 일치하고 모든 근거 인용이 정확합니다. 다만 해설의 Section Daylight 관련 설명은 제공 자료로 확인되지 않습니다.",
+        "sourceCheck": {
+          "questionUnambiguous": true,
+          "finalAnswerMatches": true,
+          "independentAnswer": "B: went",
+          "issues": []
+        },
+        "visualCheck": null
+      },
+      "elapsedMs": 12364
+    },
+    {
+      "session": 0,
+      "case": "continuation",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:43:18.423Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 96,
+        "selectedSegments": 6,
+        "selectedChars": 48000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "41",
+          "12"
+        ],
+        "reasons": {
+          "3ca12c0f-a20f-4507-b120-4a2c1d2d1a75": "match",
+          "d77e5455-4579-4735-9cf1-f9233842cc67": "document_context",
+          "b94b7c5b-9aad-4b7c-8e0a-3d169133e1d5": "document_context",
+          "1838f2e2-54a4-4a4a-9590-a0df48a8bc99": "continuation",
+          "ea7ba3f6-e4c4-41c1-a0d9-ab4e5ed6c3a8": "continuation",
+          "fd8d7fe7-2ddc-4fbe-8c35-119fceb4bd8e": "preceding_context"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "3ca12c0f-a20f-4507-b120-4a2c1d2d1a75",
+          "ordinal": 83
+        },
+        {
+          "segmentId": "d77e5455-4579-4735-9cf1-f9233842cc67",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "b94b7c5b-9aad-4b7c-8e0a-3d169133e1d5",
+          "ordinal": 95
+        },
+        {
+          "segmentId": "1838f2e2-54a4-4a4a-9590-a0df48a8bc99",
+          "ordinal": 84
+        },
+        {
+          "segmentId": "ea7ba3f6-e4c4-41c1-a0d9-ab4e5ed6c3a8",
+          "ordinal": 85
+        },
+        {
+          "segmentId": "fd8d7fe7-2ddc-4fbe-8c35-119fceb4bd8e",
+          "ordinal": 82
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 1,
+        "hasMore": false,
+        "answerSearch": null,
+        "unresolved": []
+      },
+      "elapsedMs": 15047
+    },
+    {
+      "session": 0,
+      "case": "continuation",
+      "role": "verify_question",
+      "startedAt": "2026-10-15T02:43:33.505Z",
+      "answerRetrieval": null,
+      "suppliedAnswers": [],
+      "imageCount": 0,
+      "output": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "독립 계산 결과 x=4이며 원문 문제, 정답 및 채점 기준이 일치한다. 동일 답안 출처·리비전의 연속 세그먼트에서 41번 풀이의 다음 구간 안내와 앞선 계산의 최종값이라는 명시적 연결이 확인된다.",
+        "sourceCheck": {
+          "questionUnambiguous": true,
+          "finalAnswerMatches": true,
+          "independentAnswer": "4",
+          "issues": []
+        },
+        "visualCheck": null
+      },
+      "elapsedMs": 10932
+    },
+    {
+      "session": 1,
+      "case": "single",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:44:22.612Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 80,
+        "selectedSegments": 6,
+        "selectedChars": 48000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "3"
+        ],
+        "reasons": {
+          "2e30bad7-3b0a-4cf5-a485-9d0dbb1efe27": "match",
+          "13b7a504-c3ab-4c99-bbcb-8e75089be499": "document_context",
+          "1c5d595d-d46e-496e-a166-75747cd83010": "document_context",
+          "e3a74efd-9547-427e-95c4-bde44476352a": "continuation",
+          "6b331999-cdb3-4a52-a74b-fdf5f8b7ca51": "continuation",
+          "2bffea3e-7b9b-4997-b3c4-45c39d4faeb0": "preceding_context"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "2e30bad7-3b0a-4cf5-a485-9d0dbb1efe27",
+          "ordinal": 66
+        },
+        {
+          "segmentId": "13b7a504-c3ab-4c99-bbcb-8e75089be499",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "1c5d595d-d46e-496e-a166-75747cd83010",
+          "ordinal": 79
+        },
+        {
+          "segmentId": "e3a74efd-9547-427e-95c4-bde44476352a",
+          "ordinal": 67
+        },
+        {
+          "segmentId": "6b331999-cdb3-4a52-a74b-fdf5f8b7ca51",
+          "ordinal": 68
+        },
+        {
+          "segmentId": "2bffea3e-7b9b-4997-b3c4-45c39d4faeb0",
+          "ordinal": 65
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 1,
+        "hasMore": false,
+        "answerSearch": null,
+        "unresolved": []
+      },
+      "elapsedMs": 13449
+    },
+    {
+      "session": 1,
+      "case": "single",
+      "role": "verify_question",
+      "startedAt": "2026-10-15T02:44:36.098Z",
+      "answerRetrieval": null,
+      "suppliedAnswers": [],
+      "imageCount": 0,
+      "output": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "원문 문항과 선택지, 문항 번호 3, 자료명 'Optics Fern 2044'가 일치하며, 제공된 정답표의 '3 | B'는 독립 풀이와 일치합니다.",
+        "sourceCheck": {
+          "questionUnambiguous": true,
+          "finalAnswerMatches": true,
+          "independentAnswer": "B (Blue). 제시된 선택지에서 파장은 파란색 < 초록색 < 빨간색 순이므로 파란색이 가장 짧습니다.",
+          "issues": []
+        },
+        "visualCheck": null
+      },
+      "elapsedMs": 11219
+    },
+    {
+      "session": 1,
+      "case": "pdf",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:44:50.515Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 16,
+        "selectedSegments": 6,
+        "selectedChars": 7449,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "9"
+        ],
+        "reasons": {
+          "802e9425-b36e-49df-931c-2a26ce4d7d61": "match",
+          "d4ea2841-6684-4968-b23b-8cd0c08a525f": "document_context",
+          "7a59486c-cdb1-44a4-b378-37de71d62346": "document_context",
+          "759014bc-41cc-44bc-bcb8-26c9e2d35e21": "continuation",
+          "96726fb4-eb5a-407a-aaa6-841058b4a226": "continuation",
+          "c77efa29-8e72-4064-9829-8d69532c38d4": "preceding_context"
+        },
+        "indexTruncated": false,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "802e9425-b36e-49df-931c-2a26ce4d7d61",
+          "ordinal": 12,
+          "pdfPage": 13
+        },
+        {
+          "segmentId": "d4ea2841-6684-4968-b23b-8cd0c08a525f",
+          "ordinal": 0,
+          "pdfPage": 1
+        },
+        {
+          "segmentId": "7a59486c-cdb1-44a4-b378-37de71d62346",
+          "ordinal": 15,
+          "pdfPage": 16
+        },
+        {
+          "segmentId": "759014bc-41cc-44bc-bcb8-26c9e2d35e21",
+          "ordinal": 13,
+          "pdfPage": 14
+        },
+        {
+          "segmentId": "96726fb4-eb5a-407a-aaa6-841058b4a226",
+          "ordinal": 14,
+          "pdfPage": 15
+        },
+        {
+          "segmentId": "c77efa29-8e72-4064-9829-8d69532c38d4",
+          "ordinal": 11,
+          "pdfPage": 12
+        }
+      ],
+      "imageCount": 10,
+      "error": "Error: 에이전트 작업 제한 시간을 초과했습니다.",
+      "elapsedMs": 240153
+    },
+    {
+      "session": 2,
+      "case": "edition",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:49:43.948Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 80,
+        "selectedSegments": 6,
+        "selectedChars": 48000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "3"
+        ],
+        "reasons": {
+          "f6c4407d-8eb3-45c3-ac3e-6fb3be94d7ab": "match",
+          "ea03069c-ff57-4c7f-aff8-b8162440dc76": "document_context",
+          "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b": "document_context",
+          "fc9d8879-f797-451a-ac12-b9bb1d810b0f": "continuation",
+          "39debcde-1e2e-4244-9bb8-aa7ea48b78ef": "continuation",
+          "e6f76dd8-3ff8-4568-8086-75ee97e4f628": "preceding_context"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "f6c4407d-8eb3-45c3-ac3e-6fb3be94d7ab",
+          "ordinal": 66
+        },
+        {
+          "segmentId": "ea03069c-ff57-4c7f-aff8-b8162440dc76",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b",
+          "ordinal": 79
+        },
+        {
+          "segmentId": "fc9d8879-f797-451a-ac12-b9bb1d810b0f",
+          "ordinal": 67
+        },
+        {
+          "segmentId": "39debcde-1e2e-4244-9bb8-aa7ea48b78ef",
+          "ordinal": 68
+        },
+        {
+          "segmentId": "e6f76dd8-3ff8-4568-8086-75ee97e4f628",
+          "ordinal": 65
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 0,
+        "hasMore": false,
+        "answerSearch": {
+          "query": "\"Optics Lagoon 2045\"",
+          "segmentIds": [
+            "7f7a2f4d-6124-40fa-a1fb-9596fdf046ec"
+          ]
+        },
+        "unresolved": []
+      },
+      "elapsedMs": 7976
+    },
+    {
+      "session": 2,
+      "case": "edition",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:49:51.933Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 80,
+        "selectedSegments": 6,
+        "selectedChars": 48000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [],
+        "reasons": {
+          "7f7a2f4d-6124-40fa-a1fb-9596fdf046ec": "match",
+          "ea03069c-ff57-4c7f-aff8-b8162440dc76": "document_context",
+          "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b": "document_context",
+          "a7b70f7f-0813-4f18-bb3f-73c80d70ec75": "continuation",
+          "58708dd3-1481-4817-bf24-b822701e864f": "continuation",
+          "3d243a99-98e1-4f4e-b074-9e192ec4128c": "preceding_context"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 1
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "7f7a2f4d-6124-40fa-a1fb-9596fdf046ec",
+          "ordinal": 44
+        },
+        {
+          "segmentId": "ea03069c-ff57-4c7f-aff8-b8162440dc76",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b",
+          "ordinal": 79
+        },
+        {
+          "segmentId": "a7b70f7f-0813-4f18-bb3f-73c80d70ec75",
+          "ordinal": 45
+        },
+        {
+          "segmentId": "58708dd3-1481-4817-bf24-b822701e864f",
+          "ordinal": 46
+        },
+        {
+          "segmentId": "3d243a99-98e1-4f4e-b074-9e192ec4128c",
+          "ordinal": 43
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 0,
+        "hasMore": false,
+        "answerSearch": {
+          "query": "\"3\" \"shortest wavelength\" \"Blue\"",
+          "segmentIds": []
+        },
+        "unresolved": []
+      },
+      "elapsedMs": 4946
+    },
+    {
+      "session": 3,
+      "case": "edition",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:51:10.955Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 80,
+        "selectedSegments": 6,
+        "selectedChars": 48000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "3"
+        ],
+        "reasons": {
+          "f6c4407d-8eb3-45c3-ac3e-6fb3be94d7ab": "match",
+          "ea03069c-ff57-4c7f-aff8-b8162440dc76": "document_context",
+          "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b": "document_context",
+          "fc9d8879-f797-451a-ac12-b9bb1d810b0f": "continuation",
+          "39debcde-1e2e-4244-9bb8-aa7ea48b78ef": "continuation",
+          "e6f76dd8-3ff8-4568-8086-75ee97e4f628": "preceding_context"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "f6c4407d-8eb3-45c3-ac3e-6fb3be94d7ab",
+          "ordinal": 66
+        },
+        {
+          "segmentId": "ea03069c-ff57-4c7f-aff8-b8162440dc76",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b",
+          "ordinal": 79
+        },
+        {
+          "segmentId": "fc9d8879-f797-451a-ac12-b9bb1d810b0f",
+          "ordinal": 67
+        },
+        {
+          "segmentId": "39debcde-1e2e-4244-9bb8-aa7ea48b78ef",
+          "ordinal": 68
+        },
+        {
+          "segmentId": "e6f76dd8-3ff8-4568-8086-75ee97e4f628",
+          "ordinal": 65
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 0,
+        "hasMore": false,
+        "answerSearch": {
+          "query": "\"Optics Lagoon 2045\"",
+          "segmentIds": [
+            "7f7a2f4d-6124-40fa-a1fb-9596fdf046ec"
+          ]
+        },
+        "unresolved": []
+      },
+      "elapsedMs": 7937
+    },
+    {
+      "session": 3,
+      "case": "edition",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:51:18.928Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 80,
+        "selectedSegments": 7,
+        "selectedChars": 56000,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [],
+        "reasons": {
+          "7f7a2f4d-6124-40fa-a1fb-9596fdf046ec": "match",
+          "f6c4407d-8eb3-45c3-ac3e-6fb3be94d7ab": "match",
+          "ea03069c-ff57-4c7f-aff8-b8162440dc76": "document_context",
+          "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b": "document_context",
+          "a7b70f7f-0813-4f18-bb3f-73c80d70ec75": "continuation",
+          "fc9d8879-f797-451a-ac12-b9bb1d810b0f": "continuation",
+          "58708dd3-1481-4817-bf24-b822701e864f": "continuation"
+        },
+        "indexTruncated": true,
+        "searchesRemaining": 1
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "7f7a2f4d-6124-40fa-a1fb-9596fdf046ec",
+          "ordinal": 44
+        },
+        {
+          "segmentId": "f6c4407d-8eb3-45c3-ac3e-6fb3be94d7ab",
+          "ordinal": 66
+        },
+        {
+          "segmentId": "ea03069c-ff57-4c7f-aff8-b8162440dc76",
+          "ordinal": 0
+        },
+        {
+          "segmentId": "4bcbb3ed-f6ee-4abb-bbe8-971d9dbbed6b",
+          "ordinal": 79
+        },
+        {
+          "segmentId": "a7b70f7f-0813-4f18-bb3f-73c80d70ec75",
+          "ordinal": 45
+        },
+        {
+          "segmentId": "fc9d8879-f797-451a-ac12-b9bb1d810b0f",
+          "ordinal": 67
+        },
+        {
+          "segmentId": "58708dd3-1481-4817-bf24-b822701e864f",
+          "ordinal": 46
+        }
+      ],
+      "imageCount": 0,
+      "output": {
+        "questionCount": 1,
+        "hasMore": false,
+        "answerSearch": null,
+        "unresolved": []
+      },
+      "elapsedMs": 11850
+    },
+    {
+      "session": 3,
+      "case": "edition",
+      "role": "verify_question",
+      "startedAt": "2026-10-15T02:51:30.816Z",
+      "answerRetrieval": null,
+      "suppliedAnswers": [],
+      "imageCount": 0,
+      "output": {
+        "usable": true,
+        "evidenceValid": true,
+        "answerValid": true,
+        "reason": "제시된 선택지 중 파장이 가장 짧은 색은 Blue(B)입니다. 문제·정답의 문항 번호 3과 선택지 대응이 일치하며, 동일 정답 자료의 판본 적용 문구가 Optics Lagoon 2045와의 연결을 뒷받침합니다. 모든 인용은 제공된 자료와 일치하고 필수 시각 자료는 없습니다.",
+        "sourceCheck": {
+          "questionUnambiguous": true,
+          "finalAnswerMatches": true,
+          "independentAnswer": "B — Blue. 가시광선에서 제시된 세 색의 파장은 빨간색 > 초록색 > 파란색 순이므로 파란색이 가장 짧습니다.",
+          "issues": []
+        },
+        "visualCheck": null
+      },
+      "elapsedMs": 9239
+    },
+    {
+      "session": 4,
+      "case": "pdf",
+      "role": "extract_existing_questions",
+      "startedAt": "2026-10-15T02:52:21.641Z",
+      "answerRetrieval": {
+        "version": 1,
+        "totalSegments": 16,
+        "selectedSegments": 6,
+        "selectedChars": 7449,
+        "maxSegments": 10,
+        "maxChars": 56000,
+        "queryReferences": [
+          "9"
+        ],
+        "reasons": {
+          "802e9425-b36e-49df-931c-2a26ce4d7d61": "match",
+          "d4ea2841-6684-4968-b23b-8cd0c08a525f": "document_context",
+          "7a59486c-cdb1-44a4-b378-37de71d62346": "document_context",
+          "759014bc-41cc-44bc-bcb8-26c9e2d35e21": "continuation",
+          "96726fb4-eb5a-407a-aaa6-841058b4a226": "continuation",
+          "c77efa29-8e72-4064-9829-8d69532c38d4": "preceding_context"
+        },
+        "indexTruncated": false,
+        "searchesRemaining": 2
+      },
+      "suppliedAnswers": [
+        {
+          "segmentId": "802e9425-b36e-49df-931c-2a26ce4d7d61",
+          "ordinal": 12,
+          "pdfPage": 13
+        },
+        {
+          "segmentId": "d4ea2841-6684-4968-b23b-8cd0c08a525f",
+          "ordinal": 0,
+          "pdfPage": 1
+        },
+        {
+          "segmentId": "7a59486c-cdb1-44a4-b378-37de71d62346",
+          "ordinal": 15,
+          "pdfPage": 16
+        },
+        {
+          "segmentId": "759014bc-41cc-44bc-bcb8-26c9e2d35e21",
+          "ordinal": 13,
+          "pdfPage": 14
+        },
+        {
+          "segmentId": "96726fb4-eb5a-407a-aaa6-841058b4a226",
+          "ordinal": 14,
+          "pdfPage": 15
+        },
+        {
+          "segmentId": "c77efa29-8e72-4064-9829-8d69532c38d4",
+          "ordinal": 11,
+          "pdfPage": 12
+        }
+      ],
+      "imageCount": 10,
+      "output": {
+        "questionCount": 1,
+        "hasMore": false,
+        "answerSearch": null,
+        "unresolved": []
+      },
+      "elapsedMs": 37298
+    },
+    {
+      "session": 4,
+      "case": "pdf",
+      "role": "verify_question",
+      "startedAt": "2026-10-15T02:52:58.983Z",
+      "answerRetrieval": null,
+      "suppliedAnswers": [],
+      "imageCount": 2,
+      "output": {
+        "usable": false,
+        "evidenceValid": true,
+        "answerValid": false,
+        "reason": "원문과 이미지의 대응은 확인되지만, 빈 그래프를 제외하는 가정이 확인되지 않아 명제와 모범답안을 무조건 타당하다고 판정할 수 없습니다. 해설의 경로 길이에도 수치 문제가 있습니다.",
+        "sourceCheck": {
+          "questionUnambiguous": false,
+          "finalAnswerMatches": false,
+          "independentAnswer": "빈 그래프를 허용하면 V=∅, E=∅는 모든 정점의 진출차수가 1 이상이라는 조건을 공허하게 만족하지만 사이클이 없으므로 원문 명제는 거짓이다. 비어 있지 않은 그래프라는 전제에서는 다음 증명이 성립한다. 정점이 중복되지 않는 최장 경로 v₁→⋯→vₕ를 택한다. 마지막 정점의 나가는 간선 vₕ→v에서 v가 경로 밖이면 경로를 연장할 수 있어 모순이다. 따라서 v=vᵢ인 i가 존재하고 vᵢ→⋯→vₕ→vᵢ는 방향 사이클이다. 공식 결론과 저장된 답안은 이 추가 전제 아래에서만 일치한다.",
+          "issues": [
+            {
+              "kind": "ambiguous",
+              "location": "question",
+              "evidence": {
+                "segmentId": "a25ef122-a927-444d-9c4a-50b8a7a7827a",
+                "quote": "Prove that in a finite directed graph, if every node has at least one outgoing edge, then\nthe graph has a cycle."
+              },
+              "description": "비어 있지 않다는 조건이 없습니다. 빈 그래프를 배제하는 강의의 정의나 관례도 제공된 자료에서 확인되지 않습니다. 빈 그래프의 허용 여부에 따라 명제의 진위와 반례 답안의 채점이 달라집니다.",
+              "contextResolves": false,
+              "affectsAnswer": true,
+              "affectsGrading": true
+            },
+            {
+              "kind": "answer_error",
+              "location": "worked_solution",
+              "evidence": {
+                "segmentId": "802e9425-b36e-49df-931c-2a26ce4d7d61",
+                "quote": "is a longer path of length \nh   +   1."
+              },
+              "description": "이미지에도 h+1로 인쇄되어 있습니다. 통상적인 간선 수 정의에서 연장된 경로의 길이는 h이며 h+1은 정점 수입니다. 해당 강의가 다른 길이 정의를 사용했는지는 확인되지 않았습니다. 단순 누락이 아닌 수치 문제이나 사이클 존재 증명에는 이 수치가 필요하지 않습니다.",
+              "contextResolves": false,
+              "affectsAnswer": false,
+              "affectsGrading": false
+            },
+            {
+              "kind": "notation_only",
+              "location": "worked_solution",
+              "evidence": {
+                "segmentId": "802e9425-b36e-49df-931c-2a26ce4d7d61",
+                "quote": "If   v   �   ∈   { v 1 ,   v 2, . . . ,   v h }"
+              },
+              "description": "텍스트층의 깨진 기호는 답안 이미지에서 ∉로 확인됩니다. 경로 밖 정점이면 연장한다는 문맥과도 일치하는 추출 오류이며 답이나 채점을 바꾸지 않습니다.",
+              "contextResolves": true,
+              "affectsAnswer": false,
+              "affectsGrading": false
+            }
+          ]
+        },
+        "visualCheck": {
+          "faithful": true,
+          "complete": true,
+          "noAnswerLeak": true,
+          "reason": "첨부된 문제지 17쪽과 답안지 13쪽을 모두 확인했습니다. 문제 번호, 제목, 20점 배점, 명제와 힌트가 일치하고, 제공된 표지 텍스트의 시험 날짜도 일치합니다. 필수 학습자용 자산 9949dcd3-b87e-4424-9cff-44e7fcde4580에는 문제 전체가 선명하게 보이며 해설이 없습니다. 답안 자산 65c88acb-1dd2-47dc-86b5-239230e9fcb3은 필수 학습자용 자산에 포함되지 않습니다."
+        }
+      },
+      "elapsedMs": 32256
+    }
+  ],
+  "sourceFiles": [
+    {
+      "title": "2008 final exam",
+      "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/7a388c9bc011b32657aba364ef3ed10d_MIT6_042JF10_final_2008.pdf",
+      "sha256": "3fda78642ea739a63b834f4c2e7874dafa9df906324b502714f3e7406e7ec3dd",
+      "pages": 20,
+      "inspectedPage": 17
+    },
+    {
+      "title": "2008 final solutions",
+      "url": "https://ocw.mit.edu/courses/6-042j-mathematics-for-computer-science-fall-2010/f2742c4fd6fcac9d60a74ee610e126f1_MIT6_042JF10_fnl_2008_sol.pdf",
+      "sha256": "f7d959c57aa377799805816402d293367303164c990fed99db21979864d94ddc",
+      "pages": 16,
+      "inspectedPage": 13
+    }
+  ],
+  "summary": {
+    "calls": 16,
+    "normalResponses": 15,
+    "timeouts": 1,
+    "elapsedMs": 448973,
+    "completedCases": 6,
+    "usable": 5,
+    "needsReview": 1,
+    "automaticTests": 120,
+    "typechecks": true,
+    "build": true,
+    "existingRoom": {
+      "fullResultUnchanged": true,
+      "items": 25,
+      "earned": 34,
+      "totalPossible": 39,
+      "pending": 0
+    },
+    "scope": "Retrieval/linking confirmed in six cases; public PDF remains held for source-quality review. Initial failures retained. No paid API fallback."
+  },
+  "finalCodeHashes": {
+    "src/answer-retrieval.ts": "46e1eac3a7fa39e88c2a73018c8c987288af983749f0d026e68b392fe868bfb4",
+    "src/workflows.ts": "e8c20f2d02a6c8a121a4e1d4bcb776297c3feff5a50cc59d18013fc3a524d3dc",
+    "scripts/live-answer-retrieval.ts": "37cb10a1e9f5b0db7405e25c5ff0363ff3ef3257269d591e4e0753135ae44596"
+  }
+}
