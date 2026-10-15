@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-10-15T03:55:00.653Z",
+  "passed": true,
+  "cli": true,
+  "environment": "same-computer new isolated data directory",
+  "databaseBytesIdenticalBeforeStartup": true,
+  "snapshotUnchanged": true,
+  "counts": {
+    "goals": 1,
+    "sources": 2,
+    "questions": 23,
+    "question_revisions": 27,
+    "exams": 0,
+    "attempts": 0,
+    "assets": 19
+  },
+  "questionVersion": 5,
+  "questionStatus": "needs_review",
+  "authenticatedImageRequests": 3,
+  "assetHashesVerified": 19,
+  "regionCacheReused": true,
+  "loginRegenerated": true,
+  "userRoomUnmodified": true
+}

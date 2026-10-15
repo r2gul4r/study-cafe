@@ -14,7 +14,7 @@ import {
 } from "../src/pdf-visuals.js";
 import { saveQuestionRegions } from "../src/question-regions.js";
 import { publicQuestion } from "../src/exams.js";
-import { backup, verifyBackup } from "../src/backup.js";
+import { backup, restoreBackup, verifyBackup } from "../src/backup.js";
 import type { AgentPort } from "../src/agent.js";
 import { cleanSourceCheck } from "./helpers/source-quality.js";
 import { alignedAudit } from "./helpers/grading.js";
@@ -110,6 +110,56 @@ test("crop creates a pinned pending revision, preserves original and caches dete
   });
   assert.deepEqual(restored.requiredAssetIds, [f.image.assetId]);
   assert.equal(restored.status, "needs_review");
+});
+
+test("restoring to a new data directory preserves original and cropped pixels, provenance and review status without copying login", async (t) => {
+  const f = await fixture(t);
+  const q = await saveQuestionRegions(f.catalog, f.q.id, {
+    expectedRevisionId: f.q.revisionId,
+    regions: [{ segmentId: f.m.segmentId, bounds: region }],
+  });
+  const saved = backup(f.store);
+  const target = mkdtempSync(join(tmpdir(), "study-region-restored-"));
+  assert.deepEqual(
+    restoreBackup(join(f.store.dir, "backups", saved.id), target),
+    {
+      restored: saved.id,
+      previousBackup: null,
+    },
+  );
+  const restored = await createApp({ dataDir: target, autoWorker: false });
+  t.after(() => restored.app.close());
+  assert.notEqual(restored.token, "test");
+  assert.equal(
+    (
+      await restored.app.inject({
+        method: "GET",
+        url: `/api/questions/${q.id}`,
+        headers: { authorization: "Bearer test" },
+      })
+    ).statusCode,
+    401,
+  );
+  assert.deepEqual(restored.catalog.readQuestion(q.id), q);
+  assert.deepEqual(
+    restored.catalog.readQuestion(q.id, f.q.revisionId),
+    f.catalog.readQuestion(q.id, f.q.revisionId),
+  );
+  validateVisualEvidence(restored.store, questionInput.strip().parse(q));
+  for (const assetId of [f.image.assetId, q.requiredAssetIds[0]!]) {
+    const response = await restored.app.inject({
+      method: "GET",
+      url: `/api/assets/${assetId}`,
+      headers: { authorization: `Bearer ${restored.token}` },
+    });
+    assert.equal(response.statusCode, 200);
+    assert.deepEqual(response.rawPayload, f.store.assetBytes(assetId).bytes);
+  }
+  assert.equal(
+    (await pdfRegionImage(restored.store, f.m.revisionId, 1, region)).assetId,
+    q.requiredAssetIds[0],
+  );
+  assert.deepEqual(f.catalog.readQuestion(q.id), q);
 });
 
 test("crop endpoint rejects missing auth, stale version, foreign/answer source, duplicate page and invalid bounds", async (t) => {
