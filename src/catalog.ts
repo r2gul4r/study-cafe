@@ -224,12 +224,47 @@ export class Catalog {
     const q = questionInput.parse(input);
     this.validateQuestion(q);
     const fingerprint = canonicalQuestion(q);
-    const duplicate = this.store.one(
+    let duplicate = this.store.one(
       "SELECT q.id FROM questions q JOIN question_revisions r ON r.id=q.current_revision WHERE q.goal_id=? AND json_extract(r.data,'$.scopeId')=? AND r.fingerprint=? AND q.archived=0",
       q.goalId,
       q.scopeId,
       fingerprint,
     );
+    if (
+      !duplicate &&
+      !options.questionId &&
+      q.sourceMatch &&
+      ["past_exam", "official_practice", "external_practice"].includes(q.origin)
+    ) {
+      // Re-extraction may include/omit a section heading in the shared passage.
+      // A unique literal stem on the same stored source segment still denotes
+      // the same printed question. Ambiguous repeated stems keep the existing
+      // full-content fingerprint path; never merge by '(a)' alone.
+      const normalize = (value: string) => value.replace(/\s+/gu, " ").trim();
+      const stem = normalize(q.stem);
+      const segmentId = q.sourceMatch.questionEvidence.segmentId;
+      const original = normalize(this.store.get("segments", segmentId).text);
+      const position = original.indexOf(stem);
+      if (position >= 0 && original.indexOf(stem, position + 1) < 0) {
+        duplicate = this.store
+          .all(
+            "SELECT q.id,r.data FROM questions q JOIN question_revisions r ON r.id=q.current_revision WHERE q.goal_id=? AND q.archived=0 AND json_extract(r.data,'$.scopeId')=? AND json_extract(r.data,'$.sourceMatch.questionEvidence.segmentId')=?",
+            q.goalId,
+            q.scopeId,
+            segmentId,
+          )
+          .find((row) => {
+            const old = decode<Question>(row.data);
+            return (
+              old.type === q.type &&
+              old.origin === q.origin &&
+              normalize(old.stem) === stem &&
+              old.sourceMatch?.questionReference ===
+                q.sourceMatch!.questionReference
+            );
+          });
+      }
+    }
     if (duplicate && !options.questionId) {
       const existing = this.readQuestion(duplicate.id);
       for (const e of q.evidence)

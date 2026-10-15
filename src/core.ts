@@ -149,16 +149,21 @@ export const questionInput = z
       bad("단일 선택 정답은 하나여야 합니다.");
     if (q.type === "multiple" && q.answer.length < 1)
       bad("복수 선택 정답이 필요합니다.");
-    if (
-      q.type === "short" &&
-      (!q.modelAnswer ||
-        !q.rubric.length ||
-        q.choices.length ||
-        q.answer.length ||
-        new Set(q.rubric.map((r) => r.id)).size !== q.rubric.length ||
-        Math.abs(q.rubric.reduce((s, r) => s + r.points, 0) - q.points) > 1e-8)
-    )
-      bad("주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다.");
+    if (q.type === "short") {
+      if (!q.modelAnswer) bad("주관식 modelAnswer에 모범답안이 필요합니다.");
+      if (!q.rubric.length) bad("주관식 rubric에 채점 기준이 필요합니다.");
+      if (q.choices.length || q.answer.length)
+        bad(
+          "주관식 choices와 answer는 빈 배열이어야 합니다. 정답은 modelAnswer에 작성하세요.",
+        );
+      if (new Set(q.rubric.map((r) => r.id)).size !== q.rubric.length)
+        bad("주관식 rubric의 기준 ID가 중복됩니다.");
+      const sum = q.rubric.reduce((s, r) => s + r.points, 0);
+      if (Math.abs(sum - q.points) > 1e-8)
+        bad(
+          `주관식 rubric.points 합계(${sum})가 문항 points(${q.points})와 다릅니다.`,
+        );
+    }
     if (q.origin === "past_exam" && !q.pastExamEvidence)
       bad("실제 기출 근거가 필요합니다.");
     if (q.origin === "ai_variant" && !q.parentId)

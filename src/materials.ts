@@ -13,6 +13,29 @@ export type Material = {
   locator: any;
 };
 
+// Edition/copyright pages may be at the end, not just the front. Context is
+// evidence for document identity, never a substitute for a question batch.
+export function documentEdges(
+  materials: Material[],
+  maxSources = 5,
+): Material[] {
+  const grouped = new Map<string, Material[]>();
+  for (const material of materials) {
+    if (!grouped.has(material.sourceId)) {
+      if (grouped.size >= maxSources) continue;
+      grouped.set(material.sourceId, []);
+    }
+    grouped.get(material.sourceId)!.push(material);
+  }
+  return [
+    ...new Map(
+      [...grouped.values()]
+        .flatMap((group) => [group[0]!, group.at(-1)!])
+        .map((m) => [m.segmentId, m]),
+    ).values(),
+  ];
+}
+
 const words = (value: string) => [
   ...new Set(
     value
@@ -82,7 +105,8 @@ export function latestMaterials(catalog: Catalog, goalId: string): Material[] {
     )
     .map((row) => {
       const source = decode(row.source_data),
-        revision = decode(row.revision_data);
+        revision = decode(row.revision_data),
+        { boxes: _boxes, ...locator } = decode<any>(row.locator);
       return {
         segmentId: row.id,
         sourceId: row.source_id,
@@ -91,7 +115,9 @@ export function latestMaterials(catalog: Catalog, goalId: string): Material[] {
         kind: source.kind,
         url: revision.url ?? source.url ?? null,
         text: row.text,
-        locator: decode(row.locator),
+        // Glyph coordinates are retained in storage for source inspection.
+        // They are not visual input and can dwarf the text in AI requests.
+        locator,
       };
     });
 }
@@ -113,6 +139,29 @@ export function validateSuppliedEvidence(
       "이번 요청에 제공하지 않은 구간이거나 원문과 다른 인용입니다.",
     );
   }
+}
+
+// sourceMatch already carries model-supplied citations. Assemble their storage
+// index locally instead of requiring the model to copy identical quotes twice.
+// Validation still checks every assembled quote against the supplied source.
+export function withExtractionEvidence(q: Question): Question {
+  if (!q.sourceMatch) return q;
+  const evidence = [
+    ...new Map(
+      [
+        ...q.evidence,
+        q.sourceMatch.questionEvidence,
+        q.sourceMatch.answerEvidence,
+        ...q.sourceMatch.editionEvidence,
+      ].map((e) => [JSON.stringify([e.segmentId, e.quote]), e]),
+    ).values(),
+  ];
+  requireThat(
+    evidence.length <= 30,
+    "EVIDENCE_LIMIT",
+    "문항의 근거는 최대 30개입니다.",
+  );
+  return { ...q, evidence };
 }
 
 export function validateExtraction(

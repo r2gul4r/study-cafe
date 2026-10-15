@@ -2,6 +2,8 @@ import { z } from "zod";
 import { containsVerbatimQuote } from "./evidence.js";
 import {
   latestMaterials,
+  documentEdges,
+  withExtractionEvidence,
   selectMaterials,
   validateExtraction,
   validateSuppliedEvidence,
@@ -106,7 +108,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 5,
+          promptVersion: 9,
           startedAt: started,
         }),
         now(),
@@ -121,7 +123,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 5,
+            promptVersion: 9,
             startedAt: started,
           }),
           now(),
@@ -468,17 +470,21 @@ export function registerWorkflows(
     );
     const created: string[] = [];
     const unresolved: { reference: string; reason: string }[] = [];
-    // Overlap batches so a question split across adjacent chunks can be read.
-    for (let offset = 0; offset < relevant.length; offset += 2) {
-      const batch = relevant.slice(offset, offset + 3);
-      const body = offset ? [relevant[0]!, ...batch] : batch;
-      const answerHeaders = answerSegments
-        .filter(
-          (m, index) =>
-            answerSegments.findIndex((v) => v.sourceId === m.sourceId) ===
-            index,
-        )
-        .slice(0, 5);
+    const sourceContext = documentEdges(relevant);
+    // Extract one segment at a time: multi-page PDF batches can require very
+    // large structured answers. Neighbours preserve continuations/context.
+    for (let offset = 0; offset < relevant.length; offset++) {
+      const batch = relevant.slice(offset, offset + 1);
+      const adjacentSegments = relevant
+        .slice(Math.max(0, offset - 1), offset + 2)
+        .filter((m) => !batch.includes(m));
+      const body = relevant.filter(
+        (m) =>
+          batch.includes(m) ||
+          adjacentSegments.includes(m) ||
+          sourceContext.includes(m),
+      );
+      const answerHeaders = documentEdges(answerSegments);
       const selectedAnswers = [
         ...new Map(
           [
@@ -488,71 +494,141 @@ export function registerWorkflows(
               batch.map((m) => m.text).join("\n"),
               { maxSegments: 7, maxChars: 56_000 },
             ),
+            // Short answer keys often contain only numbers and letters, not
+            // the vocabulary of the question. Fill the remaining bounded
+            // context with whole segments instead of dropping those keys.
+            ...answerSegments,
           ].map((m) => [m.segmentId, m]),
         ).values(),
-      ];
-      const result = await ctx.step(
-        `extract:${latest}:${offset}`,
-        () =>
-          ask(
-            ctx,
-            "extract_existing_questions",
-            {
-              goal: goalAtScope(src.goalId, scope.id),
-              source: src,
-              scope,
-              segments: batch,
-              sourceHeader: relevant[0],
-              answerSegments: selectedAnswers,
-              shortAnswerPolicy,
-              instruction:
-                "Extract only existing complete questions from segments, not new ones or questions appearing only in sourceHeader. Keep exact stem, choices and passage wording. sourceMatch is required: use the identical printed questionReference/answerReference, cite questionEvidence and answerEvidence with their numbers and original answer. If the answer comes from a separate document, edition must be a common verbatim edition/session identifier and editionEvidence must quote it from BOTH documents. Include all match citations in evidence. Never infer a matching edition from a shared website or URL alone. For answers printed with the question, edition may be null and editionEvidence=[]. Missing or ambiguous answers, edition, passages or assets go in unresolved. Use source kind for origin; user_material and reference map to external_practice only when actual questions exist. Keep linked passage groups together. Never invent unavailable question text.",
-            },
-            z
-              .object({
-                questions: z.array(questionInput).max(20),
-                unresolved: z.array(
+      ].slice(0, 12);
+      const processed = new Map<
+        string,
+        { reference: string; stem?: string; reason?: string }
+      >();
+      for (let part = 0; part < 20; part++) {
+        const result = await ctx.step(
+          `extract:page:${latest}:${offset}:${part}`,
+          async () => {
+            let previousFailure: string | null = null;
+            for (let attempt = 0; attempt < 2; attempt++) {
+              try {
+                return await ask(
+                  ctx,
+                  "extract_existing_questions",
+                  {
+                    goal: goalAtScope(src.goalId, scope.id),
+                    source: src,
+                    scope,
+                    segments: batch,
+                    adjacentSegments,
+                    sourceHeader: relevant[0],
+                    sourceContext,
+                    answerSegments: selectedAnswers,
+                    previousFailure,
+                    processed: [...processed.values()],
+                    pagePolicy:
+                      "Return at most TWO new questions in this response. processed lists questions or unresolved items already handled for this segment; do not repeat them. Set hasMore=true only if additional unprocessed questions remain in segments. Do not report remaining extractable questions as unresolved merely because of this response limit: they will be requested next. Use the shortest exact quotations that still establish the parent problem, printed marker and answer. Do not quote whole pages when a shorter complete passage suffices.",
+                    evidencePolicy:
+                      "Put question, answer and edition citations in sourceMatch. The server assembles these into evidence automatically after exact-source validation. evidence only needs additional support such as a parent problem or shared passage; do not repeat sourceMatch citations there. Never invent or paraphrase any quote.",
+                    shortAnswerPolicy,
+                    referencePolicy:
+                      "questionReference and answerReference must each be a single literal printed marker that occurs inside their respective quote. Do not synthesize composite labels such as 'Problem 2. (a)' if the parent number and subpart are printed separately. Use the actual subpart marker, e.g. '(a)', and also include the parent problem heading and shared passage in evidence so the independent reviewer can disambiguate repeated subpart labels. answerEvidence must include that printed marker AND its answer, not just the solution formula. Keep subquestions separate when a page break or header interrupts their text; preserve their shared passage and groupId. Do not rewrite malformed source math or fill missing assets from the solutions.",
+                    wordingPolicy:
+                      "Each stem, passage and choice must be one contiguous excerpt of the supplied original question text after whitespace normalization only. Retain printed subpart labels and symbols; do not join separated excerpts, translate, paraphrase, change Unicode math symbols or convert formulas into LaTeX. Include all necessary shared context in passage. If the extracted text has lost essential math/table layout or a required figure, report unresolved instead of silently reconstructing it from the answer sheet or your own knowledge.",
+                    instruction:
+                      "Extract only existing complete questions anchored in segments, not new ones or questions appearing only in sourceHeader/sourceContext/adjacentSegments. adjacentSegments supply shared passages or continuations; the questionEvidence anchor must be in segments. sourceContext supplies the document's front and back matter for edition evidence; it is not extra question content. Keep exact stem, choices and passage wording. For short questions choices=[] and answer=[]; provide a nonempty modelAnswer and unique rubric IDs with positive points whose sum equals the question points. Do not infer extra scoring requirements from worked solutions. Fix previousFailure when supplied. sourceMatch is required: use the identical printed questionReference/answerReference, cite questionEvidence and answerEvidence with their numbers and original answer. If the answer comes from a separate document, edition must be a common verbatim edition/session identifier and editionEvidence must quote it from BOTH documents, including sourceContext when needed. All match citations must be exact; the server adds them to evidence. Never infer a matching edition from a shared website or URL alone. For answers printed with the question, edition may be null and editionEvidence=[]. Missing or ambiguous answers, edition, passages or assets go in unresolved. Use source kind for origin; user_material and reference map to external_practice only when actual questions exist. Keep linked passage groups together. Never invent unavailable question text.",
+                  },
                   z
-                    .object({ reference: z.string(), reason: z.string() })
+                    .object({
+                      questions: z.array(questionInput).max(2),
+                      hasMore: z.boolean().default(false),
+                      unresolved: z.array(
+                        z
+                          .object({ reference: z.string(), reason: z.string() })
+                          .strict(),
+                      ),
+                    })
                     .strict(),
-                ),
-              })
-              .strict(),
-          ),
-        (output) => {
-          const ids: string[] = [];
-          const issues = [...output.unresolved];
-          for (const q of output.questions) {
-            try {
-              requireThat(
-                q.goalId === src.goalId && q.scopeId === scope.id,
-                "AGENT_SCOPE",
-                "추출 결과 범위가 다릅니다.",
-              );
-              validateExtraction(q, src, body, selectedAnswers);
-              requireThat(
-                batch.some(
-                  (m) =>
-                    m.segmentId === q.sourceMatch!.questionEvidence.segmentId,
-                ),
-                "SOURCE_BATCH",
-                "이번 원문 구간의 문항이 아닙니다.",
-              );
-              ids.push(catalog.createQuestion(q).id);
-            } catch (error) {
-              if (!(error instanceof Fault)) throw error;
-              issues.push({
-                reference:
-                  q.sourceMatch?.questionReference ?? q.stem.slice(0, 100),
-                reason: error.message,
-              });
+                );
+              } catch (error) {
+                ctx.signal.throwIfAborted();
+                if (
+                  !(error instanceof Fault) ||
+                  error.code !== "AGENT_OUTPUT_INVALID" ||
+                  attempt === 1
+                )
+                  throw error;
+                previousFailure = error.message.slice(0, 4000);
+              }
             }
-          }
-          return { ids, unresolved: issues };
-        },
-      );
-      created.push(...result.ids);
-      unresolved.push(...result.unresolved);
+            throw new Error("Unreachable extraction retry");
+          },
+          (output) => {
+            const ids: string[] = [];
+            const issues = [...output.unresolved];
+            for (const returned of output.questions) {
+              let q = returned;
+              try {
+                q = withExtractionEvidence(q);
+                requireThat(
+                  q.goalId === src.goalId && q.scopeId === scope.id,
+                  "AGENT_SCOPE",
+                  "추출 결과 범위가 다릅니다.",
+                );
+                validateExtraction(q, src, body, selectedAnswers);
+                requireThat(
+                  batch.some(
+                    (m) =>
+                      m.segmentId === q.sourceMatch!.questionEvidence.segmentId,
+                  ),
+                  "SOURCE_BATCH",
+                  "이번 원문 구간의 문항이 아닙니다.",
+                );
+                ids.push(catalog.createQuestion(q).id);
+              } catch (error) {
+                if (!(error instanceof Fault)) throw error;
+                issues.push({
+                  reference:
+                    q.sourceMatch?.questionReference ?? q.stem.slice(0, 100),
+                  reason: error.message,
+                });
+              }
+            }
+            return {
+              ids,
+              unresolved: issues,
+              hasMore: output.hasMore,
+              processed: [
+                ...output.questions.map((q) => ({
+                  reference: q.sourceMatch?.questionReference ?? "",
+                  stem: q.stem,
+                })),
+                ...output.unresolved.map((issue) => ({
+                  reference: issue.reference,
+                  reason: issue.reason,
+                })),
+              ],
+            };
+          },
+        );
+        created.push(...result.ids);
+        unresolved.push(...result.unresolved);
+        const before = processed.size;
+        for (const item of result.processed)
+          processed.set(
+            JSON.stringify([item.reference, "stem" in item ? item.stem : null]),
+            item,
+          );
+        if (!result.hasMore) break;
+        if (processed.size === before || part === 19) {
+          unresolved.push({
+            reference: `segment:${batch[0]!.segmentId}`,
+            reason:
+              "문항 추출의 추가 응답이 진전되지 않거나 구간 처리 한도에 도달했습니다. 남은 문항을 확인하세요.",
+          });
+          break;
+        }
+      }
     }
     for (const qid of new Set(created)) {
       const q = catalog.readQuestion(qid);

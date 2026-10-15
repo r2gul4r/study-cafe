@@ -513,20 +513,25 @@ test("extraction isolates rejected candidates and keeps uncertain answer mapping
           },
         };
       };
+      const candidates = [
+        make(1),
+        { ...make(2), answer: ["b"] },
+        {
+          ...make(3),
+          choices: [
+            { id: "a", text: "가운데 값" },
+            { id: "b", text: "원문에 없는 보기" },
+          ],
+        },
+        { ...make(4), sourceMatch: null },
+      ];
+      const continuation = input.processed.length > 0;
       return schema.parse({
-        questions: [
-          make(1),
-          { ...make(2), answer: ["b"] },
-          {
-            ...make(3),
-            choices: [
-              { id: "a", text: "가운데 값" },
-              { id: "b", text: "원문에 없는 보기" },
-            ],
-          },
-          { ...make(4), sourceMatch: null },
-        ],
-        unresolved: [{ reference: "5번", reason: "정답 없음" }],
+        questions: continuation ? candidates.slice(2) : candidates.slice(0, 2),
+        hasMore: !continuation,
+        unresolved: continuation
+          ? [{ reference: "5번", reason: "정답 없음" }]
+          : [],
       });
     }
     assert.equal(role, "verify_question");

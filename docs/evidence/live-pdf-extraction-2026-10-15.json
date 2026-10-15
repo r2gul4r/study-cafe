@@ -1,0 +1,2813 @@
+{
+  "date": "2026-10-15",
+  "baselineCommit": "d95bbf88f6cce3f0817bc4b79422eab76037ce12",
+  "workflow": "Verified URL import -> actual PDF text extraction -> actual Codex existing-question extraction -> independent Codex review -> local structural audit",
+  "account": "Existing ChatGPT-managed Codex login, no paid API fallback",
+  "model": "existing configuration, no override",
+  "effort": "medium",
+  "sourceAttribution": {
+    "authors": ["Jeremy Orloff", "Jennifer French Kamrin"],
+    "publisher": "MIT OpenCourseWare",
+    "license": "CC BY-NC-SA 4.0",
+    "licenseUrl": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "examListing": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/pages/exams/"
+  },
+  "sourcePdfMetadata": [
+    {
+      "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01.pdf",
+      "pdfSha256": "a613da7596bc236cc996826a4c0034c432643cb6a02ba3077c28a92d27d511ab",
+      "pdfBytes": 95162,
+      "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    },
+    {
+      "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01_sol.pdf",
+      "pdfSha256": "3d387d65226c3db6216671649216190e92a37dcd9312a2ba8179c4cb96d6c053",
+      "pdfBytes": 114615,
+      "pages": [1, 2, 3, 4, 5, 6]
+    }
+  ],
+  "startedAt": "2026-10-14T23:57:17.017Z",
+  "callsStarted": 45,
+  "recordedSessionCallCounters": 44,
+  "counterNote": "One operator-interrupted attempt was visible in process output but ended before the old runner persisted its counter. It is included separately in callsStarted; its final outcome and duration are unknown.",
+  "callsWithSavedOutcome": 44,
+  "successfulStructuredResponses": 37,
+  "failedCalls": 7,
+  "interruptedWithoutOutcome": 1,
+  "savedCallElapsedMs": 2564407,
+  "calls": [
+    {
+      "number": 1,
+      "role": "extract_existing_questions",
+      "session": 1,
+      "startedAt": "2026-10-14T23:57:32.899Z",
+      "elapsedMs": 26496,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1(a)",
+          "reason": "문제 segment f0b1718f-dfb7-4253-8286-3042d89148e2에 필수 PDF 곡선 그림이 없고 텍스트 좌표만 있습니다. 해설 segment d0563a78-1475-4e33-9c42-a6571eb49716의 정답은 “Solution:   𝑋 .(Variance   measures   the   spread   away   from   the   mean.)”이지만, 그림 자산 및 양쪽 문서의 공통 시행 식별자 근거가 확인되지 않아 추출을 보류합니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1(b)",
+          "reason": "문제 segment f0b1718f-dfb7-4253-8286-3042d89148e2와 해설 segment d0563a78-1475-4e33-9c42-a6571eb49716에서 문항 및 정답 연결은 확인됩니다. 그러나 문제 문서의 제공 본문에는 시행 연도·학기가 없습니다. 해설의 segment 3099d257-fbc9-411b-b42f-ff102765c2da에는 “Spring   2022”가 있으나 문제 문서에서 대응 인용을 확보할 수 없어 필수 editionEvidence를 구성하지 못했습니다. 제목·URL만으로 동일 시행을 추정하지 않았습니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 2(a), Problem 2(b)",
+          "reason": "문제 segment bc814848-293b-4556-9335-9799c932cb81과 해설 segments d0563a78-1475-4e33-9c42-a6571eb49716, 78159ae1-361d-4298-a53f-8912d10e397d에 문항과 대응 풀이가 있습니다. 그러나 문제 문서 본문에서 해설 문서의 “Spring   2022”와 대응하는 시행 식별자 인용을 확보할 수 없습니다. 별도 문서 정답 연결에 필요한 양쪽 editionEvidence가 없어 추출을 보류합니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 0",
+          "reason": "“Problem   0.   (5   pts)   Be   sure   to   attach   your   cheat   sheet   to   your   test.”는 치트시트 제출 지시이므로 확률·통계 학습 문항으로 추출하지 않았습니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problems 3–6",
+          "reason": "제공된 문제 segments는 PDF 1–3쪽뿐입니다. 해설에 등장하는 문제를 문제 원문 대신 사용하지 않았으며, 나머지 문제의 추출에는 해당 문제 segments가 필요합니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 2,
+      "role": "extract_existing_questions",
+      "session": 1,
+      "startedAt": "2026-10-14T23:57:59.414Z",
+      "elapsedMs": 19577,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 2.",
+          "reason": "문제 원문은 bc814848-293b-4556-9335-9799c932cb81, 해답은 d0563a78-1475-4e33-9c42-a6571eb49716 및 78159ae1-361d-4298-a53f-8912d10e397d에 있으나, 문제 문서에서 판본·학기 식별자를 확인할 인용 근거가 없습니다. 해답 문서의 3099d257-fbc9-411b-b42f-ff102765c2da에는 'Spring   2022'가 있지만 문제 문서에서는 확인되지 않습니다. 제목·URL만으로 동일 판본을 추정할 수 없어 정답 연결을 보류합니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 3.",
+          "reason": "문제 원문은 04616279-3942-4b5a-bf9f-e8ee172255bf, 해답은 78159ae1-361d-4298-a53f-8912d10e397d 및 d42fc6af-5881-41a1-ae56-f552c874d81e에 있습니다. 그러나 별도 문제·해답 문서 양쪽에서 공통 판본·학기 식별자를 인용할 수 없습니다. 'Spring   2022'는 제공된 해답 문서에서만 확인되므로 정답 연결을 보류합니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 4.",
+          "reason": "문제 원문은 ea98287e-70b5-48a3-a26c-f141ee7b1678, 해답은 d42fc6af-5881-41a1-ae56-f552c874d81e에 있습니다. 그러나 별도 문제·해답 문서 양쪽에서 공통 판본·학기 식별자를 인용할 수 없습니다. 'Spring   2022'는 제공된 해답 문서에서만 확인되므로 정답 연결을 보류합니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 3,
+      "role": "extract_existing_questions",
+      "session": 1,
+      "startedAt": "2026-10-14T23:58:19.008Z",
+      "elapsedMs": 17077,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 4",
+          "reason": "문제(ea98287e-70b5-48a3-a26c-f141ee7b1678)와 해설(d42fc6af-5881-41a1-ae56-f552c874d81e)의 문항 및 정답 0.125는 확인된다. 그러나 별도 문서 간 공통 판본·학기 식별자를 양쪽 원문에서 인용할 수 없다. 해설의 3099d257-fbc9-411b-b42f-ff102765c2da에는 'Spring   2022'가 있지만 제공된 문제 문서 세그먼트와 sourceHeader에는 없다. 제목·URL만으로 판본을 추정하지 않았다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(a)–(e)",
+          "reason": "문제의 공통 지문과 (a)–(c)는 e48ac646-2bb7-4958-ad8b-c54734123239, 이어지는 (d)–(e)는 73ffa777-6dd8-40d7-892f-c0572fa18816에서 확인된다. 대응 해설은 d42fc6af-5881-41a1-ae56-f552c874d81e 및 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 있다. 그러나 해설에 있는 'Spring   2022'를 문제 문서 원문에서도 확인할 근거가 제공되지 않아 필수 editionEvidence를 구성할 수 없다. 공통 지문 그룹 전체를 미해결로 유지했다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 4,
+      "role": "extract_existing_questions",
+      "session": 1,
+      "startedAt": "2026-10-14T23:58:36.101Z",
+      "elapsedMs": 21162,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(d) / 73ffa777-6dd8-40d7-892f-c0572fa18816",
+          "reason": "제공된 문제 세그먼트는 '(Problem   5   continued)'로 시작하며 공통 지문과 결합확률밀도 정의가 없습니다. 해설에 해당 내용이 있지만 문제 원문의 누락 지문으로 대신할 수 없습니다. 또한 문제 문서에서 공통 회차 식별자 'Spring   2022'를 인용할 근거가 없어 별도 해설 문서와의 edition 연결을 확정할 수 없습니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(e) / 73ffa777-6dd8-40d7-892f-c0572fa18816",
+          "reason": "Xeno와 Yolanda의 도착 시간 및 결합분포를 정의하는 문제 공통 지문이 제공되지 않았습니다. 해설 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 적분과 영역 설명은 있지만 누락된 문제 지문을 대신하지 않습니다. 문제 문서의 회차 인용 근거도 없어 두 문서의 edition 연결이 미확정입니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 6 / 91c2a1cd-98b3-4264-a652-0dfb63ecafbf",
+          "reason": "문제와 해설에 'Problem   6.   (10   pts)'가 있고, 해설 ffba984e-7215-4ac2-96f1-aa43ffe161d5의 답은 '≈ 𝑃 (𝑍   > 0.5)   = 1 − 𝑃 (𝑍   ≤ 0.5) ≈ 1 − 0.6915   = 0.3085'입니다. 그러나 'Spring   2022'는 해설 문서의 3099d257-fbc9-411b-b42f-ff102765c2da에서만 확인되며 문제 문서의 제공된 본문에는 없습니다. 제목·URL만으로 회차를 추정하지 않는 조건에 따라 추출을 보류합니다. 추가로 해설의 'Var (𝑆)   = 20 ⋅ 5 ⋅ 10 4   = 10 5'는 산술적으로 불일치하므로 원문 오류 확인이 필요합니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 5,
+      "role": "extract_existing_questions",
+      "session": 1,
+      "startedAt": "2026-10-14T23:58:57.278Z",
+      "elapsedMs": 11808,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "reason": "제공된 문제 segments에는 PDF 9쪽의 표준정규분포표(92c51066-2e0f-4922-a345-9d72e85078c7), 10쪽의 여분 용지(2c331f10-38e4-4562-9ae3-5b259e4932ad), 11쪽의 출처 안내(5920cec7-7541-4f6d-b494-1f8eec20b496)만 있으며 완전한 문제가 없습니다. 문제 본문이 있는 segments가 필요합니다. sourceHeader의 Problem 0과 answerSegments에만 있는 문제는 지시에 따라 추출하지 않았습니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 6,
+      "role": "extract_existing_questions",
+      "session": 1,
+      "startedAt": "2026-10-14T23:59:09.105Z",
+      "elapsedMs": 13437,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / 5920cec7-7541-4f6d-b494-1f8eec20b496",
+          "reason": "제공된 문제 segments에는 PDF 11쪽의 저작권·강좌 안내만 있고 완전한 문항이 없습니다. answerSegments의 문항을 문제 원문 대신 추출할 수 없으므로 문제 1–6의 본문 세그먼트가 필요합니다. 문제·정답의 번호와 원문 근거를 연결하는 sourceMatch도 현재 구성할 수 없습니다."
+        },
+        {
+          "reference": "b0f8cd41-a13a-44eb-b24d-e8541b546a31 / Problem 0",
+          "reason": "Problem 0은 sourceHeader에만 있으며 치트 시트 제출 안내입니다. sourceHeader에만 있는 문항은 추출하지 않는다는 조건에 따라 제외했습니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 7,
+      "role": "extract_existing_questions",
+      "session": 2,
+      "startedAt": "2026-10-15T00:00:11.857Z",
+      "elapsedMs": 85000,
+      "inputBytes": null,
+      "error": {
+        "code": "AGENT_OUTPUT_INVALID",
+        "message": "에이전트 결과가 요청한 스키마와 일치하지 않습니다: questions.0: 주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다.; questions.1: 주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다.; questions.2: 주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다."
+      },
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 8,
+      "role": "extract_existing_questions",
+      "session": 3,
+      "startedAt": "2026-10-15T00:02:40.242Z",
+      "elapsedMs": 85814,
+      "inputBytes": null,
+      "error": {
+        "code": "AGENT_OUTPUT_INVALID",
+        "message": "에이전트 결과가 요청한 스키마와 일치하지 않습니다: questions.0: 주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다."
+      },
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 9,
+      "role": "extract_existing_questions",
+      "session": 3,
+      "startedAt": "2026-10-15T00:04:06.076Z",
+      "elapsedMs": 85216,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 3,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6: Problem 0",
+          "reason": "치트시트 첨부에 대한 행정적 지시이므로 확률·통계 학습 문항에서 제외했다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6: Problem 1. (a)",
+          "reason": "f0b1718f-dfb7-4253-8286-3042d89148e2에는 그래프의 라벨만 있고 곡선이나 연결된 그림 자산이 없다. 공식 해설의 정답 𝑋는 확인되지만 필수 그래프를 복원할 수 없어 완전한 문항으로 추출하지 않았다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 10,
+      "role": "extract_existing_questions",
+      "session": 3,
+      "startedAt": "2026-10-15T00:05:31.311Z",
+      "elapsedMs": 156128,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 7,
+      "hasMore": null,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 11,
+      "role": "extract_existing_questions",
+      "session": 3,
+      "startedAt": "2026-10-15T00:08:07.457Z",
+      "elapsedMs": 142089,
+      "inputBytes": null,
+      "error": null,
+      "questionsReturned": 6,
+      "hasMore": null,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 12,
+      "role": "extract_existing_questions",
+      "session": 3,
+      "startedAt": "2026-10-15T00:10:29.563Z",
+      "elapsedMs": 240114,
+      "inputBytes": null,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 13,
+      "role": "extract_existing_questions",
+      "session": 5,
+      "startedAt": "2026-10-15T00:17:36.626Z",
+      "elapsedMs": 81766,
+      "inputBytes": 28191,
+      "error": null,
+      "questionsReturned": 2,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "Problem 0.",
+          "reason": "치트시트 첨부를 요구하는 행정 항목으로, 정답과 채점 가능한 학습 문항으로 추출하지 않았다."
+        },
+        {
+          "reference": "Problem 1. (a)",
+          "reason": "f0b1718f-dfb7-4253-8286-3042d89148e2에 분산 비교에 필수적인 확률밀도 그래프가 없고 사용 가능한 그림 자산도 제공되지 않았다. 해설의 정답 𝑋만으로 그림을 복원하지 않았다."
+        },
+        {
+          "reference": "Problem 1. (b)",
+          "reason": "문항과 공식 답은 확인되지만, (i)와 (ii)의 개별 배점은 없고 합계 6점만 제공되어 있다. 별도 출력별 채점 기준과 근거 없는 배점 배분 금지 조건을 동시에 충족할 수 없어 추출을 보류했다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 14,
+      "role": "extract_existing_questions",
+      "session": 5,
+      "startedAt": "2026-10-15T00:18:58.412Z",
+      "elapsedMs": 240103,
+      "inputBytes": 27957,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 15,
+      "role": "extract_existing_questions",
+      "session": 6,
+      "startedAt": "2026-10-15T00:24:30.345Z",
+      "elapsedMs": 11204,
+      "inputBytes": 27137,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "b0f8cd41-a13a-44eb-b24d-e8541b546a31 — Problem 0.",
+          "reason": "대상 segments의 유일한 문항은 “Problem   0.   (5   pts)   Be   sure   to   attach   your   cheat   sheet   to   your   test.”로, 답안을 요구하는 학습 문제가 아니라 자료 첨부 지시입니다. 해설 문서도 동일한 지시만 반복하므로 모범답안과 채점 기준을 갖춘 문제로 추출하지 않았습니다. Problem 1은 adjacentSegments에만 있어 추출 대상에서 제외했습니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 16,
+      "role": "extract_existing_questions",
+      "session": 6,
+      "startedAt": "2026-10-15T00:24:41.569Z",
+      "elapsedMs": 40940,
+      "inputBytes": 28343,
+      "error": null,
+      "questionsReturned": 1,
+      "hasMore": null,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1 / (a)",
+          "reason": "필수 확률밀도함수 그림이 제공된 텍스트에서 누락되어 분포의 형태와 퍼짐을 확인할 수 없다. 해설에는 𝑋가 정답이라고 명시되어 있으나, 해설로 누락 그림을 재구성하지 않고 문항 추출을 보류한다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 17,
+      "role": "extract_existing_questions",
+      "session": 6,
+      "startedAt": "2026-10-15T00:25:22.535Z",
+      "elapsedMs": 69476,
+      "inputBytes": 28162,
+      "error": null,
+      "questionsReturned": 2,
+      "hasMore": null,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 18,
+      "role": "extract_existing_questions",
+      "session": 6,
+      "startedAt": "2026-10-15T00:26:32.032Z",
+      "elapsedMs": 240126,
+      "inputBytes": 28109,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 19,
+      "role": "extract_existing_questions",
+      "session": 7,
+      "startedAt": "2026-10-15T00:32:21.151Z",
+      "elapsedMs": 11968,
+      "inputBytes": 27693,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": false,
+      "unresolved": [
+        {
+          "reference": "Problem   0.",
+          "reason": "当前 segments 中仅有提交提示：“Problem   0.   (5   pts)   Be   sure   to   attach   your   cheat   sheet   to   your   test.” 이는 시험 보조자료 첨부 지시이며, 풀이할 학습 문항이나 채점 가능한 정답이 제공되지 않아 추출하지 않았습니다. Problem 1은 adjacentSegments에만 있어 이번 추출 대상이 아닙니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 20,
+      "role": "extract_existing_questions",
+      "session": 7,
+      "startedAt": "2026-10-15T00:32:33.139Z",
+      "elapsedMs": 240107,
+      "inputBytes": 28899,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 21,
+      "role": "extract_existing_questions",
+      "session": 8,
+      "startedAt": "2026-10-15T00:37:28.014Z",
+      "elapsedMs": 42271,
+      "inputBytes": 28899,
+      "error": null,
+      "questionsReturned": 1,
+      "hasMore": false,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1 / (a)",
+          "reason": "f0b1718f-dfb7-4253-8286-3042d89148e2에는 비교에 필수적인 세 확률밀도함수의 그림이 없고 함수 이름만 남아 있다. 해설의 정답 𝑋는 확인되지만, 그림을 해설에서 추정하거나 복원하지 않고 문항 추출을 보류한다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 22,
+      "role": "extract_existing_questions",
+      "session": 8,
+      "startedAt": "2026-10-15T00:38:10.317Z",
+      "elapsedMs": 55143,
+      "inputBytes": 28718,
+      "error": null,
+      "questionsReturned": 2,
+      "hasMore": false,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 23,
+      "role": "extract_existing_questions",
+      "session": 8,
+      "startedAt": "2026-10-15T00:39:05.484Z",
+      "elapsedMs": 52801,
+      "inputBytes": 28665,
+      "error": null,
+      "questionsReturned": 2,
+      "hasMore": true,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 24,
+      "role": "extract_existing_questions",
+      "session": 8,
+      "startedAt": "2026-10-15T00:39:58.314Z",
+      "elapsedMs": 240126,
+      "inputBytes": 28887,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 25,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:44:45.749Z",
+      "elapsedMs": 35288,
+      "inputBytes": 28887,
+      "error": null,
+      "questionsReturned": 2,
+      "hasMore": false,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 26,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:45:21.066Z",
+      "elapsedMs": 36803,
+      "inputBytes": 28762,
+      "error": null,
+      "questionsReturned": 1,
+      "hasMore": false,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 27,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:45:57.897Z",
+      "elapsedMs": 58556,
+      "inputBytes": 29003,
+      "error": null,
+      "questionsReturned": 2,
+      "hasMore": true,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 28,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:46:56.480Z",
+      "elapsedMs": 10492,
+      "inputBytes": 29127,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": false,
+      "unresolved": [
+        {
+          "reference": "(c)",
+          "reason": "문항은 e48ac646-2bb7-4958-ad8b-c54734123239에 있으나, 해설의 인쇄 표지 '(c)'는 d42fc6af-5881-41a1-ae56-f552c874d81e에, 실제 답은 다음 페이지인 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 분리되어 있습니다. 표지와 답을 모두 포함하는 단일 세그먼트의 정확한 answerEvidence 인용을 제공할 수 없어 정답 연결을 미해결로 보고합니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 29,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:47:06.998Z",
+      "elapsedMs": 51384,
+      "inputBytes": 29421,
+      "error": null,
+      "questionsReturned": 1,
+      "hasMore": false,
+      "unresolved": [
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / 73ffa777-6dd8-40d7-892f-c0572fa18816 / (e)",
+          "reason": "문제의 적분 표기에서 영역 첨자 𝑅이 분리되어 추출되었다(\"form   ∬   ℎ(𝑥,   𝑦)   𝑑𝑥   𝑑𝑦\" 다음 줄들에 \"𝑅\"이 위치). 공백 정규화만으로 원래 수식 배치를 보존할 수 없어, 수식 재구성을 금지한 정책에 따라 미해결로 남긴다. 원문 수식 배치 확인이 필요하다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 30,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:47:58.407Z",
+      "elapsedMs": 9480,
+      "inputBytes": 31465,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": false,
+      "unresolved": [
+        {
+          "reference": "91c2a1cd-98b3-4264-a652-0dfb63ecafbf — Problem 6.",
+          "reason": "문제의 감마분포 pdf에서 분수·지수 배치가 손실되어 원문 수식을 확정할 수 없습니다. 정답 자료(ffba984e-7215-4ac2-96f1-aa43ffe161d5)에도 합의 분산이 ‘20 ⋅ 5 ⋅ 10 4 = 10 5’로 추출되어 표준편차 ‘10 3’과 불일치합니다. 원본 PDF의 수식 배치를 확인해야 하며, 정답지나 계산으로 문제 수식을 재구성하지 않았습니다."
+        }
+      ],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 31,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:48:07.910Z",
+      "elapsedMs": 5208,
+      "inputBytes": 30570,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": false,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 32,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:48:13.139Z",
+      "elapsedMs": 4202,
+      "inputBytes": 29768,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": false,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 33,
+      "role": "extract_existing_questions",
+      "session": 9,
+      "startedAt": "2026-10-15T00:48:17.365Z",
+      "elapsedMs": 4632,
+      "inputBytes": 26421,
+      "error": null,
+      "questionsReturned": 0,
+      "hasMore": false,
+      "unresolved": [],
+      "questionId": null,
+      "review": null
+    },
+    {
+      "number": 34,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:48:22.026Z",
+      "elapsedMs": 11266,
+      "inputBytes": 13469,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "f69750c6-a9d2-4568-a160-33dcc5e1c474",
+      "review": {
+        "usable": true,
+        "reason": "독립 계산 결과 합집합 확률은 0.7+0.3−0.25=0.75, 조건부 확률은 0.25/0.3=5/6으로 모범답안과 일치한다. 문제 출처 f0b1718f-dfb7-4253-8286-3042d89148e2와 해설 출처 d0563a78-1475-4e33-9c42-a6571eb49716의 Problem 1(b)는 조건과 요구 항목이 일치하며 인용문도 제공 자료와 일치한다. 두 표지 자료의 Spring   2022 표기도 일치한다. 해설의 분수 줄바꿈은 있으나 문제 조건과 독립 계산으로 정답을 명확히 검증할 수 있다. 이 소문항에는 그림이나 추가 자산이 필요 없다. 총 6점은 출처가 뒷받침하며, 3점씩의 세부 배점은 공식 배점이 아님을 명시했다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "p1b_i",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(i) Compute 𝑃 (𝐴 ∪ 𝐵)",
+              "reason": "합집합 확률의 계산값을 요구하므로 0.75 또는 동치인 값을 평가하는 기준은 요청에 부합한다."
+            },
+            {
+              "id": "p1b_ii",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(ii) Compute 𝑃 (𝐴|𝐵) .",
+              "reason": "조건부 확률의 계산값을 요구하므로 0.25/0.3 또는 동치인 값을 평가하는 기준은 요청에 부합한다."
+            }
+          ],
+          "explanation": "두 기준 모두 명시적으로 요청된 계산 결과만 평가하며, 요구하지 않은 유도나 설명을 필수로 부과하지 않는다."
+        }
+      }
+    },
+    {
+      "number": 35,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:48:33.315Z",
+      "elapsedMs": 10260,
+      "inputBytes": 14655,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "f17a2c01-3a88-480c-8a61-06122f096fa0",
+      "review": {
+        "usable": true,
+        "reason": "독립 계산 결과 C(10, 2) × C(8, 5) × (5 × 4) × 52⁵ × 10³으로 모범답안과 일치한다. 문제 출처 bc814848-293b-4556-9335-9799c932cb81과 해설 출처 d0563a78-1475-4e33-9c42-a6571eb49716의 Problem 2(a), 지문 및 배점이 일치하며, 제공된 판본 근거는 Spring 2022이다. 인용문은 제공 자료와 일치한다. 마지막 수식의 조합 표기는 추출 순서가 뒤바뀌었지만 단계별 해설과 독립 계산으로 정답을 확인할 수 있다. 필요한 누락 자산은 없다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "p2a-count",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(a) How many passwords are there? (No need to simplify your answer.)",
+              "reason": "비밀번호 개수를 요구하며 단순화는 불필요하다고 명시한다. 기준은 올바른 개수와 동치식을 인정하고 풀이 설명을 요구하지 않으므로 요청에 부합한다."
+            }
+          ],
+          "explanation": "유일한 채점 기준은 지문 조건에 따른 개수만 평가하며 추가 요구사항을 부과하지 않는다."
+        }
+      }
+    },
+    {
+      "number": 36,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:48:43.603Z",
+      "elapsedMs": 10354,
+      "inputBytes": 14171,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "852ab85b-44e2-4475-a56f-338a2bc97c99",
+      "review": {
+        "usable": true,
+        "reason": "독립 계산으로 기호의 위치 쌍은 C(10,2)=45가지, 인접한 쌍은 9가지이므로 확률은 1/5이다. bc814848-293b-4556-9335-9799c932cb81의 Problem 2(b)와 78159ae1-361d-4298-a53f-8912d10e397d의 해설은 질문 문장이 일치하며, 인접 위치가 9개라는 설명도 정답을 지지한다. 인용문은 제공 자료와 일치하고 영어 조건도 보존되었다. Spring 2022 표기는 두 판본 근거에 있으며, 필요한 별도 그림이나 자산은 없다. 해설 수식의 추출 배치는 흐트러져 있지만 명시된 풀이와 독립 계산으로 정답을 확인할 수 있다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "p2b-probability",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "what is the probability that the two symbols are next to each other?",
+              "reason": "문항은 두 기호가 인접할 확률만 요구한다. 기준 역시 확률의 정확성만 평가하고 동치식을 인정하며 설명을 요구하지 않으므로 전체가 요청과 일치한다."
+            }
+          ],
+          "explanation": "5점 기준은 문항에서 요구한 확률값만 평가하며 추가 풀이 의무를 부과하지 않는다."
+        }
+      }
+    },
+    {
+      "number": 37,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:48:53.986Z",
+      "elapsedMs": 7984,
+      "inputBytes": 10429,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "46f87219-114d-4c0b-b5e4-25746b0641e8",
+      "review": {
+        "usable": true,
+        "reason": "독립 계산 결과 (5/8)(1/4)+(3/8)(1/6)=7/32로 모범답안과 일치한다. 제공 자료에서 문제 3(b)의 지문과 해설 연결, Spring 2022 표기 및 5점 배점이 일치하며 인용문도 해당 segmentId의 원문과 일치한다. 필수 그림이나 추가 자료 없이 풀 수 있다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "p3b-probability",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(b) What is the probability of rolling a 3?",
+              "reason": "눈 3이 나올 확률을 요구하므로 7/32 또는 동등한 값이나 식을 평가하는 기준은 요청에 부합한다. 요구하지 않은 풀이 설명을 의무화하지 않는다."
+            }
+          ],
+          "explanation": "유일한 채점 기준은 문항이 요구한 확률값만 평가하므로 정렬되어 있다."
+        }
+      }
+    },
+    {
+      "number": 38,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:49:01.996Z",
+      "elapsedMs": 9521,
+      "inputBytes": 10291,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "3b040526-9b72-4360-a001-267772d6c2d6",
+      "review": {
+        "usable": true,
+        "reason": "독립 계산으로 (5/8×1/4)/(5/8×1/4+3/8×1/6)=5/7을 확인했다. 문제 자료 04616279-3942-4b5a-bf9f-e8ee172255bf와 해설 자료 78159ae1-361d-4298-a53f-8912d10e397d의 Problem 3(c), 지문, 조건부 확률 및 정답이 일치한다. 인용문은 제공 자료에 존재하며, 두 판본 근거 모두 Spring   2022를 명시한다. 필요한 그림이나 누락된 자산은 없다. 검증 범위는 제공 자료이다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "p3c-answer",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(c) Compute 𝑃 (𝐷 = 4|𝑅 = 3) .",
+              "reason": "조건부 확률의 값을 계산하라는 요구에 대해 5/7 또는 동치인 값만 평가하므로 부합한다. 요구하지 않은 풀이 설명은 채점 조건에 포함하지 않는다."
+            }
+          ],
+          "explanation": "유일한 채점 기준은 문항에서 요구한 계산 결과만 평가한다."
+        }
+      }
+    },
+    {
+      "number": 39,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:49:11.544Z",
+      "elapsedMs": 9242,
+      "inputBytes": 10760,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "ec72d944-6540-4104-b252-e7f12d8e755d",
+      "review": {
+        "usable": true,
+        "reason": "제공 자료의 문제 3(d), 주사위 설정, Spring 2022 표기와 해설이 일치하며 인용문도 원문과 일치한다. 독립 계산으로 P(R=6,D=4)=0, P(R=6)P(D=4)=(1/16)(5/8)=5/128이므로 독립이 아니다. 정답과 설명이 타당하고 추가 그림이나 표 없이 풀 수 있다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "p3d-answer",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(d) Are 𝐷 and 𝑅 independent?",
+              "reason": "독립 여부를 묻는 요청에 대해 독립이 아니라고 답하는지만 평가한다. 요구되지 않은 풀이 또는 설명을 필수로 부과하지 않는다."
+            }
+          ],
+          "explanation": "채점 기준은 문항이 요구하는 독립 여부 판단과 일치한다."
+        }
+      }
+    },
+    {
+      "number": 40,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:49:20.813Z",
+      "elapsedMs": 9815,
+      "inputBytes": 12885,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "4551a8d6-7480-41f2-8f97-7a2332b3766a",
+      "review": {
+        "usable": true,
+        "reason": "문항과 해설의 Problem 4, 배점, 지문 및 Spring 2022 표기가 제공 자료와 일치한다. 인용문은 해당 segment에 존재한다. 해설 수식의 추출 순서는 일부 흐트러졌지만, 지문의 수치로 독립 계산한 0.014/(0.014+0.098)=0.125가 해설의 최종값과 일치하여 정답 연결은 명확하다. 필수 그림이나 누락된 자료 없이 풀이할 수 있다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "probability",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "What is the probability that a random person who tests positive has the disease?",
+              "reason": "문항이 요구하는 양성 판정자의 질병 보유 조건부 확률만 평가하며, 0.125 또는 동치인 값은 정확하다. 요구하지 않은 유도나 설명을 채점 조건으로 추가하지 않는다."
+            }
+          ],
+          "explanation": "단일 채점 기준은 문항의 확률값 요구와 완전히 부합한다."
+        }
+      }
+    },
+    {
+      "number": 41,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:49:30.652Z",
+      "elapsedMs": 11244,
+      "inputBytes": 11997,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "5465c389-dedd-4a23-9755-0b658d409cea",
+      "review": {
+        "usable": true,
+        "reason": "제공된 원문과 해설의 Problem 5(b), 지문, Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 자료에 존재하며 정답 연결이 명확하다. 영어 원문과 수식이 보존되어 있고 필요한 누락 자산은 없다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "independence",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(b) Are 𝑋 and 𝑌 independent?",
+              "reason": "독립 여부를 묻는 요청에 대해 독립이 아니라고 답하는지만 평가하며, 요청하지 않은 유도나 설명을 요구하지 않는다."
+            }
+          ],
+          "explanation": "독립적으로 계산하면 [0,1]에서 주변 pdf는 각각 5/4−x/2와 5/4−y/2이다. 두 함수의 곱은 결합 pdf 5/4−xy와 거의 모든 점에서 같지 않으므로 독립이 아니다. 모범답안과 해설은 타당하며, 배점 기준도 질문의 요구에 부합한다."
+        }
+      }
+    },
+    {
+      "number": 42,
+      "role": "verify_question",
+      "session": 9,
+      "startedAt": "2026-10-15T00:49:41.923Z",
+      "elapsedMs": 11885,
+      "inputBytes": 14469,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "51f68712-aebf-4e16-818c-4ad5a8159ef3",
+      "review": {
+        "usable": true,
+        "reason": "제공 자료에서 Problem 5(d)의 문항·해설·공통 지문과 Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 원문에 존재한다. 해설 수식의 줄 배치가 흐트러져 있으나, 명확한 지문의 결합밀도로 독립 계산하여 정답을 확인했다. 필요한 그림이나 누락 자산은 없다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "covariance",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(d) Compute the covariance Cov (𝑋, 𝑌 ) and correlation Cor (𝑋, 𝑌 ) .",
+              "reason": "명시적으로 요구한 공분산 결과를 평가한다. 독립 계산에서 E[XY]=29/144, E[X]=E[Y]=11/24이므로 공분산은 −5/576이다. 동치인 미정리 식의 허용도 문항 조건과 일치한다."
+            },
+            {
+              "id": "correlation",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(d) Compute the covariance Cov (𝑋, 𝑌 ) and correlation Cor (𝑋, 𝑌 ) .",
+              "reason": "명시적으로 요구한 상관계수 결과를 평가한다. 독립 계산에서 Var(X)=Var(Y)=47/576이므로 상관계수는 −5/47이다. 별도의 유도나 설명을 요구하지 않는다."
+            }
+          ],
+          "explanation": "두 기준 모두 문항의 요구에 부합한다. 총 5점은 원문의 배점과 일치하며, 각 2.5점 분할은 공식 채점표가 아닌 평가용으로 명시되어 있다."
+        }
+      }
+    },
+    {
+      "number": 43,
+      "role": "verify_question",
+      "session": 10,
+      "startedAt": "2026-10-15T00:51:48.935Z",
+      "elapsedMs": 15124,
+      "inputBytes": 12683,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "e118fe23-e8cc-4832-9e69-4b8a80a9f21a",
+      "review": {
+        "usable": true,
+        "reason": "제공 자료에서 Problem 3(a)의 지문·문항·해설 및 Spring 2022 표기가 일치하며, 인용문도 해당 segmentId의 원문과 일치한다. 독립 계산으로 결합확률과 주변확률을 확인했다. 필요한 그림이나 누락 자산은 없으며, 세부 배점은 공식 배점이 아닌 학습용으로 명시되어 있다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "p3a-joint",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(a) Make a joint probability table for 𝐷 and 𝑅 .",
+              "reason": "결합확률표를 명시적으로 요구한다. D=4에서는 (5/8)(1/4)=5/32, D=6에서는 (3/8)(1/6)=1/16이며, 4면체로 5와 6이 나올 확률은 0이므로 기준 전체가 요청에 부합한다."
+            },
+            {
+              "id": "p3a-marginal-d",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "Be sure to include the marginal probabilities for 𝐷 and 𝑅 .",
+              "reason": "D의 주변확률을 명시적으로 요구하며, 주사위 구성에 따른 5/8과 3/8을 평가하는 기준이다."
+            },
+            {
+              "id": "p3a-marginal-r",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "Be sure to include the marginal probabilities for 𝐷 and 𝑅 .",
+              "reason": "R의 주변확률을 명시적으로 요구한다. 결합확률을 합하면 1~4는 각각 7/32, 5~6은 각각 1/16이므로 기준이 요청에 부합한다."
+            }
+          ],
+          "explanation": "모든 기준은 요청된 결합확률표와 두 주변분포만 평가하며, 요청하지 않은 풀이 설명을 필수로 요구하지 않는다. 배점 합계는 원문 (a)의 10점과 일치한다."
+        }
+      }
+    },
+    {
+      "number": 44,
+      "role": "verify_question",
+      "session": 10,
+      "startedAt": "2026-10-15T00:52:04.149Z",
+      "elapsedMs": 11718,
+      "inputBytes": 12731,
+      "error": null,
+      "questionsReturned": null,
+      "hasMore": null,
+      "unresolved": null,
+      "questionId": "1c048fe3-9e3c-4f42-8147-a9870ff84a07",
+      "review": {
+        "usable": true,
+        "reason": "제공 자료에서 Problem 5(a)의 지문·문항·해설과 Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 원문과 일치하며, 영어 원문은 공백 정리 외에 의미 변경 없이 유지되었다. 필요한 그림이나 누락된 자산은 없다. 검증 범위는 제공 자료이다.",
+        "evidenceValid": true,
+        "answerValid": true,
+        "rubricCheck": {
+          "criteria": [
+            {
+              "id": "marginal-x",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(a) Find the two marginal pdfs.",
+              "reason": "두 주변 pdf를 구하라는 요청에는 X의 주변 pdf가 포함된다. 풀이 과정이나 추가 설명을 요구하지 않는 기준이다."
+            },
+            {
+              "id": "marginal-y",
+              "aligned": true,
+              "promptField": "stem",
+              "promptQuote": "(a) Find the two marginal pdfs.",
+              "reason": "두 주변 pdf를 구하라는 요청에는 Y의 주변 pdf가 포함된다. 문맥상 지지구간이 명확한 동치 표현을 인정하는 것도 요청에 부합한다."
+            }
+          ],
+          "explanation": "독립 계산으로 ∫₀¹(5/4−xy)dy=5/4−x/2, ∫₀¹(5/4−xy)dx=5/4−y/2이다. 각각 [0,1]에서 적용되고 밖에서는 0이므로 모범답안과 해설 segmentId d42fc6af-5881-41a1-ae56-f552c874d81e가 일치한다. 문항 segmentId e48ac646-2bb7-4958-ad8b-c54734123239의 동일한 지문과 (a) 요청으로 정답 연결도 확인된다. 각 2.5점은 공식 세부 배점이 아닌 평가용 분배로 명시되어 있다."
+        }
+      }
+    }
+  ],
+  "sessions": [
+    {
+      "startedAt": "2026-10-14T23:57:17.018Z",
+      "phase": "ingest",
+      "maxCalls": 30,
+      "calls": 0,
+      "passed": true,
+      "finishedAt": "2026-10-14T23:57:18.519Z"
+    },
+    {
+      "startedAt": "2026-10-14T23:57:32.263Z",
+      "phase": "extract",
+      "maxCalls": 30,
+      "calls": 6,
+      "result": {
+        "questionIds": [],
+        "count": 0,
+        "usable": 0,
+        "needsReview": 0,
+        "unresolved": [
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1(a)",
+            "reason": "문제 segment f0b1718f-dfb7-4253-8286-3042d89148e2에 필수 PDF 곡선 그림이 없고 텍스트 좌표만 있습니다. 해설 segment d0563a78-1475-4e33-9c42-a6571eb49716의 정답은 “Solution:   𝑋 .(Variance   measures   the   spread   away   from   the   mean.)”이지만, 그림 자산 및 양쪽 문서의 공통 시행 식별자 근거가 확인되지 않아 추출을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1(b)",
+            "reason": "문제 segment f0b1718f-dfb7-4253-8286-3042d89148e2와 해설 segment d0563a78-1475-4e33-9c42-a6571eb49716에서 문항 및 정답 연결은 확인됩니다. 그러나 문제 문서의 제공 본문에는 시행 연도·학기가 없습니다. 해설의 segment 3099d257-fbc9-411b-b42f-ff102765c2da에는 “Spring   2022”가 있으나 문제 문서에서 대응 인용을 확보할 수 없어 필수 editionEvidence를 구성하지 못했습니다. 제목·URL만으로 동일 시행을 추정하지 않았습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 2(a), Problem 2(b)",
+            "reason": "문제 segment bc814848-293b-4556-9335-9799c932cb81과 해설 segments d0563a78-1475-4e33-9c42-a6571eb49716, 78159ae1-361d-4298-a53f-8912d10e397d에 문항과 대응 풀이가 있습니다. 그러나 문제 문서 본문에서 해설 문서의 “Spring   2022”와 대응하는 시행 식별자 인용을 확보할 수 없습니다. 별도 문서 정답 연결에 필요한 양쪽 editionEvidence가 없어 추출을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 0",
+            "reason": "“Problem   0.   (5   pts)   Be   sure   to   attach   your   cheat   sheet   to   your   test.”는 치트시트 제출 지시이므로 확률·통계 학습 문항으로 추출하지 않았습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problems 3–6",
+            "reason": "제공된 문제 segments는 PDF 1–3쪽뿐입니다. 해설에 등장하는 문제를 문제 원문 대신 사용하지 않았으며, 나머지 문제의 추출에는 해당 문제 segments가 필요합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 2.",
+            "reason": "문제 원문은 bc814848-293b-4556-9335-9799c932cb81, 해답은 d0563a78-1475-4e33-9c42-a6571eb49716 및 78159ae1-361d-4298-a53f-8912d10e397d에 있으나, 문제 문서에서 판본·학기 식별자를 확인할 인용 근거가 없습니다. 해답 문서의 3099d257-fbc9-411b-b42f-ff102765c2da에는 'Spring   2022'가 있지만 문제 문서에서는 확인되지 않습니다. 제목·URL만으로 동일 판본을 추정할 수 없어 정답 연결을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 3.",
+            "reason": "문제 원문은 04616279-3942-4b5a-bf9f-e8ee172255bf, 해답은 78159ae1-361d-4298-a53f-8912d10e397d 및 d42fc6af-5881-41a1-ae56-f552c874d81e에 있습니다. 그러나 별도 문제·해답 문서 양쪽에서 공통 판본·학기 식별자를 인용할 수 없습니다. 'Spring   2022'는 제공된 해답 문서에서만 확인되므로 정답 연결을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 4.",
+            "reason": "문제 원문은 ea98287e-70b5-48a3-a26c-f141ee7b1678, 해답은 d42fc6af-5881-41a1-ae56-f552c874d81e에 있습니다. 그러나 별도 문제·해답 문서 양쪽에서 공통 판본·학기 식별자를 인용할 수 없습니다. 'Spring   2022'는 제공된 해답 문서에서만 확인되므로 정답 연결을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 4",
+            "reason": "문제(ea98287e-70b5-48a3-a26c-f141ee7b1678)와 해설(d42fc6af-5881-41a1-ae56-f552c874d81e)의 문항 및 정답 0.125는 확인된다. 그러나 별도 문서 간 공통 판본·학기 식별자를 양쪽 원문에서 인용할 수 없다. 해설의 3099d257-fbc9-411b-b42f-ff102765c2da에는 'Spring   2022'가 있지만 제공된 문제 문서 세그먼트와 sourceHeader에는 없다. 제목·URL만으로 판본을 추정하지 않았다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(a)–(e)",
+            "reason": "문제의 공통 지문과 (a)–(c)는 e48ac646-2bb7-4958-ad8b-c54734123239, 이어지는 (d)–(e)는 73ffa777-6dd8-40d7-892f-c0572fa18816에서 확인된다. 대응 해설은 d42fc6af-5881-41a1-ae56-f552c874d81e 및 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 있다. 그러나 해설에 있는 'Spring   2022'를 문제 문서 원문에서도 확인할 근거가 제공되지 않아 필수 editionEvidence를 구성할 수 없다. 공통 지문 그룹 전체를 미해결로 유지했다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(d) / 73ffa777-6dd8-40d7-892f-c0572fa18816",
+            "reason": "제공된 문제 세그먼트는 '(Problem   5   continued)'로 시작하며 공통 지문과 결합확률밀도 정의가 없습니다. 해설에 해당 내용이 있지만 문제 원문의 누락 지문으로 대신할 수 없습니다. 또한 문제 문서에서 공통 회차 식별자 'Spring   2022'를 인용할 근거가 없어 별도 해설 문서와의 edition 연결을 확정할 수 없습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(e) / 73ffa777-6dd8-40d7-892f-c0572fa18816",
+            "reason": "Xeno와 Yolanda의 도착 시간 및 결합분포를 정의하는 문제 공통 지문이 제공되지 않았습니다. 해설 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 적분과 영역 설명은 있지만 누락된 문제 지문을 대신하지 않습니다. 문제 문서의 회차 인용 근거도 없어 두 문서의 edition 연결이 미확정입니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 6 / 91c2a1cd-98b3-4264-a652-0dfb63ecafbf",
+            "reason": "문제와 해설에 'Problem   6.   (10   pts)'가 있고, 해설 ffba984e-7215-4ac2-96f1-aa43ffe161d5의 답은 '≈ 𝑃 (𝑍   > 0.5)   = 1 − 𝑃 (𝑍   ≤ 0.5) ≈ 1 − 0.6915   = 0.3085'입니다. 그러나 'Spring   2022'는 해설 문서의 3099d257-fbc9-411b-b42f-ff102765c2da에서만 확인되며 문제 문서의 제공된 본문에는 없습니다. 제목·URL만으로 회차를 추정하지 않는 조건에 따라 추출을 보류합니다. 추가로 해설의 'Var (𝑆)   = 20 ⋅ 5 ⋅ 10 4   = 10 5'는 산술적으로 불일치하므로 원문 오류 확인이 필요합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "reason": "제공된 문제 segments에는 PDF 9쪽의 표준정규분포표(92c51066-2e0f-4922-a345-9d72e85078c7), 10쪽의 여분 용지(2c331f10-38e4-4562-9ae3-5b259e4932ad), 11쪽의 출처 안내(5920cec7-7541-4f6d-b494-1f8eec20b496)만 있으며 완전한 문제가 없습니다. 문제 본문이 있는 segments가 필요합니다. sourceHeader의 Problem 0과 answerSegments에만 있는 문제는 지시에 따라 추출하지 않았습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / 5920cec7-7541-4f6d-b494-1f8eec20b496",
+            "reason": "제공된 문제 segments에는 PDF 11쪽의 저작권·강좌 안내만 있고 완전한 문항이 없습니다. answerSegments의 문항을 문제 원문 대신 추출할 수 없으므로 문제 1–6의 본문 세그먼트가 필요합니다. 문제·정답의 번호와 원문 근거를 연결하는 sourceMatch도 현재 구성할 수 없습니다."
+          },
+          {
+            "reference": "b0f8cd41-a13a-44eb-b24d-e8541b546a31 / Problem 0",
+            "reason": "Problem 0은 sourceHeader에만 있으며 치트 시트 제출 안내입니다. sourceHeader에만 있는 문항은 추출하지 않는다는 조건에 따라 제외했습니다."
+          }
+        ]
+      },
+      "passed": false,
+      "error": "No usable question; inspect unresolved reasons before claiming success",
+      "finishedAt": "2026-10-14T23:59:22.730Z"
+    },
+    {
+      "startedAt": "2026-10-15T00:00:11.354Z",
+      "phase": "extract",
+      "maxCalls": 30,
+      "calls": 1,
+      "passed": false,
+      "error": "extract_questions: {\"code\":\"AGENT_OUTPUT_INVALID\",\"message\":\"에이전트 결과가 요청한 스키마와 일치하지 않습니다: questions.0: 주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다.; questions.1: 주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다.; questions.2: 주관식 모범답안과 합계가 배점과 같은 고유 채점 기준이 필요합니다.\"}\n+ actual - expected\n\n+ 'failed'\n- 'succeeded'\n",
+      "finishedAt": "2026-10-15T00:01:37.080Z"
+    },
+    {
+      "startedAt": "2026-10-15T00:02:39.674Z",
+      "phase": "extract",
+      "maxCalls": 30,
+      "calls": 5,
+      "passed": false,
+      "error": "extract_questions: {\"code\":\"CODEX_TURN_TIMEOUT\",\"message\":\"에이전트 작업 제한 시간을 초과했습니다.\"}\n+ actual - expected\n\n+ 'failed'\n- 'succeeded'\n",
+      "finishedAt": "2026-10-15T00:14:29.949Z"
+    },
+    {
+      "index": 4,
+      "startedAt": "2026-10-15T00:14:49.891Z",
+      "phase": "extract",
+      "maxCalls": 30,
+      "calls": 0,
+      "workflowHash": "90bdf37a967c57305651c4bb43b3ab9a4a42878d1bd03ed0a1e63946c0720e2f",
+      "interrupted": true,
+      "finishedAt": "2026-10-15T00:17:21.317Z",
+      "passed": false,
+      "error": "Operator stopped the active evaluation after measuring excessive PDF glyph-coordinate input. One in-flight call has no saved output or duration; not counted as a completed response."
+    },
+    {
+      "index": 5,
+      "startedAt": "2026-10-15T00:17:36.003Z",
+      "phase": "extract",
+      "maxCalls": 30,
+      "calls": 2,
+      "workflowHash": "90bdf37a967c57305651c4bb43b3ab9a4a42878d1bd03ed0a1e63946c0720e2f",
+      "passed": false,
+      "error": "extract_questions: {\"code\":\"CODEX_TURN_TIMEOUT\",\"message\":\"에이전트 작업 제한 시간을 초과했습니다.\"}\n+ actual - expected\n\n+ 'failed'\n- 'succeeded'\n",
+      "finishedAt": "2026-10-15T00:22:58.689Z"
+    },
+    {
+      "index": 6,
+      "startedAt": "2026-10-15T00:24:28.668Z",
+      "phase": "extract",
+      "maxCalls": 30,
+      "calls": 4,
+      "workflowHash": "464c868eede2fa8d51790560e178fc9575d234ae0b397c7ab24d0dbe3b64c604",
+      "passed": false,
+      "error": "extract_questions: {\"code\":\"CODEX_TURN_TIMEOUT\",\"message\":\"에이전트 작업 제한 시간을 초과했습니다.\"}\n+ actual - expected\n\n+ 'failed'\n- 'succeeded'\n",
+      "finishedAt": "2026-10-15T00:30:32.222Z"
+    },
+    {
+      "index": 7,
+      "startedAt": "2026-10-15T00:32:20.263Z",
+      "phase": "extract",
+      "maxCalls": 40,
+      "calls": 2,
+      "workflowHash": "9fa12a97056e9d3915501044817af3622b6945428148b4b951c25b0a07353175",
+      "passed": false,
+      "error": "extract_questions: {\"code\":\"CODEX_TURN_TIMEOUT\",\"message\":\"에이전트 작업 제한 시간을 초과했습니다.\"}\n+ actual - expected\n\n+ 'failed'\n- 'succeeded'\n",
+      "finishedAt": "2026-10-15T00:36:33.386Z"
+    },
+    {
+      "index": 8,
+      "startedAt": "2026-10-15T00:37:27.196Z",
+      "phase": "extract",
+      "maxCalls": 40,
+      "calls": 4,
+      "workflowHash": "9fa12a97056e9d3915501044817af3622b6945428148b4b951c25b0a07353175",
+      "passed": false,
+      "error": "extract_questions: {\"code\":\"CODEX_TURN_TIMEOUT\",\"message\":\"에이전트 작업 제한 시간을 초과했습니다.\"}\n+ actual - expected\n\n+ 'failed'\n- 'succeeded'\n",
+      "finishedAt": "2026-10-15T00:43:58.570Z"
+    },
+    {
+      "index": 9,
+      "startedAt": "2026-10-15T00:44:44.761Z",
+      "phase": "extract",
+      "maxCalls": 40,
+      "calls": 18,
+      "workflowHash": "9fa12a97056e9d3915501044817af3622b6945428148b4b951c25b0a07353175",
+      "result": {
+        "questionIds": [
+          "f69750c6-a9d2-4568-a160-33dcc5e1c474",
+          "f17a2c01-3a88-480c-8a61-06122f096fa0",
+          "852ab85b-44e2-4475-a56f-338a2bc97c99",
+          "46f87219-114d-4c0b-b5e4-25746b0641e8",
+          "3b040526-9b72-4360-a001-267772d6c2d6",
+          "ec72d944-6540-4104-b252-e7f12d8e755d",
+          "4551a8d6-7480-41f2-8f97-7a2332b3766a",
+          "5465c389-dedd-4a23-9755-0b658d409cea",
+          "51f68712-aebf-4e16-818c-4ad5a8159ef3"
+        ],
+        "count": 9,
+        "usable": 9,
+        "needsReview": 0,
+        "unresolved": [
+          {
+            "reference": "Problem   0.",
+            "reason": "当前 segments 中仅有提交提示：“Problem   0.   (5   pts)   Be   sure   to   attach   your   cheat   sheet   to   your   test.” 이는 시험 보조자료 첨부 지시이며, 풀이할 학습 문항이나 채점 가능한 정답이 제공되지 않아 추출하지 않았습니다. Problem 1은 adjacentSegments에만 있어 이번 추출 대상이 아닙니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1 / (a)",
+            "reason": "f0b1718f-dfb7-4253-8286-3042d89148e2에는 비교에 필수적인 세 확률밀도함수의 그림이 없고 함수 이름만 남아 있다. 해설의 정답 𝑋는 확인되지만, 그림을 해설에서 추정하거나 복원하지 않고 문항 추출을 보류한다."
+          },
+          {
+            "reference": "(a)",
+            "reason": "문항·정답·판본 연결의 인용을 근거 목록에도 포함해야 합니다."
+          },
+          {
+            "reference": "(a)",
+            "reason": "문항·정답·판본 연결의 인용을 근거 목록에도 포함해야 합니다."
+          },
+          {
+            "reference": "(c)",
+            "reason": "문항은 e48ac646-2bb7-4958-ad8b-c54734123239에 있으나, 해설의 인쇄 표지 '(c)'는 d42fc6af-5881-41a1-ae56-f552c874d81e에, 실제 답은 다음 페이지인 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 분리되어 있습니다. 표지와 답을 모두 포함하는 단일 세그먼트의 정확한 answerEvidence 인용을 제공할 수 없어 정답 연결을 미해결로 보고합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / 73ffa777-6dd8-40d7-892f-c0572fa18816 / (e)",
+            "reason": "문제의 적분 표기에서 영역 첨자 𝑅이 분리되어 추출되었다(\"form   ∬   ℎ(𝑥,   𝑦)   𝑑𝑥   𝑑𝑦\" 다음 줄들에 \"𝑅\"이 위치). 공백 정규화만으로 원래 수식 배치를 보존할 수 없어, 수식 재구성을 금지한 정책에 따라 미해결로 남긴다. 원문 수식 배치 확인이 필요하다."
+          },
+          {
+            "reference": "91c2a1cd-98b3-4264-a652-0dfb63ecafbf — Problem 6.",
+            "reason": "문제의 감마분포 pdf에서 분수·지수 배치가 손실되어 원문 수식을 확정할 수 없습니다. 정답 자료(ffba984e-7215-4ac2-96f1-aa43ffe161d5)에도 합의 분산이 ‘20 ⋅ 5 ⋅ 10 4 = 10 5’로 추출되어 표준편차 ‘10 3’과 불일치합니다. 원본 PDF의 수식 배치를 확인해야 하며, 정답지나 계산으로 문제 수식을 재구성하지 않았습니다."
+          }
+        ]
+      },
+      "passed": true,
+      "finishedAt": "2026-10-15T00:49:54.102Z"
+    },
+    {
+      "index": 10,
+      "startedAt": "2026-10-15T00:51:48.144Z",
+      "phase": "recheck",
+      "maxCalls": 5,
+      "calls": 2,
+      "workflowHash": "7675f17d9d55ae36c61ce2ed789dbcf5e37bd5dd493f370722a12fdeca0651ea",
+      "rechecked": 2,
+      "passed": true,
+      "finishedAt": "2026-10-15T00:52:16.065Z"
+    }
+  ],
+  "previousExtractions": [
+    {
+      "jobId": "39b3aac7-b5f4-4d9d-bb69-f02422fb74ed",
+      "status": "succeeded",
+      "result": {
+        "questionIds": [],
+        "count": 0,
+        "usable": 0,
+        "needsReview": 0,
+        "unresolved": [
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1(a)",
+            "reason": "문제 segment f0b1718f-dfb7-4253-8286-3042d89148e2에 필수 PDF 곡선 그림이 없고 텍스트 좌표만 있습니다. 해설 segment d0563a78-1475-4e33-9c42-a6571eb49716의 정답은 “Solution:   𝑋 .(Variance   measures   the   spread   away   from   the   mean.)”이지만, 그림 자산 및 양쪽 문서의 공통 시행 식별자 근거가 확인되지 않아 추출을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1(b)",
+            "reason": "문제 segment f0b1718f-dfb7-4253-8286-3042d89148e2와 해설 segment d0563a78-1475-4e33-9c42-a6571eb49716에서 문항 및 정답 연결은 확인됩니다. 그러나 문제 문서의 제공 본문에는 시행 연도·학기가 없습니다. 해설의 segment 3099d257-fbc9-411b-b42f-ff102765c2da에는 “Spring   2022”가 있으나 문제 문서에서 대응 인용을 확보할 수 없어 필수 editionEvidence를 구성하지 못했습니다. 제목·URL만으로 동일 시행을 추정하지 않았습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 2(a), Problem 2(b)",
+            "reason": "문제 segment bc814848-293b-4556-9335-9799c932cb81과 해설 segments d0563a78-1475-4e33-9c42-a6571eb49716, 78159ae1-361d-4298-a53f-8912d10e397d에 문항과 대응 풀이가 있습니다. 그러나 문제 문서 본문에서 해설 문서의 “Spring   2022”와 대응하는 시행 식별자 인용을 확보할 수 없습니다. 별도 문서 정답 연결에 필요한 양쪽 editionEvidence가 없어 추출을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 0",
+            "reason": "“Problem   0.   (5   pts)   Be   sure   to   attach   your   cheat   sheet   to   your   test.”는 치트시트 제출 지시이므로 확률·통계 학습 문항으로 추출하지 않았습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problems 3–6",
+            "reason": "제공된 문제 segments는 PDF 1–3쪽뿐입니다. 해설에 등장하는 문제를 문제 원문 대신 사용하지 않았으며, 나머지 문제의 추출에는 해당 문제 segments가 필요합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 2.",
+            "reason": "문제 원문은 bc814848-293b-4556-9335-9799c932cb81, 해답은 d0563a78-1475-4e33-9c42-a6571eb49716 및 78159ae1-361d-4298-a53f-8912d10e397d에 있으나, 문제 문서에서 판본·학기 식별자를 확인할 인용 근거가 없습니다. 해답 문서의 3099d257-fbc9-411b-b42f-ff102765c2da에는 'Spring   2022'가 있지만 문제 문서에서는 확인되지 않습니다. 제목·URL만으로 동일 판본을 추정할 수 없어 정답 연결을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 3.",
+            "reason": "문제 원문은 04616279-3942-4b5a-bf9f-e8ee172255bf, 해답은 78159ae1-361d-4298-a53f-8912d10e397d 및 d42fc6af-5881-41a1-ae56-f552c874d81e에 있습니다. 그러나 별도 문제·해답 문서 양쪽에서 공통 판본·학기 식별자를 인용할 수 없습니다. 'Spring   2022'는 제공된 해답 문서에서만 확인되므로 정답 연결을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 — Problem 4.",
+            "reason": "문제 원문은 ea98287e-70b5-48a3-a26c-f141ee7b1678, 해답은 d42fc6af-5881-41a1-ae56-f552c874d81e에 있습니다. 그러나 별도 문제·해답 문서 양쪽에서 공통 판본·학기 식별자를 인용할 수 없습니다. 'Spring   2022'는 제공된 해답 문서에서만 확인되므로 정답 연결을 보류합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 4",
+            "reason": "문제(ea98287e-70b5-48a3-a26c-f141ee7b1678)와 해설(d42fc6af-5881-41a1-ae56-f552c874d81e)의 문항 및 정답 0.125는 확인된다. 그러나 별도 문서 간 공통 판본·학기 식별자를 양쪽 원문에서 인용할 수 없다. 해설의 3099d257-fbc9-411b-b42f-ff102765c2da에는 'Spring   2022'가 있지만 제공된 문제 문서 세그먼트와 sourceHeader에는 없다. 제목·URL만으로 판본을 추정하지 않았다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(a)–(e)",
+            "reason": "문제의 공통 지문과 (a)–(c)는 e48ac646-2bb7-4958-ad8b-c54734123239, 이어지는 (d)–(e)는 73ffa777-6dd8-40d7-892f-c0572fa18816에서 확인된다. 대응 해설은 d42fc6af-5881-41a1-ae56-f552c874d81e 및 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 있다. 그러나 해설에 있는 'Spring   2022'를 문제 문서 원문에서도 확인할 근거가 제공되지 않아 필수 editionEvidence를 구성할 수 없다. 공통 지문 그룹 전체를 미해결로 유지했다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(d) / 73ffa777-6dd8-40d7-892f-c0572fa18816",
+            "reason": "제공된 문제 세그먼트는 '(Problem   5   continued)'로 시작하며 공통 지문과 결합확률밀도 정의가 없습니다. 해설에 해당 내용이 있지만 문제 원문의 누락 지문으로 대신할 수 없습니다. 또한 문제 문서에서 공통 회차 식별자 'Spring   2022'를 인용할 근거가 없어 별도 해설 문서와의 edition 연결을 확정할 수 없습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 5(e) / 73ffa777-6dd8-40d7-892f-c0572fa18816",
+            "reason": "Xeno와 Yolanda의 도착 시간 및 결합분포를 정의하는 문제 공통 지문이 제공되지 않았습니다. 해설 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 적분과 영역 설명은 있지만 누락된 문제 지문을 대신하지 않습니다. 문제 문서의 회차 인용 근거도 없어 두 문서의 edition 연결이 미확정입니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 6 / 91c2a1cd-98b3-4264-a652-0dfb63ecafbf",
+            "reason": "문제와 해설에 'Problem   6.   (10   pts)'가 있고, 해설 ffba984e-7215-4ac2-96f1-aa43ffe161d5의 답은 '≈ 𝑃 (𝑍   > 0.5)   = 1 − 𝑃 (𝑍   ≤ 0.5) ≈ 1 − 0.6915   = 0.3085'입니다. 그러나 'Spring   2022'는 해설 문서의 3099d257-fbc9-411b-b42f-ff102765c2da에서만 확인되며 문제 문서의 제공된 본문에는 없습니다. 제목·URL만으로 회차를 추정하지 않는 조건에 따라 추출을 보류합니다. 추가로 해설의 'Var (𝑆)   = 20 ⋅ 5 ⋅ 10 4   = 10 5'는 산술적으로 불일치하므로 원문 오류 확인이 필요합니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "reason": "제공된 문제 segments에는 PDF 9쪽의 표준정규분포표(92c51066-2e0f-4922-a345-9d72e85078c7), 10쪽의 여분 용지(2c331f10-38e4-4562-9ae3-5b259e4932ad), 11쪽의 출처 안내(5920cec7-7541-4f6d-b494-1f8eec20b496)만 있으며 완전한 문제가 없습니다. 문제 본문이 있는 segments가 필요합니다. sourceHeader의 Problem 0과 answerSegments에만 있는 문제는 지시에 따라 추출하지 않았습니다."
+          },
+          {
+            "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / 5920cec7-7541-4f6d-b494-1f8eec20b496",
+            "reason": "제공된 문제 segments에는 PDF 11쪽의 저작권·강좌 안내만 있고 완전한 문항이 없습니다. answerSegments의 문항을 문제 원문 대신 추출할 수 없으므로 문제 1–6의 본문 세그먼트가 필요합니다. 문제·정답의 번호와 원문 근거를 연결하는 sourceMatch도 현재 구성할 수 없습니다."
+          },
+          {
+            "reference": "b0f8cd41-a13a-44eb-b24d-e8541b546a31 / Problem 0",
+            "reason": "Problem 0은 sourceHeader에만 있으며 치트 시트 제출 안내입니다. sourceHeader에만 있는 문항은 추출하지 않는다는 조건에 따라 제외했습니다."
+          }
+        ]
+      },
+      "error": null,
+      "candidates": 0
+    },
+    {
+      "jobId": "271f1ae9-29e1-47f2-89ad-188e2981572b",
+      "status": "failed",
+      "result": null,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "candidates": 0
+    },
+    {
+      "jobId": "eea40de5-12c6-4356-8fe3-c7e3e0d5c426",
+      "status": "cancelled",
+      "result": null,
+      "error": null,
+      "candidates": 0
+    },
+    {
+      "jobId": "27323d64-7dd4-45c2-a62e-24b7f19aadfb",
+      "status": "failed",
+      "result": null,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "candidates": 2
+    },
+    {
+      "jobId": "c259bf7e-be4d-4a44-ad94-3dacc5560d9b",
+      "status": "failed",
+      "result": null,
+      "error": {
+        "code": "CODEX_TURN_TIMEOUT",
+        "message": "에이전트 작업 제한 시간을 초과했습니다."
+      },
+      "candidates": 5
+    }
+  ],
+  "finalExtraction": {
+    "jobId": "da6af91b-0f06-48b8-9ec0-889f1f7314cd",
+    "status": "succeeded",
+    "result": {
+      "questionIds": [
+        "f69750c6-a9d2-4568-a160-33dcc5e1c474",
+        "f17a2c01-3a88-480c-8a61-06122f096fa0",
+        "852ab85b-44e2-4475-a56f-338a2bc97c99",
+        "46f87219-114d-4c0b-b5e4-25746b0641e8",
+        "3b040526-9b72-4360-a001-267772d6c2d6",
+        "ec72d944-6540-4104-b252-e7f12d8e755d",
+        "4551a8d6-7480-41f2-8f97-7a2332b3766a",
+        "5465c389-dedd-4a23-9755-0b658d409cea",
+        "51f68712-aebf-4e16-818c-4ad5a8159ef3"
+      ],
+      "count": 9,
+      "usable": 9,
+      "needsReview": 0,
+      "unresolved": [
+        {
+          "reference": "Problem   0.",
+          "reason": "当前 segments 中仅有提交提示：“Problem   0.   (5   pts)   Be   sure   to   attach   your   cheat   sheet   to   your   test.” 이는 시험 보조자료 첨부 지시이며, 풀이할 학습 문항이나 채점 가능한 정답이 제공되지 않아 추출하지 않았습니다. Problem 1은 adjacentSegments에만 있어 이번 추출 대상이 아닙니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / Problem 1 / (a)",
+          "reason": "f0b1718f-dfb7-4253-8286-3042d89148e2에는 비교에 필수적인 세 확률밀도함수의 그림이 없고 함수 이름만 남아 있다. 해설의 정답 𝑋는 확인되지만, 그림을 해설에서 추정하거나 복원하지 않고 문항 추출을 보류한다."
+        },
+        {
+          "reference": "(a)",
+          "reason": "문항·정답·판본 연결의 인용을 근거 목록에도 포함해야 합니다."
+        },
+        {
+          "reference": "(a)",
+          "reason": "문항·정답·판본 연결의 인용을 근거 목록에도 포함해야 합니다."
+        },
+        {
+          "reference": "(c)",
+          "reason": "문항은 e48ac646-2bb7-4958-ad8b-c54734123239에 있으나, 해설의 인쇄 표지 '(c)'는 d42fc6af-5881-41a1-ae56-f552c874d81e에, 실제 답은 다음 페이지인 9fe21896-9d55-4ff4-b9aa-ffefd1abc864에 분리되어 있습니다. 표지와 답을 모두 포함하는 단일 세그먼트의 정확한 answerEvidence 인용을 제공할 수 없어 정답 연결을 미해결로 보고합니다."
+        },
+        {
+          "reference": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6 / 73ffa777-6dd8-40d7-892f-c0572fa18816 / (e)",
+          "reason": "문제의 적분 표기에서 영역 첨자 𝑅이 분리되어 추출되었다(\"form   ∬   ℎ(𝑥,   𝑦)   𝑑𝑥   𝑑𝑦\" 다음 줄들에 \"𝑅\"이 위치). 공백 정규화만으로 원래 수식 배치를 보존할 수 없어, 수식 재구성을 금지한 정책에 따라 미해결로 남긴다. 원문 수식 배치 확인이 필요하다."
+        },
+        {
+          "reference": "91c2a1cd-98b3-4264-a652-0dfb63ecafbf — Problem 6.",
+          "reason": "문제의 감마분포 pdf에서 분수·지수 배치가 손실되어 원문 수식을 확정할 수 없습니다. 정답 자료(ffba984e-7215-4ac2-96f1-aa43ffe161d5)에도 합의 분산이 ‘20 ⋅ 5 ⋅ 10 4 = 10 5’로 추출되어 표준편차 ‘10 3’과 불일치합니다. 원본 PDF의 수식 배치를 확인해야 하며, 정답지나 계산으로 문제 수식을 재구성하지 않았습니다."
+        }
+      ]
+    }
+  },
+  "citationAssemblyRecheck": {
+    "extractionJobId": "da6af91b-0f06-48b8-9ec0-889f1f7314cd",
+    "candidates": [
+      {
+        "callIndex": 22,
+        "questionIndex": 0,
+        "questionId": "e118fe23-e8cc-4832-9e69-4b8a80a9f21a",
+        "rejectedBefore": {
+          "code": "SOURCE_MATCH_EVIDENCE",
+          "message": "문항·정답·판본 연결의 인용을 근거 목록에도 포함해야 합니다."
+        },
+        "rawOutputSha256": "41bbc490b92592a8fd8ea1add241983c413b0c2361dcd6545a3e7c926e33bf79"
+      },
+      {
+        "callIndex": 26,
+        "questionIndex": 0,
+        "questionId": "1c048fe3-9e3c-4f42-8147-a9870ff84a07",
+        "rejectedBefore": {
+          "code": "SOURCE_MATCH_EVIDENCE",
+          "message": "문항·정답·판본 연결의 인용을 근거 목록에도 포함해야 합니다."
+        },
+        "rawOutputSha256": "6510d3525261043a88585103a0e600e33e62d545595998dadc7413cea9e76c25"
+      }
+    ],
+    "rejected": [],
+    "method": "Unmodified saved real Codex outputs -> server citation assembly -> exact-source validation -> fresh real Codex review"
+  },
+  "structuralAudit": {
+    "at": "2026-10-15T00:52:16.037Z",
+    "structuralOnly": true,
+    "extractionJobId": "da6af91b-0f06-48b8-9ec0-889f1f7314cd",
+    "historicalCandidateCount": 2,
+    "scope": "Exact wording/evidence, source and edition linkage, stored independent review. Manual content review is separate.",
+    "sources": [
+      {
+        "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+        "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01.pdf",
+        "pdfSha256": "a613da7596bc236cc996826a4c0034c432643cb6a02ba3077c28a92d27d511ab",
+        "pdfBytes": 95162,
+        "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+      },
+      {
+        "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+        "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01_sol.pdf",
+        "pdfSha256": "3d387d65226c3db6216671649216190e92a37dcd9312a2ba8179c4cb96d6c053",
+        "pdfBytes": 114615,
+        "pages": [1, 2, 3, 4, 5, 6]
+      }
+    ],
+    "questions": [
+      {
+        "id": "f17a2c01-3a88-480c-8a61-06122f096fa0",
+        "revisionId": "5bf6cf3e-5f45-4f2f-aa96-ae1126692e97",
+        "status": "usable",
+        "reference": "(a)",
+        "review": {
+          "actor": "codex",
+          "reason": "독립 계산 결과 C(10, 2) × C(8, 5) × (5 × 4) × 52⁵ × 10³으로 모범답안과 일치한다. 문제 출처 bc814848-293b-4556-9335-9799c932cb81과 해설 출처 d0563a78-1475-4e33-9c42-a6571eb49716의 Problem 2(a), 지문 및 배점이 일치하며, 제공된 판본 근거는 Spring 2022이다. 인용문은 제공 자료와 일치한다. 마지막 수식의 조합 표기는 추출 순서가 뒤바뀌었지만 단계별 해설과 독립 계산으로 정답을 확인할 수 있다. 필요한 누락 자산은 없다.",
+          "at": "2026-10-15T00:48:43.600Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "support",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "support",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 3,
+            "role": "support",
+            "quoteHash": "757b18948f776a7a67c92acc47c800fa4173725ebd553530359d45ae28448977",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 3,
+            "role": "support",
+            "quoteHash": "37872283928f7f62d5c7117480398622cb27ca80c546b9341b0b450e1ff9fa01",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 3,
+            "role": "question",
+            "quoteHash": "0a78f3f5f11c38a872e98a9387049e22632bc276068e5b9ec8f7c3957a179299",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 1,
+            "role": "answer",
+            "quoteHash": "9e56bcfbfed6cb503e36ab561c492c4e16a2a5bad038efce2bda4e275dfb5faa",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "852ab85b-44e2-4475-a56f-338a2bc97c99",
+        "revisionId": "0501cbe7-15d1-4979-b3ba-96192c2cf3bb",
+        "status": "usable",
+        "reference": "(b)",
+        "review": {
+          "actor": "codex",
+          "reason": "독립 계산으로 기호의 위치 쌍은 C(10,2)=45가지, 인접한 쌍은 9가지이므로 확률은 1/5이다. bc814848-293b-4556-9335-9799c932cb81의 Problem 2(b)와 78159ae1-361d-4298-a53f-8912d10e397d의 해설은 질문 문장이 일치하며, 인접 위치가 9개라는 설명도 정답을 지지한다. 인용문은 제공 자료와 일치하고 영어 조건도 보존되었다. Spring 2022 표기는 두 판본 근거에 있으며, 필요한 별도 그림이나 자산은 없다. 해설 수식의 추출 배치는 흐트러져 있지만 명시된 풀이와 독립 계산으로 정답을 확인할 수 있다.",
+          "at": "2026-10-15T00:48:53.984Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "support",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "support",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 2,
+            "role": "answer",
+            "quoteHash": "c9b7cd6ac462afcbb33299595b697d158c93c1698a9a04d851a2628ed739c41b",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 3,
+            "role": "question",
+            "quoteHash": "314cae32f83552235f88bef58fad968a4dc224427eb8279e7d777d5b74145237",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 3,
+            "role": "support",
+            "quoteHash": "37872283928f7f62d5c7117480398622cb27ca80c546b9341b0b450e1ff9fa01",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "f69750c6-a9d2-4568-a160-33dcc5e1c474",
+        "revisionId": "f868ad7d-fcae-4c56-987e-7e43e228117b",
+        "status": "usable",
+        "reference": "(b)",
+        "review": {
+          "actor": "codex",
+          "reason": "독립 계산 결과 합집합 확률은 0.7+0.3−0.25=0.75, 조건부 확률은 0.25/0.3=5/6으로 모범답안과 일치한다. 문제 출처 f0b1718f-dfb7-4253-8286-3042d89148e2와 해설 출처 d0563a78-1475-4e33-9c42-a6571eb49716의 Problem 1(b)는 조건과 요구 항목이 일치하며 인용문도 제공 자료와 일치한다. 두 표지 자료의 Spring   2022 표기도 일치한다. 해설의 분수 줄바꿈은 있으나 문제 조건과 독립 계산으로 정답을 명확히 검증할 수 있다. 이 소문항에는 그림이나 추가 자산이 필요 없다. 총 6점은 출처가 뒷받침하며, 3점씩의 세부 배점은 공식 배점이 아님을 명시했다.",
+          "at": "2026-10-15T00:48:33.312Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 1,
+            "role": "answer",
+            "quoteHash": "46bb3e7f39f68ad353cb955dd107c09fdf90df32ff45dd07893aeaf4869f13ac",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 1,
+            "role": "support",
+            "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 2,
+            "role": "question",
+            "quoteHash": "ddb7d4db1aa77979fbaef236ffe5a10375186fd5bd069203fa1993b6f9a8cbd9",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 2,
+            "role": "support",
+            "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "46f87219-114d-4c0b-b5e4-25746b0641e8",
+        "revisionId": "3a4be1b2-a496-43f9-9b42-d8b745c80d9c",
+        "status": "usable",
+        "reference": "(b)",
+        "review": {
+          "actor": "codex",
+          "reason": "독립 계산 결과 (5/8)(1/4)+(3/8)(1/6)=7/32로 모범답안과 일치한다. 제공 자료에서 문제 3(b)의 지문과 해설 연결, Spring 2022 표기 및 5점 배점이 일치하며 인용문도 해당 segmentId의 원문과 일치한다. 필수 그림이나 추가 자료 없이 풀 수 있다.",
+          "at": "2026-10-15T00:49:01.993Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "question",
+            "quoteHash": "73bfa7233c4ade24d52a9af6a80d99c8c0e554277ba301036f9c24c2bfcf2ee8",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "support",
+            "quoteHash": "4664c893a6909b6b8006bf43270a99c6e2fad18ce50177f60d2ea6510c04f811",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 2,
+            "role": "answer",
+            "quoteHash": "1ab50df4974911a93f8a59a6fc6d86dbd3fa8c4d9c31f06cd4165fa989dc80fe",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "3b040526-9b72-4360-a001-267772d6c2d6",
+        "revisionId": "908fa2d6-6d6d-4109-94e2-36da90c60e4d",
+        "status": "usable",
+        "reference": "(c)",
+        "review": {
+          "actor": "codex",
+          "reason": "독립 계산으로 (5/8×1/4)/(5/8×1/4+3/8×1/6)=5/7을 확인했다. 문제 자료 04616279-3942-4b5a-bf9f-e8ee172255bf와 해설 자료 78159ae1-361d-4298-a53f-8912d10e397d의 Problem 3(c), 지문, 조건부 확률 및 정답이 일치한다. 인용문은 제공 자료에 존재하며, 두 판본 근거 모두 Spring   2022를 명시한다. 필요한 그림이나 누락된 자산은 없다. 검증 범위는 제공 자료이다.",
+          "at": "2026-10-15T00:49:11.541Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "question",
+            "quoteHash": "3fb336686f0c2ac152675d0fb888d4193e37c3ef29f500b3fd9514af969574ca",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "support",
+            "quoteHash": "4664c893a6909b6b8006bf43270a99c6e2fad18ce50177f60d2ea6510c04f811",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 2,
+            "role": "answer",
+            "quoteHash": "a9312df114f320bb1d27fbac4e76578d72ac35f00509f45ce6b074d0b3d4d1ab",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "ec72d944-6540-4104-b252-e7f12d8e755d",
+        "revisionId": "7f262c22-4a04-4a74-8696-22915ff87e53",
+        "status": "usable",
+        "reference": "(d)",
+        "review": {
+          "actor": "codex",
+          "reason": "제공 자료의 문제 3(d), 주사위 설정, Spring 2022 표기와 해설이 일치하며 인용문도 원문과 일치한다. 독립 계산으로 P(R=6,D=4)=0, P(R=6)P(D=4)=(1/16)(5/8)=5/128이므로 독립이 아니다. 정답과 설명이 타당하고 추가 그림이나 표 없이 풀 수 있다.",
+          "at": "2026-10-15T00:49:20.811Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "question",
+            "quoteHash": "7068200a6b8f100c0c34f679f0f1bdc9b3cf37fa6db0822a9ab3461a87db7e0c",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "support",
+            "quoteHash": "4664c893a6909b6b8006bf43270a99c6e2fad18ce50177f60d2ea6510c04f811",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 3,
+            "role": "answer",
+            "quoteHash": "59212d98daa8c05dda3d1f767aebeadb00cfde6b70611342620f7f4a18e47d00",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "4551a8d6-7480-41f2-8f97-7a2332b3766a",
+        "revisionId": "34683cda-78e2-40cf-949d-71d8e2060283",
+        "status": "usable",
+        "reference": "Problem   4.",
+        "review": {
+          "actor": "codex",
+          "reason": "문항과 해설의 Problem 4, 배점, 지문 및 Spring 2022 표기가 제공 자료와 일치한다. 인용문은 해당 segment에 존재한다. 해설 수식의 추출 순서는 일부 흐트러졌지만, 지문의 수치로 독립 계산한 0.014/(0.014+0.098)=0.125가 해설의 최종값과 일치하여 정답 연결은 명확하다. 필수 그림이나 누락된 자료 없이 풀이할 수 있다.",
+          "at": "2026-10-15T00:49:30.649Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 3,
+            "role": "answer",
+            "quoteHash": "000a2c1813b45bba17824bfa9b3a44291dff80f82bf4db082a8f0eba516dd722",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 5,
+            "role": "question",
+            "quoteHash": "ec231341281786ffcb99dae2d70415e748d75116c0be30a71517c05048b76805",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "5465c389-dedd-4a23-9755-0b658d409cea",
+        "revisionId": "019be645-f590-4009-85a5-ff9c62a76763",
+        "status": "usable",
+        "reference": "(b)",
+        "review": {
+          "actor": "codex",
+          "reason": "제공된 원문과 해설의 Problem 5(b), 지문, Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 자료에 존재하며 정답 연결이 명확하다. 영어 원문과 수식이 보존되어 있고 필요한 누락 자산은 없다.",
+          "at": "2026-10-15T00:49:41.920Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 3,
+            "role": "answer",
+            "quoteHash": "601ad0cb7218b20b597cdc76d21aab08025d7a1afeae62625547dc8e4333cd14",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 6,
+            "role": "question",
+            "quoteHash": "5efe72392f5d08f318a8aef532c189d234d91cdc7486fc94b71f0eb937b21bbf",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 6,
+            "role": "support",
+            "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "51f68712-aebf-4e16-818c-4ad5a8159ef3",
+        "revisionId": "e71f2ef9-a7d5-402c-9b98-a0e617666e7a",
+        "status": "usable",
+        "reference": "(d)",
+        "review": {
+          "actor": "codex",
+          "reason": "제공 자료에서 Problem 5(d)의 문항·해설·공통 지문과 Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 원문에 존재한다. 해설 수식의 줄 배치가 흐트러져 있으나, 명확한 지문의 결합밀도로 독립 계산하여 정답을 확인했다. 필요한 그림이나 누락 자산은 없다.",
+          "at": "2026-10-15T00:49:53.833Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 7,
+            "role": "question",
+            "quoteHash": "68c2d2b8c2d8eb8d37f9ba707ec419895146f0d7f23d3e72fc00f2874d61f415",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 4,
+            "role": "answer",
+            "quoteHash": "f6f43f4c6795e1586a9459380f4bc7b847a530b0e33241c871c9822b8ad29625",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 6,
+            "role": "support",
+            "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "e118fe23-e8cc-4832-9e69-4b8a80a9f21a",
+        "revisionId": "82efd6da-0f3c-4ef3-84b7-09760d6acd8b",
+        "status": "usable",
+        "reference": "(a)",
+        "review": {
+          "actor": "codex",
+          "reason": "제공 자료에서 Problem 3(a)의 지문·문항·해설 및 Spring 2022 표기가 일치하며, 인용문도 해당 segmentId의 원문과 일치한다. 독립 계산으로 결합확률과 주변확률을 확인했다. 필요한 그림이나 누락 자산은 없으며, 세부 배점은 공식 배점이 아닌 학습용으로 명시되어 있다.",
+          "at": "2026-10-15T00:52:04.080Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "question",
+            "quoteHash": "dcea5def27cbabfeffb2d2b5081a173d8ab925298de3f5701703a565b14118bf",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 4,
+            "role": "support",
+            "quoteHash": "08b98291513b7e36944f9ccc6e1f9fc2eccb4937642628e028e6536902c55f8e",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 2,
+            "role": "answer",
+            "quoteHash": "21f1ddac5c1567668ffa6b61234d55ad2da7fd475526a4cbebbea8c5f5fde395",
+            "exactQuote": true
+          }
+        ]
+      },
+      {
+        "id": "1c048fe3-9e3c-4f42-8147-a9870ff84a07",
+        "revisionId": "291b23a0-f713-4ab8-8a62-0b6a50c079a5",
+        "status": "usable",
+        "reference": "(a)",
+        "review": {
+          "actor": "codex",
+          "reason": "제공 자료에서 Problem 5(a)의 지문·문항·해설과 Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 원문과 일치하며, 영어 원문은 공백 정리 외에 의미 변경 없이 유지되었다. 필요한 그림이나 누락된 자산은 없다. 검증 범위는 제공 자료이다.",
+          "at": "2026-10-15T00:52:15.886Z"
+        },
+        "evidence": [
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 6,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 11,
+            "role": "edition",
+            "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+            "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+            "page": 3,
+            "role": "answer",
+            "quoteHash": "063ef688845bb15fcbbab9b9cca1e6ebc52f38eee49940be427cdbbbe4808c4c",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 6,
+            "role": "question",
+            "quoteHash": "7347ac7cb1446bf981a7951adf8bbde07fe999e83ecf9114f97d29e9e23a5373",
+            "exactQuote": true
+          },
+          {
+            "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+            "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+            "page": 6,
+            "role": "support",
+            "quoteHash": "823d98a79eb0f06d598558934ad04c202fbdbcb581d0a1f64b2f04bb656a2b77",
+            "exactQuote": true
+          }
+        ]
+      }
+    ]
+  },
+  "currentQuestions": [
+    {
+      "id": "f17a2c01-3a88-480c-8a61-06122f096fa0",
+      "revisionId": "5bf6cf3e-5f45-4f2f-aa96-ae1126692e97",
+      "status": "usable",
+      "points": 10,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-2",
+      "reference": "(a)",
+      "questionPage": 3,
+      "answerPage": 1,
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "support",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 3,
+          "role": "support",
+          "quoteHash": "757b18948f776a7a67c92acc47c800fa4173725ebd553530359d45ae28448977",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 3,
+          "role": "support",
+          "quoteHash": "37872283928f7f62d5c7117480398622cb27ca80c546b9341b0b450e1ff9fa01",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 3,
+          "role": "question",
+          "quoteHash": "0a78f3f5f11c38a872e98a9387049e22632bc276068e5b9ec8f7c3957a179299",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 1,
+          "role": "answer",
+          "quoteHash": "9e56bcfbfed6cb503e36ab561c492c4e16a2a5bad038efce2bda4e275dfb5faa",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "독립 계산 결과 C(10, 2) × C(8, 5) × (5 × 4) × 52⁵ × 10³으로 모범답안과 일치한다. 문제 출처 bc814848-293b-4556-9335-9799c932cb81과 해설 출처 d0563a78-1475-4e33-9c42-a6571eb49716의 Problem 2(a), 지문 및 배점이 일치하며, 제공된 판본 근거는 Spring 2022이다. 인용문은 제공 자료와 일치한다. 마지막 수식의 조합 표기는 추출 순서가 뒤바뀌었지만 단계별 해설과 독립 계산으로 정답을 확인할 수 있다. 필요한 누락 자산은 없다.",
+        "at": "2026-10-15T00:48:43.600Z"
+      }
+    },
+    {
+      "id": "852ab85b-44e2-4475-a56f-338a2bc97c99",
+      "revisionId": "0501cbe7-15d1-4979-b3ba-96192c2cf3bb",
+      "status": "usable",
+      "points": 5,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-2",
+      "reference": "(b)",
+      "questionPage": 3,
+      "answerPage": 2,
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1107512cad6a17c6e4b0de33f76781400ad37fe6d53b1a2790e620f7230fd5d6",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "support",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 2,
+          "role": "answer",
+          "quoteHash": "c9b7cd6ac462afcbb33299595b697d158c93c1698a9a04d851a2628ed739c41b",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 3,
+          "role": "question",
+          "quoteHash": "314cae32f83552235f88bef58fad968a4dc224427eb8279e7d777d5b74145237",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 3,
+          "role": "support",
+          "quoteHash": "37872283928f7f62d5c7117480398622cb27ca80c546b9341b0b450e1ff9fa01",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "독립 계산으로 기호의 위치 쌍은 C(10,2)=45가지, 인접한 쌍은 9가지이므로 확률은 1/5이다. bc814848-293b-4556-9335-9799c932cb81의 Problem 2(b)와 78159ae1-361d-4298-a53f-8912d10e397d의 해설은 질문 문장이 일치하며, 인접 위치가 9개라는 설명도 정답을 지지한다. 인용문은 제공 자료와 일치하고 영어 조건도 보존되었다. Spring 2022 표기는 두 판본 근거에 있으며, 필요한 별도 그림이나 자산은 없다. 해설 수식의 추출 배치는 흐트러져 있지만 명시된 풀이와 독립 계산으로 정답을 확인할 수 있다.",
+        "at": "2026-10-15T00:48:53.984Z"
+      }
+    },
+    {
+      "id": "f69750c6-a9d2-4568-a160-33dcc5e1c474",
+      "revisionId": "f868ad7d-fcae-4c56-987e-7e43e228117b",
+      "status": "usable",
+      "points": 6,
+      "origin": "past_exam",
+      "groupId": null,
+      "reference": "(b)",
+      "questionPage": 2,
+      "answerPage": 1,
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 1,
+          "role": "answer",
+          "quoteHash": "46bb3e7f39f68ad353cb955dd107c09fdf90df32ff45dd07893aeaf4869f13ac",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 1,
+          "role": "support",
+          "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 2,
+          "role": "question",
+          "quoteHash": "ddb7d4db1aa77979fbaef236ffe5a10375186fd5bd069203fa1993b6f9a8cbd9",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 2,
+          "role": "support",
+          "quoteHash": "808d5e06c2e44be72118a2c2ec824b7666a05f36c3effe2f1b64051e367aad23",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "독립 계산 결과 합집합 확률은 0.7+0.3−0.25=0.75, 조건부 확률은 0.25/0.3=5/6으로 모범답안과 일치한다. 문제 출처 f0b1718f-dfb7-4253-8286-3042d89148e2와 해설 출처 d0563a78-1475-4e33-9c42-a6571eb49716의 Problem 1(b)는 조건과 요구 항목이 일치하며 인용문도 제공 자료와 일치한다. 두 표지 자료의 Spring   2022 표기도 일치한다. 해설의 분수 줄바꿈은 있으나 문제 조건과 독립 계산으로 정답을 명확히 검증할 수 있다. 이 소문항에는 그림이나 추가 자산이 필요 없다. 총 6점은 출처가 뒷받침하며, 3점씩의 세부 배점은 공식 배점이 아님을 명시했다.",
+        "at": "2026-10-15T00:48:33.312Z"
+      }
+    },
+    {
+      "id": "46f87219-114d-4c0b-b5e4-25746b0641e8",
+      "revisionId": "3a4be1b2-a496-43f9-9b42-d8b745c80d9c",
+      "status": "usable",
+      "points": 5,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-3",
+      "reference": "(b)",
+      "questionPage": 4,
+      "answerPage": 2,
+      "evidence": [
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "question",
+          "quoteHash": "73bfa7233c4ade24d52a9af6a80d99c8c0e554277ba301036f9c24c2bfcf2ee8",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "support",
+          "quoteHash": "4664c893a6909b6b8006bf43270a99c6e2fad18ce50177f60d2ea6510c04f811",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 2,
+          "role": "answer",
+          "quoteHash": "1ab50df4974911a93f8a59a6fc6d86dbd3fa8c4d9c31f06cd4165fa989dc80fe",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "독립 계산 결과 (5/8)(1/4)+(3/8)(1/6)=7/32로 모범답안과 일치한다. 제공 자료에서 문제 3(b)의 지문과 해설 연결, Spring 2022 표기 및 5점 배점이 일치하며 인용문도 해당 segmentId의 원문과 일치한다. 필수 그림이나 추가 자료 없이 풀 수 있다.",
+        "at": "2026-10-15T00:49:01.993Z"
+      }
+    },
+    {
+      "id": "3b040526-9b72-4360-a001-267772d6c2d6",
+      "revisionId": "908fa2d6-6d6d-4109-94e2-36da90c60e4d",
+      "status": "usable",
+      "points": 5,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-3",
+      "reference": "(c)",
+      "questionPage": 4,
+      "answerPage": 2,
+      "evidence": [
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "question",
+          "quoteHash": "3fb336686f0c2ac152675d0fb888d4193e37c3ef29f500b3fd9514af969574ca",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "support",
+          "quoteHash": "4664c893a6909b6b8006bf43270a99c6e2fad18ce50177f60d2ea6510c04f811",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 2,
+          "role": "answer",
+          "quoteHash": "a9312df114f320bb1d27fbac4e76578d72ac35f00509f45ce6b074d0b3d4d1ab",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "독립 계산으로 (5/8×1/4)/(5/8×1/4+3/8×1/6)=5/7을 확인했다. 문제 자료 04616279-3942-4b5a-bf9f-e8ee172255bf와 해설 자료 78159ae1-361d-4298-a53f-8912d10e397d의 Problem 3(c), 지문, 조건부 확률 및 정답이 일치한다. 인용문은 제공 자료에 존재하며, 두 판본 근거 모두 Spring   2022를 명시한다. 필요한 그림이나 누락된 자산은 없다. 검증 범위는 제공 자료이다.",
+        "at": "2026-10-15T00:49:11.541Z"
+      }
+    },
+    {
+      "id": "ec72d944-6540-4104-b252-e7f12d8e755d",
+      "revisionId": "7f262c22-4a04-4a74-8696-22915ff87e53",
+      "status": "usable",
+      "points": 5,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-3",
+      "reference": "(d)",
+      "questionPage": 4,
+      "answerPage": 3,
+      "evidence": [
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "question",
+          "quoteHash": "7068200a6b8f100c0c34f679f0f1bdc9b3cf37fa6db0822a9ab3461a87db7e0c",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "support",
+          "quoteHash": "4664c893a6909b6b8006bf43270a99c6e2fad18ce50177f60d2ea6510c04f811",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "answer",
+          "quoteHash": "59212d98daa8c05dda3d1f767aebeadb00cfde6b70611342620f7f4a18e47d00",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "제공 자료의 문제 3(d), 주사위 설정, Spring 2022 표기와 해설이 일치하며 인용문도 원문과 일치한다. 독립 계산으로 P(R=6,D=4)=0, P(R=6)P(D=4)=(1/16)(5/8)=5/128이므로 독립이 아니다. 정답과 설명이 타당하고 추가 그림이나 표 없이 풀 수 있다.",
+        "at": "2026-10-15T00:49:20.811Z"
+      }
+    },
+    {
+      "id": "4551a8d6-7480-41f2-8f97-7a2332b3766a",
+      "revisionId": "34683cda-78e2-40cf-949d-71d8e2060283",
+      "status": "usable",
+      "points": 10,
+      "origin": "past_exam",
+      "groupId": null,
+      "reference": "Problem   4.",
+      "questionPage": 5,
+      "answerPage": 3,
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "answer",
+          "quoteHash": "000a2c1813b45bba17824bfa9b3a44291dff80f82bf4db082a8f0eba516dd722",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 5,
+          "role": "question",
+          "quoteHash": "ec231341281786ffcb99dae2d70415e748d75116c0be30a71517c05048b76805",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "문항과 해설의 Problem 4, 배점, 지문 및 Spring 2022 표기가 제공 자료와 일치한다. 인용문은 해당 segment에 존재한다. 해설 수식의 추출 순서는 일부 흐트러졌지만, 지문의 수치로 독립 계산한 0.014/(0.014+0.098)=0.125가 해설의 최종값과 일치하여 정답 연결은 명확하다. 필수 그림이나 누락된 자료 없이 풀이할 수 있다.",
+        "at": "2026-10-15T00:49:30.649Z"
+      }
+    },
+    {
+      "id": "5465c389-dedd-4a23-9755-0b658d409cea",
+      "revisionId": "019be645-f590-4009-85a5-ff9c62a76763",
+      "status": "usable",
+      "points": 5,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-5",
+      "reference": "(b)",
+      "questionPage": 6,
+      "answerPage": 3,
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "answer",
+          "quoteHash": "601ad0cb7218b20b597cdc76d21aab08025d7a1afeae62625547dc8e4333cd14",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "question",
+          "quoteHash": "5efe72392f5d08f318a8aef532c189d234d91cdc7486fc94b71f0eb937b21bbf",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "제공된 원문과 해설의 Problem 5(b), 지문, Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 자료에 존재하며 정답 연결이 명확하다. 영어 원문과 수식이 보존되어 있고 필요한 누락 자산은 없다.",
+        "at": "2026-10-15T00:49:41.920Z"
+      }
+    },
+    {
+      "id": "51f68712-aebf-4e16-818c-4ad5a8159ef3",
+      "revisionId": "e71f2ef9-a7d5-402c-9b98-a0e617666e7a",
+      "status": "usable",
+      "points": 5,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-5",
+      "reference": "(d)",
+      "questionPage": 7,
+      "answerPage": 4,
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 7,
+          "role": "question",
+          "quoteHash": "68c2d2b8c2d8eb8d37f9ba707ec419895146f0d7f23d3e72fc00f2874d61f415",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 4,
+          "role": "answer",
+          "quoteHash": "f6f43f4c6795e1586a9459380f4bc7b847a530b0e33241c871c9822b8ad29625",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "e66367aa17f2a5a32da179022f76606f5af5f437a3920413565368113aa68861",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "제공 자료에서 Problem 5(d)의 문항·해설·공통 지문과 Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 원문에 존재한다. 해설 수식의 줄 배치가 흐트러져 있으나, 명확한 지문의 결합밀도로 독립 계산하여 정답을 확인했다. 필요한 그림이나 누락 자산은 없다.",
+        "at": "2026-10-15T00:49:53.833Z"
+      }
+    },
+    {
+      "id": "e118fe23-e8cc-4832-9e69-4b8a80a9f21a",
+      "revisionId": "82efd6da-0f3c-4ef3-84b7-09760d6acd8b",
+      "status": "usable",
+      "points": 10,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-3",
+      "reference": "(a)",
+      "questionPage": 4,
+      "answerPage": 2,
+      "evidence": [
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "question",
+          "quoteHash": "dcea5def27cbabfeffb2d2b5081a173d8ab925298de3f5701703a565b14118bf",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 4,
+          "role": "support",
+          "quoteHash": "08b98291513b7e36944f9ccc6e1f9fc2eccb4937642628e028e6536902c55f8e",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 2,
+          "role": "answer",
+          "quoteHash": "21f1ddac5c1567668ffa6b61234d55ad2da7fd475526a4cbebbea8c5f5fde395",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "제공 자료에서 Problem 3(a)의 지문·문항·해설 및 Spring 2022 표기가 일치하며, 인용문도 해당 segmentId의 원문과 일치한다. 독립 계산으로 결합확률과 주변확률을 확인했다. 필요한 그림이나 누락 자산은 없으며, 세부 배점은 공식 배점이 아닌 학습용으로 명시되어 있다.",
+        "at": "2026-10-15T00:52:04.080Z"
+      }
+    },
+    {
+      "id": "1c048fe3-9e3c-4f42-8147-a9870ff84a07",
+      "revisionId": "291b23a0-f713-4ab8-8a62-0b6a50c079a5",
+      "status": "usable",
+      "points": 5,
+      "origin": "past_exam",
+      "groupId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6-problem-5",
+      "reference": "(a)",
+      "questionPage": 6,
+      "answerPage": 3,
+      "evidence": [
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 6,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 11,
+          "role": "edition",
+          "quoteHash": "1e502f8b4400734229f38b2905fef8180f6b4886bd07413dcb87a37ffe56f242",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+          "revisionId": "4227d89b-43e1-45bb-8bba-8fabc913caaa",
+          "page": 3,
+          "role": "answer",
+          "quoteHash": "063ef688845bb15fcbbab9b9cca1e6ebc52f38eee49940be427cdbbbe4808c4c",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "question",
+          "quoteHash": "7347ac7cb1446bf981a7951adf8bbde07fe999e83ecf9114f97d29e9e23a5373",
+          "exactQuote": true
+        },
+        {
+          "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+          "revisionId": "3ea4cf68-4d5c-431c-961f-779f1f35241c",
+          "page": 6,
+          "role": "support",
+          "quoteHash": "823d98a79eb0f06d598558934ad04c202fbdbcb581d0a1f64b2f04bb656a2b77",
+          "exactQuote": true
+        }
+      ],
+      "review": {
+        "actor": "codex",
+        "reason": "제공 자료에서 Problem 5(a)의 지문·문항·해설과 Spring 2022 표기가 일치한다. 인용문은 해당 segmentId의 원문과 일치하며, 영어 원문은 공백 정리 외에 의미 변경 없이 유지되었다. 필요한 그림이나 누락된 자산은 없다. 검증 범위는 제공 자료이다.",
+        "at": "2026-10-15T00:52:15.886Z"
+      }
+    }
+  ],
+  "historicalCandidates": [
+    {
+      "id": "552a00cc-af6c-4e20-8aeb-3a5b41ae74aa",
+      "status": "needs_review",
+      "reference": "(a)",
+      "review": {
+        "reason": "검토 대기"
+      }
+    },
+    {
+      "id": "1a50e4cd-9441-4b68-9791-17517a658677",
+      "status": "needs_review",
+      "reference": "(b)",
+      "review": {
+        "reason": "검토 대기"
+      }
+    }
+  ],
+  "scopeLimits": [
+    "One public exam/solution pair; URLs and scope provided by evaluator, not autonomous discovery.",
+    "No source PDFs, full source text or question bank redistributed in Git.",
+    "Text input only; no OCR, rendered-image input or general math/table layout repair.",
+    "Earlier experiments and unreviewed historical candidates remain in the isolated database."
+  ],
+  "inputSizeComparison": {
+    "sameTenStoredSegments": true,
+    "beforeBytes": 487287,
+    "afterBytes": 17353,
+    "textCharacters": 14474,
+    "notATokenOrLatencyBenchmark": true
+  }
+}
