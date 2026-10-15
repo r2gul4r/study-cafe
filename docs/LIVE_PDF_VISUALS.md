@@ -1,5 +1,7 @@
 # 실제 PDF 이미지·다중 페이지 정답 검증
 
+후속 [원본 오류 영향도 검증](SOURCE_QUALITY.md)에서 5(d)의 중간 `dy` 누락은 허용하고 6번의 수치 등식 오류는 보류하도록 개선했다. 아래 내용은 이전 실행 당시의 기록이다.
+
 검증일: 2026-10-15. 앞선 [텍스트 PDF 검증](LIVE_PDF_EXTRACTION.md)의 보류 항목을 개선한 후속 작업이다. 같은 MIT 18.05 Spring 2022 Exam 1 시험지 11쪽·해설 6쪽의 저장 원본을 사용했다. 저자는 Jeremy Orloff와 Jennifer French Kamrin, 제공처는 MIT OpenCourseWare, 이용 조건은 CC BY-NC-SA 4.0이다. 원본 PDF·페이지 이미지·전체 모델 응답은 격리된 로컬 검증 폴더에만 보관한다.
 
 - [공식 시험 목록](https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/pages/exams/)

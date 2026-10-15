@@ -56,6 +56,10 @@ export type Question = {
   difficulty: string;
   status: string;
   conceptIds: string[];
+  review?: {
+    reason: string;
+    sourceCheck?: { issues: { kind: string; description: string }[] };
+  };
   choices: { id: string; text: string }[];
   explanationChoiceOrder?: string[];
   passage: string | null;

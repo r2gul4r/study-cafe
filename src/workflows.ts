@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { containsVerbatimQuote } from "./evidence.js";
 import {
+  sourceCheckOutput,
+  sourceCheckFailure,
+  sourceNotationNotice,
+  sourceQualityPolicy,
+} from "./source-quality.js";
+import {
   latestMaterials,
   documentEdges,
   withExtractionEvidence,
@@ -76,6 +82,7 @@ const verifyOutput = z
     evidenceValid: z.boolean(),
     answerValid: z.boolean(),
     rubricCheck: rubricAuditOutput.nullable(),
+    sourceCheck: sourceCheckOutput.nullable().default(null),
     visualCheck: z
       .object({
         faithful: z.boolean(),
@@ -126,7 +133,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 11,
+          promptVersion: 13,
           startedAt: started,
         }),
         now(),
@@ -141,7 +148,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 11,
+            promptVersion: 13,
             startedAt: started,
           }),
           now(),
@@ -193,17 +200,20 @@ export function registerWorkflows(
       materials.filter((m) => visualIds.has(m.segmentId)),
       ctx.signal,
     );
+    // Do not bias a new independent review with an earlier approval/hold.
+    const { review: _priorReview, status: _priorStatus, ...candidate } = q;
     const review = await ask(
       ctx,
       "verify_question",
       {
         goal: goalAtScope(q.goalId, q.scopeId),
-        question: q,
+        question: candidate,
         materials: materials.map(
           (m) => rendered.find((v) => v.segmentId === m.segmentId) ?? m,
         ),
         visualPolicy:
-          "If visualEvidence is nonempty, inspect every attached original page. Return visualCheck: faithful confirms every stem/passage/choice and math symbol agrees with the original question image (not the answer sheet), complete confirms graphs and all necessary context are visible in requiredAssetIds, and noAnswerLeak confirms those learner-facing images contain no solutions/answer keys. Any missing image, changed question, unreadable formula or disagreement makes usable=false. Text-layout loss may be transcribed into readable plain/Unicode math only when visualTranscription=true and the original image is preserved. Independently compute answers; an original solution typo must not be silently corrected or accepted. For answerContinuationEvidence, check consecutive pages and matching parent problem/subpart; adjacency alone is not proof. Include specific reasons for discrepancies.",
+          "If visualEvidence is nonempty, inspect every attached original page. Return visualCheck: faithful confirms every stem/passage/choice and math symbol agrees with the original question image (not the answer sheet), complete confirms graphs and all necessary context are visible in requiredAssetIds, and noAnswerLeak confirms those learner-facing images contain no solutions/answer keys. Any missing image, changed question or unreadable question formula makes usable=false. Text-layout loss may be transcribed into readable plain/Unicode math only when visualTranscription=true and the original image is preserved. Classify worked-solution notation separately with sourceQualityPolicy; a harmless intermediate omission does not make a faithful question image invalid. For answerContinuationEvidence, check consecutive pages and matching parent problem/subpart; adjacency alone is not proof. Include specific reasons for discrepancies.",
+        sourceQualityPolicy,
         instruction:
           "Solve independently. Check the answer, ambiguity, exact quotations, source support and all required assets. An exact quote alone is not proof: the material must support the correct answer and requested concept. For extracted questions, independently check sourceMatch: the question number, choice-to-answer mapping, edition and passage must agree with the quoted question and answer sheet; never accept a match just because the numbers look similar. Verify any choice-letter references against the supplied original choices array order, never a shuffled order. Set usable=false on uncertainty. For non-short questions rubricCheck=null. For short questions return rubricCheck using this policy: " +
           rubricInstruction,
@@ -212,6 +222,9 @@ export function registerWorkflows(
       false,
       imageInputs(s, rendered),
     );
+    const sourceFailure = sourceCheckFailure(q, review.sourceCheck, materials);
+    if (sourceFailure)
+      return { ...review, usable: false, reason: sourceFailure };
     if (
       (q.visualEvidence?.length || q.visualTranscription) &&
       !(
@@ -239,7 +252,13 @@ export function registerWorkflows(
             mismatches.map((c) => c.reason).join(" "),
         };
     }
-    return review;
+    const notice = q.sourceMatch
+      ? sourceNotationNotice(review.sourceCheck)
+      : "";
+    return {
+      ...review,
+      reason: notice ? `${review.reason}\n${notice}` : review.reason,
+    };
   };
   jobs.handlers.set("plan_goal", async (input, ctx) =>
     ctx.step("plan", async () => {
@@ -618,10 +637,13 @@ export function registerWorkflows(
                     evidencePolicy:
                       "Put question, answer and edition citations in sourceMatch. The server assembles these into evidence automatically after exact-source validation. evidence only needs additional support such as a parent problem or shared passage; do not repeat sourceMatch citations there. Never invent or paraphrase any quote.",
                     shortAnswerPolicy,
+                    sourceQualityPolicy:
+                      sourceQualityPolicy +
+                      " At extraction time, return complete questions with harmless notation omissions for independent review. Do not mark them unresolved solely for that omission. If the original final answer or a numeric equality conflicts, keep it unresolved; never substitute a repaired key.",
                     referencePolicy:
                       "questionReference and answerReference must be identical single literal printed markers inside their respective exact text quote. Do not synthesize composite labels when parent number and subpart are printed separately. Include the parent problem and shared context in evidence to disambiguate repeated subpart markers. answerEvidence anchors the printed marker. If the answer continues onto later segments/pages, put exact quotations in answerContinuationEvidence, in consecutive segment order from the same revision, including all intervening segments. Keep the original page boundaries. Inspect the page images to distinguish a continued answer from the next subpart. Never link solely because pages are adjacent. Preserve groupId across subquestions.",
                     wordingPolicy:
-                      "For PDF questions with supplied pageImage, use visual extraction: set visualTranscription=true for EVERY such question, faithfully transcribe the original printed wording and math into readable plain/Unicode notation (e.g. x^2, explicit fractions), retain language and labels, and attach the original question pages. This explicit mode is necessary even for a punctuation or mathematical glyph difference from the text layer. For sources WITHOUT images, keep contiguous verbatim stem/passage/choices with whitespace normalization only and visualTranscription=false. Do not paraphrase, use LaTeX markup or guess from the answer sheet. For graphs keep the actual original image, not an invented textual replacement. Include visualEvidence {segmentId,assetId,role} for every question/answer page you visually rely on, using supplied pageImage IDs; include a literal text-layer citation for each such segment in evidence. All quote fields MUST remain exact text-layer substrings, never the visual transcription. requiredAssetIds must include ALL question-role image IDs and NO answer-role images. Use no other asset IDs. Never attach a question image containing solutions to learners. If no image resolves the problem, report unresolved. An original answer typo/conflict remains unresolved, not silently repaired.",
+                      "For PDF questions with supplied pageImage, use visual extraction: set visualTranscription=true for EVERY such question, faithfully transcribe the original printed wording and math into readable plain/Unicode notation (e.g. x^2, explicit fractions), retain language and labels, and attach the original question pages. This explicit mode is necessary even for a punctuation or mathematical glyph difference from the text layer. For sources WITHOUT images, keep contiguous verbatim stem/passage/choices with whitespace normalization only and visualTranscription=false. Do not paraphrase, use LaTeX markup or guess from the answer sheet. For graphs keep the actual original image, not an invented textual replacement. Include visualEvidence {segmentId,assetId,role} for every question/answer page you visually rely on, using supplied pageImage IDs; include a literal text-layer citation for each such segment in evidence. All quote fields MUST remain exact text-layer substrings, never the visual transcription. requiredAssetIds must include ALL question-role image IDs and NO answer-role images. Use no other asset IDs. Never attach a question image containing solutions to learners. If no image resolves the problem, report unresolved. Apply sourceQualityPolicy to distinguish harmless worked-solution notation from an actual answer conflict; never silently repair the original key.",
                     instruction:
                       "Extract only existing complete questions anchored in segments, not new ones or questions appearing only in sourceHeader/sourceContext/adjacentSegments. adjacentSegments supply shared passages or continuations; the questionEvidence anchor must be in segments. sourceContext supplies the document's front and back matter for edition evidence; it is not extra question content. Keep exact stem, choices and passage wording. For short questions choices=[] and answer=[]; provide a nonempty modelAnswer and unique rubric IDs with positive points whose sum equals the question points. Do not infer extra scoring requirements from worked solutions. Fix previousFailure when supplied. sourceMatch is required: use the identical printed questionReference/answerReference, cite questionEvidence and answerEvidence with their numbers and original answer. If the answer comes from a separate document, edition must be a common verbatim edition/session identifier and editionEvidence must quote it from BOTH documents, including sourceContext when needed. All match citations must be exact; the server adds them to evidence. Never infer a matching edition from a shared website or URL alone. For answers printed with the question, edition may be null and editionEvidence=[]. Missing or ambiguous answers, edition, passages or assets go in unresolved. Use source kind for origin; user_material and reference map to external_practice only when actual questions exist. Keep linked passage groups together. Never invent unavailable question text.",
                   },
@@ -732,6 +754,7 @@ export function registerWorkflows(
               : "needs_review",
             v.reason,
             "codex",
+            v.sourceCheck,
           ),
       );
     }
@@ -761,6 +784,7 @@ export function registerWorkflows(
             : "needs_review",
           v.reason,
           "codex",
+          v.sourceCheck,
         ),
     );
   });

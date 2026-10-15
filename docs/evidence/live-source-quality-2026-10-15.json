@@ -1,0 +1,903 @@
+{
+  "kind": "study-cafe-live-source-quality-v1",
+  "date": "2026-10-15",
+  "scope": "Two fresh targeted extractions from stored original PDF pages 7,8, plus six authored text contrast reviews. Existing ChatGPT login, no additional paid provider. Not a full-exam rerun.",
+  "sourceAttribution": "Jeremy Orloff and Jennifer French Kamrin, MIT OpenCourseWare, 18.05 Spring 2022, CC BY-NC-SA 4.0.",
+  "sources": [
+    {
+      "sourceId": "47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01.pdf",
+      "pdfSha256": "a613da7596bc236cc996826a4c0034c432643cb6a02ba3077c28a92d27d511ab",
+      "pdfBytes": 95162,
+      "pages": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+    },
+    {
+      "sourceId": "f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc",
+      "url": "https://ocw.mit.edu/courses/18-05-introduction-to-probability-and-statistics-spring-2022/mit18_05_s22_exam01_sol.pdf",
+      "pdfSha256": "3d387d65226c3db6216671649216190e92a37dcd9312a2ba8179c4cb96d6c053",
+      "pdfBytes": 114615,
+      "pages": [1, 2, 3, 4, 5, 6]
+    }
+  ],
+  "totals": {
+    "calls": 14,
+    "structuredSuccesses": 14,
+    "failures": 0,
+    "callMilliseconds": 401745
+  },
+  "pdf": {
+    "sessions": [
+      {
+        "index": 14,
+        "startedAt": "2026-10-15T01:42:46.850Z",
+        "finishedAt": "2026-10-15T01:45:21.059Z",
+        "pdfPages": [7, 8],
+        "workflowHash": "9347f71a980ba0ab7f6eeb889d0eb92bf463a2dfb607998e592eb869a7b6a1eb",
+        "calls": 4,
+        "passed": true,
+        "result": {
+          "questionIds": [
+            "155a993f-390a-43e7-8d22-616d5b6f5a5c",
+            "e1a13481-6eed-4641-805a-a6adf5b7b235"
+          ],
+          "count": 2,
+          "usable": 2,
+          "needsReview": 0,
+          "unresolved": [
+            {
+              "reference": "Problem 6.",
+              "reason": "answer_error: 공식 해설 5쪽 이미지에서도 분산 계산의 잘못된 수치 등식이 확인됩니다. 답안 segmentId=ffba984e-7215-4ac2-96f1-aa43ffe161d5의 정확한 인용: \"Var (𝑆)   = 20 ⋅ 5 ⋅ 10 4   = 10 5\". 독립 계산으로는 20 × 5 × 10^4 = 10^6이며, 10^5가 아닙니다. 표준편차 1000과 최종 근삿값 0.3085는 독립 계산과 일치하지만, 수치 등식 오류는 notation_only가 아니므로 sourceQualityPolicy에 따라 추출을 보류합니다. 문제 근거: segmentId=91c2a1cd-98b3-4264-a652-0dfb63ecafbf, \"Problem   6.   (10   pts)\". 원문 해설을 임의로 수정하지 않았습니다."
+            }
+          ]
+        }
+      },
+      {
+        "index": 15,
+        "startedAt": "2026-10-15T01:48:42.507Z",
+        "finishedAt": "2026-10-15T01:51:27.897Z",
+        "pdfPages": [7, 8],
+        "workflowHash": "4ca95f019dd8a304d5e61d95927273e40d4c569f2ef33cd84c9a5e5d07394278",
+        "calls": 4,
+        "passed": true,
+        "result": {
+          "questionIds": [
+            "155a993f-390a-43e7-8d22-616d5b6f5a5c",
+            "e1a13481-6eed-4641-805a-a6adf5b7b235"
+          ],
+          "count": 2,
+          "usable": 2,
+          "needsReview": 0,
+          "unresolved": [
+            {
+              "reference": "Problem   6.",
+              "reason": "공식 해설의 수치 등식 오류(answer_error)로 추출을 보류합니다. 해설 segment ffba984e-7215-4ac2-96f1-aa43ffe161d5의 정확한 인용: “Var (𝑆) = 20 ⋅ 5 ⋅ 10 4   = 10 5”. 해설 5쪽 이미지(ed0d826e-58e6-49a2-89fe-62a15e6ed338)에서도 같은 등식을 확인했습니다. 독립 계산에서는 20 × 5 × 10^4 = 10^6입니다. 표준편차 1000과 최종 근삿값 0.3085는 독립 계산과 일치하지만, 중간 수치 등식의 실제 오류이므로 단순 표기 누락으로 처리하거나 공식 해설을 수정하여 추출하지 않습니다."
+            }
+          ]
+        }
+      }
+    ],
+    "calls": [
+      {
+        "session": 14,
+        "role": "extract_existing_questions",
+        "startedAt": "2026-10-15T01:42:47.700Z",
+        "elapsedMs": 92427,
+        "questionId": null,
+        "pages": [7],
+        "imageAssetIds": [
+          "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+          "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+          "acd00acf-72ab-41be-876b-1b880a99371a",
+          "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "2b4ad910-d33d-472b-8c75-a4041908c992",
+          "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+          "c0ff8f64-54e7-4e45-812a-922d18c409a4"
+        ],
+        "outputSha256": "5c29275f6541c53146686620378946d705d72de4485c279495f61611268c134e"
+      },
+      {
+        "session": 14,
+        "role": "extract_existing_questions",
+        "startedAt": "2026-10-15T01:44:20.166Z",
+        "elapsedMs": 14294,
+        "questionId": null,
+        "pages": [8],
+        "imageAssetIds": [
+          "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+          "17edf7bd-7b04-478f-bc85-76c02d402c31",
+          "acd00acf-72ab-41be-876b-1b880a99371a",
+          "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+          "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+          "2b4ad910-d33d-472b-8c75-a4041908c992",
+          "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439"
+        ],
+        "outputSha256": "27f567eb6e46ef8b39d5cd5c477574c919143234b925a7974eb916af95edd795"
+      },
+      {
+        "session": 14,
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:44:34.489Z",
+        "elapsedMs": 22381,
+        "questionId": "155a993f-390a-43e7-8d22-616d5b6f5a5c",
+        "imageAssetIds": [
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2"
+        ],
+        "outputSha256": "333701fb142ef96c9400d6f36c1318642bc73250986f39d2ce52c5ddc9c124e7",
+        "review": {
+          "usable": true,
+          "evidenceValid": true,
+          "answerValid": true,
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "0≤x,y≤1에서 주변밀도는 f_X(x)=5/4−x/2이다. E[X]=E[Y]=11/24, E[X²]=7/24이므로 Var(X)=Var(Y)=47/576이다. E[XY]=5/16−1/9=29/144이므로 Cov(X,Y)=29/144−(11/24)²=−5/576, Cor(X,Y)=−5/47이다. 두 결과 모두 원문 해설의 최종 답 및 저장된 답과 일치한다.",
+            "issues": [
+              {
+                "kind": "notation_only",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "9fe21896-9d55-4ff4-b9aa-ffefd1abc864",
+                  "quote": "5𝑥𝑦/4 − 𝑥 2 𝑦 2   𝑑𝑥"
+                },
+                "description": "E[XY] 계산의 두 번째 이중적분에서 dy가 누락되어 있으며 이미지에서도 확인된다. 직전 이중적분의 dx dy와 두 적분구간 [0,1]이 의미를 유일하게 정한다. 적분값과 최종 답은 정확하다.",
+                "contextResolves": true,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "visualCheck": {
+            "faithful": true,
+            "complete": true,
+            "noAnswerLeak": true,
+            "reason": "문제 이미지 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 19775d7a-0e0c-490f-a876-cd3f40b75fba에서 지문, 정의역, 결합밀도, Problem 5 (d)의 요구 및 힌트가 전사와 일치한다. 필요한 문맥이 모두 보이며 두 학습자용 이미지에는 해답이 없다. 해설 이미지 a1f455d7-a7a6-4b40-a876-c543c1101439는 별도 정답 근거로 확인했다."
+          },
+          "reason": "원문 이미지 3장을 확인했다. 문제·지문·출처 연결과 채점 기준이 일치하며, 독립 계산 결과가 원문 및 저장된 정답과 같다. 해설의 중간 미분기호 누락은 답이나 채점에 영향을 주지 않는다.",
+          "rubricAligned": true
+        }
+      },
+      {
+        "session": 14,
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:44:56.906Z",
+        "elapsedMs": 24035,
+        "questionId": "e1a13481-6eed-4641-805a-a6adf5b7b235",
+        "imageAssetIds": [
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+        ],
+        "outputSha256": "a8b97c9ca8683af9196b4292d707d70620b1c9f684e869537b7e33f5963bdd6d",
+        "review": {
+          "usable": true,
+          "evidenceValid": true,
+          "answerValid": true,
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "R={(x,y)∈[0,1]²: x<y<x+0.1}, h(x,y)=5/4−xy. 따라서 ∫₀^0.9 ∫ₓ^(x+0.1) (5/4−xy) dy dx + ∫₀.₉¹ ∫ₓ¹ (5/4−xy) dy dx. x=0.9에서 위쪽 경계가 y=x+0.1에서 y=1로 바뀝니다.",
+            "issues": []
+          },
+          "visualCheck": {
+            "faithful": true,
+            "complete": true,
+            "noAnswerLeak": true,
+            "reason": "필수 이미지 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 19775d7a-0e0c-490f-a876-cd3f40b75fba에서 지문, 밀도식 및 (e)의 모든 조건을 확인했으며 해설 노출은 없습니다. 해설 이미지 a1f455d7-a7a6-4b40-a876-c543c1101439의 영역 그림과 ed0d826e-58e6-49a2-89fe-62a15e6ed338의 적분 경계도 일치합니다. 해설 5쪽 첫 식은 4쪽 (e)와 동일한 사건 X<Y<X+0.1 및 밀도 5/4−xy를 명시하므로 후속 답안 연결이 확인됩니다. 검증 범위는 Problem 5(e)입니다."
+          },
+          "reason": "첨부 원문 4장을 대조했습니다. 문제 출처 47ffc99e-e2b8-42a1-8a43-4d6ad15e04d6의 Problem 5(e)와 해설 출처 f7db7f5c-0bd7-4d3d-aea4-3776c4d81afc의 (e)는 조건과 피적분함수가 일치합니다. 제공된 판본 근거는 모두 Spring   2022입니다. 독립 풀이, 원문 정답 및 저장된 모범답안이 일치합니다.",
+          "rubricAligned": true
+        }
+      },
+      {
+        "session": 15,
+        "role": "extract_existing_questions",
+        "startedAt": "2026-10-15T01:48:43.349Z",
+        "elapsedMs": 103373,
+        "questionId": null,
+        "pages": [7],
+        "imageAssetIds": [
+          "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+          "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+          "acd00acf-72ab-41be-876b-1b880a99371a",
+          "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "2b4ad910-d33d-472b-8c75-a4041908c992",
+          "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+          "c0ff8f64-54e7-4e45-812a-922d18c409a4"
+        ],
+        "outputSha256": "49c6cb1c39829f233a19b2dd8ccc35b01e773cf4fdd3634b8ae6c1ceffb6f5aa"
+      },
+      {
+        "session": 15,
+        "role": "extract_existing_questions",
+        "startedAt": "2026-10-15T01:50:26.803Z",
+        "elapsedMs": 14388,
+        "questionId": null,
+        "pages": [8],
+        "imageAssetIds": [
+          "db3b67ec-a232-41cd-9ac7-cd6665d79097",
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "49d3e8a6-d4eb-4a00-b77a-48834223cafe",
+          "17edf7bd-7b04-478f-bc85-76c02d402c31",
+          "acd00acf-72ab-41be-876b-1b880a99371a",
+          "7c769751-17dc-46ac-8fae-c9ba346e2daf",
+          "ed0d826e-58e6-49a2-89fe-62a15e6ed338",
+          "2b4ad910-d33d-472b-8c75-a4041908c992",
+          "c0ff8f64-54e7-4e45-812a-922d18c409a4",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439"
+        ],
+        "outputSha256": "9b158cee4ee5c6a38a17a80ac6e1847c52e31754b8ddaea3e07fef8b78d13b4c"
+      },
+      {
+        "session": 15,
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:50:41.242Z",
+        "elapsedMs": 22655,
+        "questionId": "155a993f-390a-43e7-8d22-616d5b6f5a5c",
+        "imageAssetIds": [
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2"
+        ],
+        "outputSha256": "25409c70b8b0a15b82a5cbe83e5cb7cf7bd1bbf6f21bfd7b55e170b9d0c163e9",
+        "review": {
+          "usable": true,
+          "evidenceValid": true,
+          "answerValid": true,
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "0≤x,y≤1에서 f_X(x)=5/4−x/2. 따라서 E[X]=E[Y]=11/24, E[X²]=7/24, Var(X)=Var(Y)=47/576이다. E[XY]=5/16−1/9=29/144이므로 Cov(X,Y)=29/144−121/576=−5/576, Cor(X,Y)=(−5/576)/(47/576)=−5/47이다.",
+            "issues": [
+              {
+                "kind": "notation_only",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "9fe21896-9d55-4ff4-b9aa-ffefd1abc864",
+                  "quote": "5𝑥𝑦/4 − 𝑥 2 𝑦 2   𝑑𝑥"
+                },
+                "description": "E[XY] 계산의 두 번째 이중적분에서 dy가 누락되어 있다. 원본 이미지에서도 확인된다. 바로 앞 이중적분의 dx dy와 두 적분의 0부터 1까지 구간이 의미를 유일하게 정하며, 이후 수치 계산과 최종 답은 정확하다.",
+                "contextResolves": true,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "visualCheck": {
+            "faithful": true,
+            "complete": true,
+            "noAnswerLeak": true,
+            "reason": "문제 이미지 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 19775d7a-0e0c-490f-a876-cd3f40b75fba에서 영어 지문, f(x,y)=5/4−xy, 시간 범위, (d)의 요구와 힌트가 모두 일치한다. 필요한 문맥이 완전하며 두 학습자용 이미지에는 해설이나 정답이 없다. 별도 해설 이미지 a1f455d7-a7a6-4b40-a876-c543c1101439에서 최종 답과 표기 누락을 확인했다."
+          },
+          "reason": "문제·해설의 Problem 5(d) 연결과 Spring 2022 판본 근거가 일치하며, 첨부된 세 원본 이미지를 확인했다. 독립 계산 결과가 원문 최종 답 및 저장된 답과 일치한다. 중간 적분의 dy 누락은 답이나 채점에 영향이 없는 표기 문제다.",
+          "rubricAligned": true
+        }
+      },
+      {
+        "session": 15,
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:51:03.934Z",
+        "elapsedMs": 23638,
+        "questionId": "e1a13481-6eed-4641-805a-a6adf5b7b235",
+        "imageAssetIds": [
+          "19775d7a-0e0c-490f-a876-cd3f40b75fba",
+          "a1f455d7-a7a6-4b40-a876-c543c1101439",
+          "4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2",
+          "ed0d826e-58e6-49a2-89fe-62a15e6ed338"
+        ],
+        "outputSha256": "769fd2366ee2fabe034e2e84bc743a0cb941f8e6f8235736899cfdf6e86511dc",
+        "review": {
+          "usable": true,
+          "evidenceValid": true,
+          "answerValid": true,
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "R = {(x,y) ∈ [0,1]² : x < y < x+0.1}, h(x,y)=5/4−xy. 확률 적분은 ∫₀^0.9 ∫ₓ^(x+0.1) (5/4−xy) dy dx + ∫₀.₉¹ ∫ₓ¹ (5/4−xy) dy dx이다. 경계 포함 여부는 결과에 영향을 주지 않는다.",
+            "issues": []
+          },
+          "visualCheck": {
+            "faithful": true,
+            "complete": true,
+            "noAnswerLeak": true,
+            "reason": "첨부된 네 페이지를 확인했다. 필수 자산 4bd39e09-bb8a-4d34-8dbf-781e9d6a1ed2와 19775d7a-0e0c-490f-a876-cd3f40b75fba에는 지문과 5(e)의 모든 조건·수식이 선명하게 있으며 해답은 없다. 해설 4쪽의 영역 그림과 5쪽의 연속 적분식은 동일한 사건 X<Y<X+0.1과 밀도를 사용하므로 5(e)의 답안 연결이 확인된다. 해설 이미지는 학습자용 필수 자산에 포함되지 않는다."
+          },
+          "reason": "문제 5(e)의 원문·수식·정답 연결과 필수 이미지를 확인했다. 독립적으로 설정한 적분이 공식 해설 및 저장된 모범답안과 일치하며, 두 채점 기준 모두 문항 요구에 부합한다.",
+          "rubricAligned": true
+        }
+      }
+    ],
+    "finalAudit": [
+      {
+        "id": "e1a13481-6eed-4641-805a-a6adf5b7b235",
+        "reference": "(e)",
+        "status": "usable",
+        "review": {
+          "actor": "codex",
+          "reason": "문제 5(e)의 원문·수식·정답 연결과 필수 이미지를 확인했다. 독립적으로 설정한 적분이 공식 해설 및 저장된 모범답안과 일치하며, 두 채점 기준 모두 문항 요구에 부합한다.",
+          "at": "2026-10-15T01:51:27.626Z",
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "R = {(x,y) ∈ [0,1]² : x < y < x+0.1}, h(x,y)=5/4−xy. 확률 적분은 ∫₀^0.9 ∫ₓ^(x+0.1) (5/4−xy) dy dx + ∫₀.₉¹ ∫ₓ¹ (5/4−xy) dy dx이다. 경계 포함 여부는 결과에 영향을 주지 않는다.",
+            "issues": []
+          },
+          "sourcePolicyVersion": 1
+        }
+      },
+      {
+        "id": "155a993f-390a-43e7-8d22-616d5b6f5a5c",
+        "reference": "(d)",
+        "status": "usable",
+        "review": {
+          "actor": "codex",
+          "reason": "문제·해설의 Problem 5(d) 연결과 Spring 2022 판본 근거가 일치하며, 첨부된 세 원본 이미지를 확인했다. 독립 계산 결과가 원문 최종 답 및 저장된 답과 일치한다. 중간 적분의 dy 누락은 답이나 채점에 영향이 없는 표기 문제다.\n원본 중간 풀이의 표기 누락(정답·채점 영향 없음): E[XY] 계산의 두 번째 이중적분에서 dy가 누락되어 있다. 원본 이미지에서도 확인된다. 바로 앞 이중적분의 dx dy와 두 적분의 0부터 1까지 구간이 의미를 유일하게 정하며, 이후 수치 계산과 최종 답은 정확하다.",
+          "at": "2026-10-15T01:51:03.922Z",
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "0≤x,y≤1에서 f_X(x)=5/4−x/2. 따라서 E[X]=E[Y]=11/24, E[X²]=7/24, Var(X)=Var(Y)=47/576이다. E[XY]=5/16−1/9=29/144이므로 Cov(X,Y)=29/144−121/576=−5/576, Cor(X,Y)=(−5/576)/(47/576)=−5/47이다.",
+            "issues": [
+              {
+                "kind": "notation_only",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "9fe21896-9d55-4ff4-b9aa-ffefd1abc864",
+                  "quote": "5𝑥𝑦/4 − 𝑥 2 𝑦 2   𝑑𝑥"
+                },
+                "description": "E[XY] 계산의 두 번째 이중적분에서 dy가 누락되어 있다. 원본 이미지에서도 확인된다. 바로 앞 이중적분의 dx dy와 두 적분의 0부터 1까지 구간이 의미를 유일하게 정하며, 이후 수치 계산과 최종 답은 정확하다.",
+                "contextResolves": true,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "sourcePolicyVersion": 1
+        }
+      }
+    ]
+  },
+  "contrasts": {
+    "kind": "study-cafe-live-source-quality-v1",
+    "startedAt": "2026-10-15T01:47:41.782Z",
+    "scope": "Six authored text contrast cases, not public past exam questions. Real product verify_question workflow. Existing ChatGPT login; no paid API fallback.",
+    "codeHashes": {
+      "source-quality": "8787327eb1996965ce20e1d34a87b4063389d09396024f0862eee53ab7f5a347",
+      "workflows": "9347f71a980ba0ab7f6eeb889d0eb92bf463a2dfb607998e592eb869a7b6a1eb"
+    },
+    "calls": [
+      {
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:47:42.733Z",
+        "output": {
+          "usable": true,
+          "reason": "독립 계산값과 원문 최종 정답 및 저장된 정답이 모두 1로 일치합니다. 중간 풀이의 dy 생략은 원문 문맥으로 명확히 해소되며 채점에 영향을 주지 않습니다.",
+          "evidenceValid": true,
+          "answerValid": true,
+          "rubricCheck": {
+            "criteria": [
+              {
+                "id": "result",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "Compute the double integral integral_0^1 integral_0^1 1 dy dx. Give only its value.",
+                "reason": "문항이 적분값만 요구하므로 결과 1만 평가하는 기준은 요청에 부합합니다."
+              }
+            ],
+            "explanation": "풀이 과정이나 설명을 요구하지 않는 결과 중심 채점 기준입니다."
+          },
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "1. 안쪽 적분 ∫₀¹ 1 dy = 1이고, 바깥쪽 적분 ∫₀¹ 1 dx = 1입니다.",
+            "issues": [
+              {
+                "kind": "notation_only",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "fb745b6f-f1ea-40ec-a03c-86da55003336",
+                  "quote": "1. Solution: I = integral_0^1 [integral_0^1 1] dx = integral_0^1 1 dx = 1. The inner integration is with respect to y as defined in the question. Final answer: 1."
+                },
+                "description": "중간 식의 안쪽 적분에 dy가 생략되어 있으나, 문제와 바로 뒤 문장이 적분 변수를 y로 명시합니다. 최종값은 정확하며 생략된 표기를 학습자에게 요구할 필요가 없습니다.",
+                "contextResolves": true,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "visualCheck": null
+        },
+        "elapsedMs": 15926
+      },
+      {
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:47:58.674Z",
+        "output": {
+          "usable": true,
+          "reason": "독립 계산 결과 3×4=12로 원문 정답 및 저장된 정답과 일치합니다. 중간 설명의 철자 오류는 의미나 채점에 영향을 주지 않습니다.",
+          "evidenceValid": true,
+          "answerValid": true,
+          "rubricCheck": {
+            "criteria": [
+              {
+                "id": "result",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "Compute 3 times 4. Give only the result.",
+                "reason": "결과만 요구하므로 12를 평가하는 기준은 요청과 일치합니다."
+              }
+            ],
+            "explanation": "풀이 과정이나 설명을 요구하지 않는 결과 중심 채점 기준입니다."
+          },
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "12",
+            "issues": [
+              {
+                "kind": "notation_only",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "88acaa1e-62ee-48f2-8ada-5f1419208274",
+                  "quote": "1. Intermediate note: The prodcut is 3 x 4 = 12. Final answer: 12."
+                },
+                "description": "'prodcut'은 'product'의 철자 오류이나 함께 제시된 곱셈식과 최종 답으로 의미가 명확합니다. 원문 인용은 그대로 유지합니다.",
+                "contextResolves": true,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "visualCheck": null
+        },
+        "elapsedMs": 11186
+      },
+      {
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:48:09.873Z",
+        "output": {
+          "usable": false,
+          "reason": "문항과 인용은 명확하지만, 독립 계산 결과는 4입니다. 원문 해설·최종 정답과 저장된 모범답안·채점 기준의 5는 잘못되었습니다.",
+          "evidenceValid": true,
+          "answerValid": false,
+          "rubricCheck": {
+            "criteria": [
+              {
+                "id": "result",
+                "aligned": false,
+                "promptField": "stem",
+                "promptQuote": "Compute 2 + 2. Give only the result.",
+                "reason": "결과만 요구한 형식은 맞지만, 기준이 요구하는 5는 2 + 2의 결과인 4와 달라 올바른 응답을 평가하지 못합니다."
+              }
+            ],
+            "explanation": "동결된 채점 기준에 수치 오류가 있어 사용할 수 없습니다."
+          },
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": false,
+            "independentAnswer": "4",
+            "issues": [
+              {
+                "kind": "answer_error",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "98e5a6cf-38a2-426d-af50-be0fccf3b038",
+                  "quote": "1. Solution: 2 + 2 = 5."
+                },
+                "description": "2 + 2 = 5는 잘못된 수치 등식이며 올바른 합은 4입니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              },
+              {
+                "kind": "answer_error",
+                "location": "final_answer",
+                "evidence": {
+                  "segmentId": "98e5a6cf-38a2-426d-af50-be0fccf3b038",
+                  "quote": "Final answer: 5."
+                },
+                "description": "원문의 최종 정답 5와 이를 따른 저장된 모범답안 및 채점 기준이 독립 계산 결과 4와 불일치합니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              }
+            ]
+          },
+          "visualCheck": null
+        },
+        "elapsedMs": 13402
+      },
+      {
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:48:23.290Z",
+        "output": {
+          "usable": false,
+          "reason": "정답 6과 채점 기준은 타당하지만, 원문 중간 풀이의 ‘2 x 3 = 5’는 실제 계산 오류이므로 사용 불가입니다.",
+          "evidenceValid": true,
+          "answerValid": true,
+          "rubricCheck": {
+            "criteria": [
+              {
+                "id": "result",
+                "aligned": true,
+                "promptField": "stem",
+                "promptQuote": "1. Compute 2 times 3. Give only the result.",
+                "reason": "결과만 요구하므로 6을 평가하는 기준은 요청과 일치합니다."
+              }
+            ],
+            "explanation": "추가 풀이를 요구하지 않는 결과 중심 채점 기준입니다."
+          },
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "6",
+            "issues": [
+              {
+                "kind": "answer_error",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "5650a9cc-a7f5-4ecf-961a-feb65c3520c8",
+                  "quote": "1. Intermediate calculation: 2 x 3 = 5. Final answer: 6."
+                },
+                "description": "2 × 3은 6이므로 중간 등식의 5는 수치 오류입니다. 뒤의 최종 답 6이 맞더라도 단순 표기 누락으로 분류할 수 없습니다.",
+                "contextResolves": false,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "visualCheck": null
+        },
+        "elapsedMs": 13043
+      },
+      {
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:48:36.346Z",
+        "output": {
+          "usable": false,
+          "reason": "문항은 명확하고 인용은 원문과 일치하지만, 원문 정답과 저장된 모범답안 및 채점 기준의 단위가 잘못되었습니다. 거리는 20 m이며 20 s가 아닙니다.",
+          "evidenceValid": true,
+          "answerValid": false,
+          "rubricCheck": {
+            "criteria": [
+              {
+                "id": "result",
+                "aligned": false,
+                "promptField": "stem",
+                "promptQuote": "Give the distance traveled, including its unit.",
+                "reason": "거리와 그 단위를 요구하지만 기준의 20 s는 시간 단위이므로 요청된 올바른 결과를 평가하지 못합니다."
+              }
+            ],
+            "explanation": "동결된 채점 기준은 단위 오류로 인해 문항의 요구와 부합하지 않습니다."
+          },
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": false,
+            "independentAnswer": "거리 = 속력 × 시간 = (10 m/s) × (2 s) = 20 m.",
+            "issues": [
+              {
+                "kind": "answer_error",
+                "location": "final_answer",
+                "evidence": {
+                  "segmentId": "f03caa14-b90d-4a57-aedf-262d89256b9b",
+                  "quote": "1. Solution: distance = speed x time = 10 x 2. Final answer: 20 s."
+                },
+                "description": "최종 답의 s는 시간 단위입니다. 요청된 거리의 단위는 m이어야 하며, 동일한 오류가 저장된 모범답안과 채점 기준에도 반영되어 있습니다. 이는 중간 풀이의 무해한 표기 생략이 아닌 최종 답 오류입니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              }
+            ]
+          },
+          "visualCheck": null
+        },
+        "elapsedMs": 12989
+      },
+      {
+        "role": "verify_question",
+        "startedAt": "2026-10-15T01:48:49.353Z",
+        "output": {
+          "usable": false,
+          "reason": "연산자가 누락되어 답을 유일하게 정할 수 없습니다. 정답표의 7만으로 덧셈을 가정할 수 없습니다.",
+          "evidenceValid": true,
+          "answerValid": false,
+          "rubricCheck": {
+            "criteria": [
+              {
+                "id": "result",
+                "aligned": false,
+                "promptField": "stem",
+                "promptQuote": "Compute 3 [missing operator] 4. Give only the result.",
+                "reason": "결과만 요구하지만 연산자가 없어 특정 값 7을 정답으로 채점할 근거가 불충분합니다."
+              }
+            ],
+            "explanation": "결과 제출 요구는 명확하나 계산 자체가 모호하므로 고정된 정답 기준을 정당화할 수 없습니다."
+          },
+          "sourceCheck": {
+            "questionUnambiguous": false,
+            "finalAnswerMatches": false,
+            "independentAnswer": "유일한 답을 결정할 수 없음: 덧셈이면 7, 곱셈이면 12 등 연산자에 따라 달라집니다.",
+            "issues": [
+              {
+                "kind": "ambiguous",
+                "location": "question",
+                "evidence": {
+                  "segmentId": "45212f09-29e2-44f1-a26c-7b92a8e0dafe",
+                  "quote": "1. Compute 3 [missing operator] 4. Give only the result."
+                },
+                "description": "문제와 정답표의 번호 및 저장된 정답 7은 일치하지만, 누락된 연산자는 원문 문맥으로 확정되지 않습니다. 정답표를 이용해 문제를 역으로 보정할 수 없으므로 독립적으로 정답을 검증할 수 없습니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              }
+            ]
+          },
+          "visualCheck": null
+        },
+        "elapsedMs": 18008
+      }
+    ],
+    "cases": [
+      {
+        "name": "intermediate_differential",
+        "stem": "1. Compute the double integral integral_0^1 integral_0^1 1 dy dx. Give only its value.",
+        "key": "1. Solution: I = integral_0^1 [integral_0^1 1] dx = integral_0^1 1 dx = 1. The inner integration is with respect to y as defined in the question. Final answer: 1.",
+        "answer": "1",
+        "expected": "usable",
+        "issue": "notation_only",
+        "questionId": "bccbc98d-00e4-4d19-bf8c-32c6e804962a",
+        "status": "usable",
+        "review": {
+          "actor": "codex",
+          "reason": "독립 계산값과 원문 최종 정답 및 저장된 정답이 모두 1로 일치합니다. 중간 풀이의 dy 생략은 원문 문맥으로 명확히 해소되며 채점에 영향을 주지 않습니다.\n원본 중간 풀이의 표기 누락(정답·채점 영향 없음): 중간 식의 안쪽 적분에 dy가 생략되어 있으나, 문제와 바로 뒤 문장이 적분 변수를 y로 명시합니다. 최종값은 정확하며 생략된 표기를 학습자에게 요구할 필요가 없습니다.",
+          "at": "2026-10-15T01:47:58.664Z",
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "1. 안쪽 적분 ∫₀¹ 1 dy = 1이고, 바깥쪽 적분 ∫₀¹ 1 dx = 1입니다.",
+            "issues": [
+              {
+                "kind": "notation_only",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "fb745b6f-f1ea-40ec-a03c-86da55003336",
+                  "quote": "1. Solution: I = integral_0^1 [integral_0^1 1] dx = integral_0^1 1 dx = 1. The inner integration is with respect to y as defined in the question. Final answer: 1."
+                },
+                "description": "중간 식의 안쪽 적분에 dy가 생략되어 있으나, 문제와 바로 뒤 문장이 적분 변수를 y로 명시합니다. 최종값은 정확하며 생략된 표기를 학습자에게 요구할 필요가 없습니다.",
+                "contextResolves": true,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "sourcePolicyVersion": 1
+        },
+        "passed": true
+      },
+      {
+        "name": "intermediate_spelling",
+        "stem": "1. Compute 3 times 4. Give only the result.",
+        "key": "1. Intermediate note: The prodcut is 3 x 4 = 12. Final answer: 12.",
+        "answer": "12",
+        "expected": "usable",
+        "issue": "notation_only",
+        "questionId": "f07bac73-c651-49a7-b759-1f3f5386dd6f",
+        "status": "usable",
+        "review": {
+          "actor": "codex",
+          "reason": "독립 계산 결과 3×4=12로 원문 정답 및 저장된 정답과 일치합니다. 중간 설명의 철자 오류는 의미나 채점에 영향을 주지 않습니다.\n원본 중간 풀이의 표기 누락(정답·채점 영향 없음): 'prodcut'은 'product'의 철자 오류이나 함께 제시된 곱셈식과 최종 답으로 의미가 명확합니다. 원문 인용은 그대로 유지합니다.",
+          "at": "2026-10-15T01:48:09.864Z",
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "12",
+            "issues": [
+              {
+                "kind": "notation_only",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "88acaa1e-62ee-48f2-8ada-5f1419208274",
+                  "quote": "1. Intermediate note: The prodcut is 3 x 4 = 12. Final answer: 12."
+                },
+                "description": "'prodcut'은 'product'의 철자 오류이나 함께 제시된 곱셈식과 최종 답으로 의미가 명확합니다. 원문 인용은 그대로 유지합니다.",
+                "contextResolves": true,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "sourcePolicyVersion": 1
+        },
+        "passed": true
+      },
+      {
+        "name": "wrong_final_answer",
+        "stem": "1. Compute 2 + 2. Give only the result.",
+        "key": "1. Solution: 2 + 2 = 5. Final answer: 5.",
+        "answer": "5",
+        "expected": "needs_review",
+        "issue": "answer_error",
+        "questionId": "395b02ce-ca7e-44d2-9e40-764a9c978a92",
+        "status": "needs_review",
+        "review": {
+          "actor": "codex",
+          "reason": "원본 문제의 의미 또는 정답이 독립 풀이와 일치하지 않습니다.",
+          "at": "2026-10-15T01:48:23.280Z",
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": false,
+            "independentAnswer": "4",
+            "issues": [
+              {
+                "kind": "answer_error",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "98e5a6cf-38a2-426d-af50-be0fccf3b038",
+                  "quote": "1. Solution: 2 + 2 = 5."
+                },
+                "description": "2 + 2 = 5는 잘못된 수치 등식이며 올바른 합은 4입니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              },
+              {
+                "kind": "answer_error",
+                "location": "final_answer",
+                "evidence": {
+                  "segmentId": "98e5a6cf-38a2-426d-af50-be0fccf3b038",
+                  "quote": "Final answer: 5."
+                },
+                "description": "원문의 최종 정답 5와 이를 따른 저장된 모범답안 및 채점 기준이 독립 계산 결과 4와 불일치합니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              }
+            ]
+          },
+          "sourcePolicyVersion": 1
+        },
+        "passed": true
+      },
+      {
+        "name": "wrong_intermediate_equality",
+        "stem": "1. Compute 2 times 3. Give only the result.",
+        "key": "1. Intermediate calculation: 2 x 3 = 5. Final answer: 6.",
+        "answer": "6",
+        "expected": "needs_review",
+        "issue": "answer_error",
+        "questionId": "9b8a2e5b-feca-42c1-b383-35744c07fd8b",
+        "status": "needs_review",
+        "review": {
+          "actor": "codex",
+          "reason": "원본 정답 오류 또는 의미 불확실: 2 × 3은 6이므로 중간 등식의 5는 수치 오류입니다. 뒤의 최종 답 6이 맞더라도 단순 표기 누락으로 분류할 수 없습니다.",
+          "at": "2026-10-15T01:48:36.335Z",
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": true,
+            "independentAnswer": "6",
+            "issues": [
+              {
+                "kind": "answer_error",
+                "location": "worked_solution",
+                "evidence": {
+                  "segmentId": "5650a9cc-a7f5-4ecf-961a-feb65c3520c8",
+                  "quote": "1. Intermediate calculation: 2 x 3 = 5. Final answer: 6."
+                },
+                "description": "2 × 3은 6이므로 중간 등식의 5는 수치 오류입니다. 뒤의 최종 답 6이 맞더라도 단순 표기 누락으로 분류할 수 없습니다.",
+                "contextResolves": false,
+                "affectsAnswer": false,
+                "affectsGrading": false
+              }
+            ]
+          },
+          "sourcePolicyVersion": 1
+        },
+        "passed": true
+      },
+      {
+        "name": "wrong_final_unit",
+        "stem": "1. A vehicle moves at 10 m/s for 2 s. Give the distance traveled, including its unit.",
+        "key": "1. Solution: distance = speed x time = 10 x 2. Final answer: 20 s.",
+        "answer": "20 s",
+        "expected": "needs_review",
+        "issue": "answer_error",
+        "questionId": "db6e671e-5a89-47e6-95ca-369dd60e8ef6",
+        "status": "needs_review",
+        "review": {
+          "actor": "codex",
+          "reason": "원본 문제의 의미 또는 정답이 독립 풀이와 일치하지 않습니다.",
+          "at": "2026-10-15T01:48:49.340Z",
+          "sourceCheck": {
+            "questionUnambiguous": true,
+            "finalAnswerMatches": false,
+            "independentAnswer": "거리 = 속력 × 시간 = (10 m/s) × (2 s) = 20 m.",
+            "issues": [
+              {
+                "kind": "answer_error",
+                "location": "final_answer",
+                "evidence": {
+                  "segmentId": "f03caa14-b90d-4a57-aedf-262d89256b9b",
+                  "quote": "1. Solution: distance = speed x time = 10 x 2. Final answer: 20 s."
+                },
+                "description": "최종 답의 s는 시간 단위입니다. 요청된 거리의 단위는 m이어야 하며, 동일한 오류가 저장된 모범답안과 채점 기준에도 반영되어 있습니다. 이는 중간 풀이의 무해한 표기 생략이 아닌 최종 답 오류입니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              }
+            ]
+          },
+          "sourcePolicyVersion": 1
+        },
+        "passed": true
+      },
+      {
+        "name": "missing_question_operator",
+        "stem": "1. Compute 3 [missing operator] 4. Give only the result.",
+        "key": "1. Final answer: 7.",
+        "answer": "7",
+        "expected": "needs_review",
+        "issue": "ambiguous",
+        "questionId": "e5e73cd9-7853-4751-9344-405ac59c5538",
+        "status": "needs_review",
+        "review": {
+          "actor": "codex",
+          "reason": "원본 문제의 의미 또는 정답이 독립 풀이와 일치하지 않습니다.",
+          "at": "2026-10-15T01:49:07.391Z",
+          "sourceCheck": {
+            "questionUnambiguous": false,
+            "finalAnswerMatches": false,
+            "independentAnswer": "유일한 답을 결정할 수 없음: 덧셈이면 7, 곱셈이면 12 등 연산자에 따라 달라집니다.",
+            "issues": [
+              {
+                "kind": "ambiguous",
+                "location": "question",
+                "evidence": {
+                  "segmentId": "45212f09-29e2-44f1-a26c-7b92a8e0dafe",
+                  "quote": "1. Compute 3 [missing operator] 4. Give only the result."
+                },
+                "description": "문제와 정답표의 번호 및 저장된 정답 7은 일치하지만, 누락된 연산자는 원문 문맥으로 확정되지 않습니다. 정답표를 이용해 문제를 역으로 보정할 수 없으므로 독립적으로 정답을 검증할 수 없습니다.",
+                "contextResolves": false,
+                "affectsAnswer": true,
+                "affectsGrading": true
+              }
+            ]
+          },
+          "sourcePolicyVersion": 1
+        },
+        "passed": true
+      }
+    ],
+    "passed": true,
+    "finishedAt": "2026-10-15T01:49:07.394Z"
+  },
+  "checks": {
+    "automatedTests": 106,
+    "typecheck": true,
+    "build": true,
+    "browserNotice": true,
+    "existingStudyRoom": {
+      "items": 25,
+      "earned": 34,
+      "totalPossible": 39,
+      "pending": 0
+    }
+  },
+  "limits": [
+    "Only selected PDF pages were re-extracted. Duplicate stored candidates receive new independent review without rewriting prior versions.",
+    "Authored text contrasts are not public past exams or PDF ingestion tests.",
+    "Contrast cases ran before removing prior review/status from the input; all candidates had no prior AI review. Final PDF session and regression tests cover that input change.",
+    "Numeric equality errors remain held even when later/final answers are correct. Original source corrections require separate review.",
+    "No claim of universal semantic or visual classification accuracy."
+  ]
+}

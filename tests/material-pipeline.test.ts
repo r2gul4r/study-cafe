@@ -1,4 +1,5 @@
 import test from "node:test";
+import { cleanSourceCheck } from "./helpers/source-quality.js";
 import assert from "node:assert/strict";
 import { mkdtempSync } from "node:fs";
 import { join } from "node:path";
@@ -542,6 +543,7 @@ test("extraction isolates rejected candidates and keeps uncertain answer mapping
       answerValid: good,
       rubricCheck: null,
       reason: good ? "정답표 대조" : "보기와 정답표 매핑 불일치",
+      sourceCheck: { ...cleanSourceCheck(), finalAnswerMatches: good },
     });
   });
   const f = await createApp({

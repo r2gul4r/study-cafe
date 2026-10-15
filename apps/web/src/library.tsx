@@ -755,6 +755,12 @@ function QuestionDetail({
               </Notice>
             )}
             <QuestionBody q={q} answer />
+            {q.review?.sourceCheck && (
+              <Notice tone="info">
+                <strong>원본 표기·정답 검토</strong>
+                <StudyText text={q.review.reason} />
+              </Notice>
+            )}
             {q.type === "short" && (
               <div className="excerpt">
                 <h4>채점 기준</h4>

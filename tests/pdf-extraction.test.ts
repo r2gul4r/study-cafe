@@ -1,4 +1,5 @@
 import test from "node:test";
+import { cleanSourceCheck } from "./helpers/source-quality.js";
 import assert from "node:assert/strict";
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -343,6 +344,7 @@ test("real PDF ingestion exposes back-matter edition evidence without extracting
         answerValid: true,
         rubricCheck: null,
         reason: "Both PDF editions and printed answer match",
+        sourceCheck: cleanSourceCheck(),
       });
     },
     async status() {
@@ -487,6 +489,7 @@ for (const scenario of ["resume", "repeated_page"] as const) {
             answerValid: true,
             rubricCheck: null,
             reason: "Verified fixture",
+            sourceCheck: cleanSourceCheck(),
           });
         calls++;
         seenSizes.push(input.processed.length);

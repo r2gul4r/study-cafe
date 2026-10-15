@@ -1,4 +1,5 @@
 import test from "node:test";
+import { cleanSourceCheck } from "./helpers/source-quality.js";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -45,6 +46,7 @@ class FakeAgent implements AgentPort {
         rubricCheck:
           input.question.type === "short" ? alignedAudit(input.question) : null,
         reason: "독립 검토 fixture",
+        sourceCheck: input.question.sourceMatch ? cleanSourceCheck() : null,
       };
     else if (role === "generate_question")
       output = {

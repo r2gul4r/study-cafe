@@ -1,4 +1,5 @@
 import test from "node:test";
+import { cleanSourceCheck } from "./helpers/source-quality.js";
 import assert from "node:assert/strict";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -278,6 +279,7 @@ test("original images survive cache/reopen; independent visual review is require
         evidenceValid: true,
         answerValid: true,
         rubricCheck: alignedAudit(raw.question),
+        sourceCheck: cleanSourceCheck(),
         reason: "mock semantic review",
         visualCheck: visualPass
           ? {

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { Store } from "./store.js";
+import type { SourceCheck } from "./source-quality.js";
 import { validateVisualEvidence } from "./pdf-visuals.js";
 import {
   id,
@@ -437,6 +438,7 @@ export class Catalog {
     status: "usable" | "needs_review" | "retired",
     reason: string,
     actor = "user",
+    sourceCheck?: SourceCheck | null,
   ) {
     const rev = this.store.get("question_revisions", revisionId);
     requireThat(reason.trim(), "REASON", "검토 근거가 필요합니다.");
@@ -445,7 +447,12 @@ export class Catalog {
     this.store.run(
       "UPDATE question_status SET status=?,review=? WHERE revision_id=?",
       status,
-      JSON.stringify({ actor, reason, at: now() }),
+      JSON.stringify({
+        actor,
+        reason,
+        at: now(),
+        ...(sourceCheck ? { sourceCheck, sourcePolicyVersion: 1 } : {}),
+      }),
       revisionId,
     );
     return this.readQuestion(rev.question_id, revisionId);
