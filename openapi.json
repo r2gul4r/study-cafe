@@ -9,6 +9,18 @@
       "localToken": {
         "type": "http",
         "scheme": "bearer"
+      },
+      "browserCookie": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Cookie",
+        "description": "HttpOnly cookie issued by /api/browser/connect. Cookie name is study_cafe_ plus the first 16 SHA-256 hex characters of Host (including port). Only same-origin browser requests are accepted."
+      },
+      "browserClient": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Study-Cafe-Client",
+        "description": "Value must be browser. Required together with the browser cookie; not an authentication secret."
       }
     }
   },
@@ -58,6 +70,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -101,6 +117,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -142,6 +162,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -269,6 +293,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -319,6 +347,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -444,6 +476,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -524,6 +560,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -596,6 +636,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -648,6 +692,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -802,6 +850,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -854,6 +906,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -933,6 +989,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -998,6 +1058,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1050,6 +1114,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1102,6 +1170,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -1167,6 +1239,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1219,6 +1295,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1271,6 +1351,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1323,6 +1407,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -1461,6 +1549,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -1504,6 +1596,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1554,6 +1650,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -1687,6 +1787,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1739,6 +1843,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -1822,6 +1930,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -1898,6 +2010,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -1950,6 +2066,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -2502,6 +2622,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -2545,6 +2669,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -2597,6 +2725,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -2649,6 +2781,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -2699,6 +2835,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3267,6 +3407,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3393,6 +3537,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3564,6 +3712,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3650,6 +3802,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3730,6 +3886,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3802,6 +3962,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3891,6 +4055,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -3956,6 +4124,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4021,6 +4193,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4164,6 +4340,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -4207,6 +4387,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4281,6 +4465,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -4324,6 +4512,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -4376,6 +4568,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4441,6 +4637,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4506,6 +4706,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4571,6 +4775,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -4614,6 +4822,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -4666,6 +4878,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4798,6 +5014,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4863,6 +5083,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -4928,6 +5152,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5002,6 +5230,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -5054,6 +5286,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5119,6 +5355,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5237,6 +5477,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -5289,6 +5533,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -5332,6 +5580,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -5384,6 +5636,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5449,6 +5705,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5514,6 +5774,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5579,6 +5843,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -5631,6 +5899,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -5683,6 +5955,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -5726,6 +6002,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -5769,6 +6049,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5837,6 +6121,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -5891,6 +6179,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -5934,6 +6226,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [
@@ -5986,6 +6282,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "requestBody": {
@@ -6051,6 +6351,228 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/browser/launch": {
+      "post": {
+        "summary": "로컬 실행기용 일회용 연결",
+        "security": [
+          {
+            "localToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "origin": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/browser/connect": {
+      "post": {
+        "summary": "일회용 연결·기존 탭 자동 전환",
+        "security": [
+          {},
+          {
+            "localToken": []
+          }
+        ],
+        "description": "Requires X-Study-Cafe-Client: browser and same-origin request. Supply a one-use launch code in the body, or the existing root Bearer token with an empty object for migration. Returns an HttpOnly cookie; anonymous empty requests are rejected.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/browser/session": {
+      "get": {
+        "summary": "브라우저 연결 확인",
+        "security": [
+          {
+            "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/browser/logout": {
+      "post": {
+        "summary": "이 브라우저 연결 해제",
+        "security": [
+          {
+            "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],
@@ -6094,6 +6616,10 @@
         "security": [
           {
             "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
           }
         ],
         "parameters": [],

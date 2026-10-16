@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { api, TOKEN_KEY } from "./api";
+import { api, browserHeaders } from "./api";
 import { Button, Field, Notice, SubmitForm } from "./ui";
 import type { Question } from "./types";
 
@@ -27,7 +27,7 @@ function RegionPage({
     const controller = new AbortController();
     void fetch(`/api/assets/${encodeURIComponent(assetId)}`, {
       signal: controller.signal,
-      headers: { Authorization: "Bearer " + sessionStorage.getItem(TOKEN_KEY) },
+      headers: browserHeaders(),
     })
       .then(async (res) => {
         if (!res.ok)

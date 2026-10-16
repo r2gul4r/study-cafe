@@ -12,7 +12,7 @@ import {
   ChevronRight,
   Download,
 } from "lucide-react";
-import { api, go, TOKEN_KEY, useQuery } from "./api";
+import { api, go, browserHeaders, useQuery } from "./api";
 import {
   Action,
   Badge,
@@ -1028,7 +1028,7 @@ export function AssetLink({
     setError("");
     void fetch("/api/assets/" + encodeURIComponent(id), {
       signal: controller.signal,
-      headers: { Authorization: "Bearer " + sessionStorage.getItem(TOKEN_KEY) },
+      headers: browserHeaders(),
     })
       .then(async (res) => {
         if (!res.ok) throw new Error("원본 자료를 불러오지 못했어요.");
@@ -1076,9 +1076,7 @@ export function AssetLink({
         variant="secondary"
         run={async () => {
           const res = await fetch("/api/assets/" + encodeURIComponent(id), {
-            headers: {
-              Authorization: "Bearer " + sessionStorage.getItem(TOKEN_KEY),
-            },
+            headers: browserHeaders(),
           });
           if (!res.ok) throw new Error("첨부파일을 가져오지 못했어요.");
           const blob = await res.blob(),

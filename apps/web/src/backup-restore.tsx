@@ -110,8 +110,8 @@ export function BackupRestore({ id }: { id: string }) {
                 text={`\`\`\`powershell\n${restoreCommands(sourceDirectory, destination)}\n\`\`\``}
               />
               <p className="muted small">
-                복원 후 서버를 시작하고 표시된 세션 토큰으로 공부방을 열어
-                기록을 확인하세요. 복원 시점에 무결성을 다시 검사합니다.
+                복원 후 서버를 시작하면 자동으로 열린 브라우저에서 공부방 기록을
+                확인할 수 있어요. 복원 시점에 무결성을 다시 검사합니다.
               </p>
             </>
           )}

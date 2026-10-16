@@ -28,9 +28,11 @@ pnpm start
 
 기본 주소는 `http://127.0.0.1:4317`이다. 데이터 기본 위치는 Windows의 `%LOCALAPPDATA%\study-cafe`이며 `STUDY_CAFE_DATA_DIR`로 변경할 수 있다. 데이터 폴더는 실행 코드·Git 저장소와 분리한다. 서버를 종료하려면 Ctrl+C를 누른다.
 
-브라우저에서 기본 주소를 열고 `session-token` 파일 내용을 연결 화면에 입력한다. 토큰은 해당 탭의 세션에만 보관한다. 프론트 개발 시 백엔드 `pnpm dev`와 별도 터미널의 `pnpm dev:web`을 실행하고 `http://127.0.0.1:5173`에 접속한다.
+서버가 브라우저를 열고 자동으로 연결한다. 토큰을 복사하거나 입력할 필요가 없다. 같은 브라우저의 연결은 30일 동안 유지하며 서버를 재시작하거나 새 탭을 열어도 다시 연결된다. 연결 해제·쿠키 삭제·만료 후에는 서버가 실행 중인 상태에서 `pnpm open` 또는 `.\scripts\start.ps1 -Open`으로 다시 연다. 사용자 지정 데이터 폴더는 서버와 실행기에 같은 `STUDY_CAFE_DATA_DIR`를 지정한다. 자동 브라우저 열기를 끄려면 `STUDY_CAFE_NO_OPEN=1` 또는 `.\scripts\start.ps1 -NoBrowser`를 사용한다. [보호 방식·문제 해결](docs/AUTOMATIC_CONNECTION.md).
 
-API는 `/health`를 제외하고 로컬 세션 토큰이 필요하다. 토큰 파일의 값을 `Authorization: Bearer ...` 헤더에 넣는다. 토큰을 URL이나 Git에 넣지 않는다.
+프론트 개발 시 `pnpm dev`와 별도 터미널의 `pnpm dev:web`을 실행하고 `pnpm open http://127.0.0.1:5173`으로 개발 화면을 연결한다. Vite 프록시는 원래 Host를 유지한다.
+
+학습 데이터 API는 인증을 계속 요구한다. 브라우저는 보호된 쿠키와 요청 출처 검사로 연결하며, CLI는 기존처럼 토큰 파일의 값을 `Authorization: Bearer ...` 헤더에 넣는다. `/api/browser/connect`는 일회용 연결 정보 또는 기존 Bearer 인증을 검증하며 빈 요청으로 연결할 수 없다. 토큰을 URL이나 Git에 넣지 않는다.
 
 ```powershell
 $studyToken = (Get-Content "$env:LOCALAPPDATA\study-cafe\session-token" -Raw).Trim()

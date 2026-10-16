@@ -11,6 +11,7 @@
     "dev": "tsx watch src/main.ts",
     "build": "pnpm build:server && pnpm build:web",
     "start": "node dist/src/main.js",
+    "open": "tsx scripts/open-study.ts",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts",
     "check": "pnpm typecheck && pnpm typecheck:web && pnpm test",

@@ -1,4 +1,4 @@
-import Fastify, { type FastifyInstance } from "fastify";
+import Fastify, { type FastifyInstance, type FastifyRequest } from "fastify";
 import fastifyStatic from "@fastify/static";
 import { z } from "zod";
 import {
@@ -10,6 +10,7 @@ import { randomBytes, timingSafeEqual } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { Store } from "./store.js";
+import { BrowserSessions } from "./browser-sessions.js";
 import { readNotes } from "./notes.js";
 import { Catalog, sourceInput } from "./catalog.js";
 import { Sources, fetchPublic } from "./sources.js";
@@ -71,6 +72,29 @@ export async function createApp(options: AppOptions) {
       : randomBytes(32).toString("hex"));
   if (!options.token && !existsSync(tokenFile))
     writeFileSync(tokenFile, token, { mode: 0o600, flag: "wx" });
+  const browserSessions = new BrowserSessions(options.dataDir, token);
+  const bearerValid = (authorization?: string) => {
+    const supplied = authorization?.startsWith("Bearer ")
+      ? authorization.slice(7)
+      : "";
+    return (
+      !!token &&
+      Buffer.byteLength(supplied) === Buffer.byteLength(token) &&
+      timingSafeEqual(Buffer.from(supplied), Buffer.from(token))
+    );
+  };
+  const browserRequest = (req: FastifyRequest) => {
+    const site = req.headers["sec-fetch-site"];
+    requireThat(
+      req.headers["x-study-cafe-client"] === "browser" &&
+        (!req.headers.origin ||
+          req.headers.origin === `http://${req.headers.host}`) &&
+        (!site || site === "same-origin" || site === "none"),
+      "BROWSER_ORIGIN",
+      "공부방 화면에서 연결해 주세요.",
+      403,
+    );
+  };
   const app = Fastify({ logger: false, bodyLimit: 30 * 1024 * 1024 });
   const frontend =
     !!options.webDir && existsSync(join(options.webDir, "index.html"));
@@ -97,7 +121,7 @@ export async function createApp(options: AppOptions) {
         .header("Vary", "Origin")
         .header(
           "Access-Control-Allow-Headers",
-          "Authorization, Content-Type, Idempotency-Key, Last-Event-ID",
+          "Authorization, Content-Type, Idempotency-Key, Last-Event-ID, X-Study-Cafe-Client",
         )
         .header(
           "Access-Control-Allow-Methods",
@@ -107,6 +131,12 @@ export async function createApp(options: AppOptions) {
     if (req.method === "OPTIONS") return reply.code(204).send();
     if (req.url === "/health") return;
     const pathname = req.url.split("?")[0]!;
+    if (pathname.startsWith("/api/browser/"))
+      reply.header("Cache-Control", "no-store");
+    if (pathname === "/api/browser/connect" && req.method === "POST") {
+      browserRequest(req);
+      return;
+    }
     if (
       frontend &&
       ["GET", "HEAD"].includes(req.method) &&
@@ -115,14 +145,15 @@ export async function createApp(options: AppOptions) {
         pathname.startsWith("/assets/"))
     )
       return;
-    const supplied = req.headers.authorization?.startsWith("Bearer ")
-      ? req.headers.authorization.slice(7)
-      : "";
+    if (bearerValid(req.headers.authorization)) return;
+    if (browserSessions.valid(req.headers.host!, req.headers.cookie)) {
+      browserRequest(req);
+      return;
+    }
     requireThat(
-      Buffer.byteLength(supplied) === Buffer.byteLength(token) &&
-        timingSafeEqual(Buffer.from(supplied), Buffer.from(token)),
+      false,
       "UNAUTHORIZED",
-      "로컬 세션 토큰이 필요합니다.",
+      "공부방 열기를 실행해 연결해 주세요.",
       401,
     );
   });
@@ -172,7 +203,20 @@ export async function createApp(options: AppOptions) {
     paths[documentedPath] ??= {};
     paths[documentedPath][method.toLowerCase()] = {
       summary: description,
-      security: path === "/health" ? [] : [{ localToken: [] }],
+      security:
+        path === "/health"
+          ? []
+          : path === "/api/browser/connect"
+            ? [{}, { localToken: [] }]
+            : path === "/api/browser/launch"
+              ? [{ localToken: [] }]
+              : [{ localToken: [] }, { browserCookie: [], browserClient: [] }],
+      ...(path === "/api/browser/connect"
+        ? {
+            description:
+              "Requires X-Study-Cafe-Client: browser and same-origin request. Supply a one-use launch code in the body, or the existing root Bearer token with an empty object for migration. Returns an HttpOnly cookie; anonymous empty requests are rejected.",
+          }
+        : {}),
       ...(body
         ? {
             requestBody: {
@@ -236,7 +280,23 @@ export async function createApp(options: AppOptions) {
     openapi: "3.1.0",
     info: { title: "study-cafe backend", version: "0.1.0" },
     components: {
-      securitySchemes: { localToken: { type: "http", scheme: "bearer" } },
+      securitySchemes: {
+        localToken: { type: "http", scheme: "bearer" },
+        browserCookie: {
+          type: "apiKey",
+          in: "header",
+          name: "Cookie",
+          description:
+            "HttpOnly cookie issued by /api/browser/connect. Cookie name is study_cafe_ plus the first 16 SHA-256 hex characters of Host (including port). Only same-origin browser requests are accepted.",
+        },
+        browserClient: {
+          type: "apiKey",
+          in: "header",
+          name: "X-Study-Cafe-Client",
+          description:
+            "Value must be browser. Required together with the browser cookie; not an authentication secret.",
+        },
+      },
     },
     paths,
   }));
@@ -968,6 +1028,75 @@ export async function createApp(options: AppOptions) {
       ),
     };
   });
+  route(
+    "POST",
+    "/api/browser/launch",
+    "로컬 실행기용 일회용 연결",
+    (req) => {
+      requireThat(
+        bearerValid(req.headers.authorization),
+        "UNAUTHORIZED",
+        "로컬 실행기에서 공부방을 열어 주세요.",
+        401,
+      );
+      const origin = req.body?.origin ?? `http://${req.headers.host}`;
+      const target = new URL(origin);
+      requireThat(
+        target.protocol === "http:" &&
+          ["127.0.0.1", "localhost", "[::1]"].includes(target.hostname) &&
+          target.origin === origin &&
+          (origin === `http://${req.headers.host}` || origins.has(origin)),
+        "ORIGIN",
+        "허용하지 않는 공부방 주소입니다.",
+        403,
+      );
+      const code = browserSessions.issue(target.host);
+      return { url: `${origin}/#/connect?code=${code}` };
+    },
+    z.object({ origin: z.url().optional() }).strict().optional(),
+  );
+  route(
+    "POST",
+    "/api/browser/connect",
+    "일회용 연결·기존 탭 자동 전환",
+    (req, reply) => {
+      const body = req.body;
+      const cookie = body.code
+        ? browserSessions.exchange(req.headers.host, body.code)
+        : (requireThat(
+            bearerValid(req.headers.authorization),
+            "UNAUTHORIZED",
+            "공부방 열기를 실행해 주세요.",
+            401,
+          ),
+          browserSessions.connect(req.headers.host));
+      reply.header("Set-Cookie", cookie);
+      return { connected: true };
+    },
+    z
+      .object({
+        code: z
+          .string()
+          .regex(/^[a-f0-9]{64}$/)
+          .optional(),
+      })
+      .strict(),
+  );
+  route("GET", "/api/browser/session", "브라우저 연결 확인", () => ({
+    connected: true,
+  }));
+  route(
+    "POST",
+    "/api/browser/logout",
+    "이 브라우저 연결 해제",
+    (req, reply) => {
+      reply.header(
+        "Set-Cookie",
+        browserSessions.disconnect(req.headers.host, req.headers.cookie),
+      );
+      return { connected: false };
+    },
+  );
   route("GET", "/api/settings", "백엔드 지원 기능", () => ({
     timezoneDefault: "Asia/Seoul",
     defaultQuestionCount: 25,
@@ -1015,5 +1144,16 @@ export async function createApp(options: AppOptions) {
     store.close();
     release();
   });
-  return { app, store, catalog, sources, exams, learning, jobs, agent, token };
+  return {
+    app,
+    store,
+    catalog,
+    sources,
+    exams,
+    learning,
+    jobs,
+    agent,
+    token,
+    browserSessions,
+  };
 }

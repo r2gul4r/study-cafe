@@ -1,4 +1,4 @@
-param([switch]$Test)
+param([switch]$Test, [switch]$Open, [switch]$NoBrowser)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 Set-Location -LiteralPath $projectRoot
@@ -8,6 +8,10 @@ $nodeExecutable = if ($nodeCommand) { $nodeCommand.Source } else { Join-Path $bu
 if (-not (Test-Path -LiteralPath $nodeExecutable)) { throw 'Node.js 24 or newer is required.' }
 $nodeMajor = [int]((& $nodeExecutable --version).TrimStart('v').Split('.')[0])
 if ($nodeMajor -lt 24) { throw 'Node.js 24 or newer is required.' }
+if ($Open) {
+  & $nodeExecutable --import tsx scripts/open-study.ts
+  exit $LASTEXITCODE
+}
 if (-not (Test-Path -LiteralPath (Join-Path $projectRoot 'node_modules\typescript'))) {
   $pnpmCommand = Get-Command pnpm -ErrorAction SilentlyContinue
   $bundledPnpm = Join-Path $bundledRuntime 'node_modules\pnpm\bin\pnpm.cjs'
@@ -42,5 +46,11 @@ if (-not $Test) {
   if ($LASTEXITCODE -ne 0) { throw 'Frontend build failed.' }
 }
 if ($Test) { & $nodeExecutable --import tsx --test 'tests/*.test.ts' }
-else { & $nodeExecutable 'dist\src\main.js' }
+else {
+  $previousNoOpen = $env:STUDY_CAFE_NO_OPEN
+  try {
+    if ($NoBrowser) { $env:STUDY_CAFE_NO_OPEN = '1' }
+    & $nodeExecutable 'dist\src\main.js'
+  } finally { $env:STUDY_CAFE_NO_OPEN = $previousNoOpen }
+}
 exit $LASTEXITCODE

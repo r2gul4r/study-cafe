@@ -17,18 +17,18 @@ import {
   LogOut,
   Coffee,
 } from "lucide-react";
-import { api, go, TOKEN_KEY, useQuery, useRoute } from "./api";
-import type { Goal, Home } from "./types";
 import {
-  Button,
-  Heading,
-  Loading,
-  Notice,
-  Empty,
-  Field,
-  SubmitForm,
-  Badge,
-} from "./ui";
+  api,
+  go,
+  TOKEN_KEY,
+  useQuery,
+  useRoute,
+  initializeConnection,
+  connectBrowser,
+  message,
+} from "./api";
+import type { Goal, Home } from "./types";
+import { Button, Heading, Loading, Notice, Empty, Badge } from "./ui";
 import { Dashboard, Goals } from "./goals";
 import { SourcesPage, Bank } from "./library";
 import { ExamsPage, AttemptPage, ResultsPage } from "./exams";
@@ -46,9 +46,46 @@ const nav = [
 export function App() {
   const route = useRoute(),
     pathname = route.split("?")[0];
-  const [connected, setConnected] = useState(
-    !!sessionStorage.getItem(TOKEN_KEY),
-  );
+  const [connected, setConnected] = useState(false);
+  const [connecting, setConnecting] = useState(true);
+  const [connectionError, setConnectionError] = useState("");
+  const [disconnecting, setDisconnecting] = useState(false);
+  useEffect(() => {
+    let live = true;
+    void initializeConnection()
+      .then(() => {
+        if (live) setConnected(true);
+      })
+      .catch((e) => {
+        if (live && e.code !== "UNAUTHORIZED") setConnectionError(message(e));
+      })
+      .finally(() => {
+        if (live) setConnecting(false);
+      });
+    return () => {
+      live = false;
+    };
+  }, []);
+  const retryConnection = async () => {
+    setConnecting(true);
+    setConnectionError("");
+    try {
+      await connectBrowser();
+      setConnected(true);
+    } catch (e) {
+      setConnectionError(message(e));
+    } finally {
+      setConnecting(false);
+    }
+  };
+  useEffect(() => {
+    // A launcher may reuse an already-open tab and only change its hash.
+    const launched = () => {
+      if (location.hash.split("?")[0] === "#/connect") void retryConnection();
+    };
+    addEventListener("hashchange", launched);
+    return () => removeEventListener("hashchange", launched);
+  }, []);
   const [mobile, setMobile] = useState(false);
   const [narrow, setNarrow] = useState(
     matchMedia("(max-width: 760px)").matches,
@@ -132,41 +169,39 @@ export function App() {
         </div>
         <section className="connect-card">
           <Badge>로컬 학습 공간</Badge>
-          <h2>내 공부방 연결하기</h2>
-          <p className="muted">로컬 서버의 세션 토큰으로 연결해 주세요.</p>
-          <SubmitForm
-            submit="공부방 열기"
-            onSubmit={async (f) => {
-              sessionStorage.setItem(TOKEN_KEY, String(f.get("token")).trim());
-              try {
-                await api("/home");
-                return true;
-              } catch (e) {
-                sessionStorage.removeItem(TOKEN_KEY);
-                throw e;
-              }
-            }}
-            onDone={() => setConnected(true)}
-          >
-            <Field label="로컬 세션 토큰">
-              <input
-                name="token"
-                type="password"
-                required
-                autoComplete="off"
-                placeholder="session-token 파일의 내용을 붙여 넣으세요"
-              />
-            </Field>
-          </SubmitForm>
-          <details>
-            <summary>토큰은 어디에 있나요?</summary>
-            <p>
-              서버 실행 시 표시되는 <code>session-token</code> 파일을 열어
-              내용을 복사하세요. 기본 위치는{" "}
-              <code>%LOCALAPPDATA%\study-cafe\session-token</code>입니다.
-            </p>
-            <p>OpenAI API 키가 아닙니다. 토큰은 이 탭의 세션에만 보관합니다.</p>
-          </details>
+          <h2>{connecting ? "공부방에 연결하고 있어요" : "내 공부방 열기"}</h2>
+          {connecting ? (
+            <Loading />
+          ) : (
+            <>
+              <p className="muted">
+                컴퓨터에서 공부방을 실행하면 자동으로 연결됩니다. 연결된
+                브라우저는 30일 동안 기억해요.
+              </p>
+              {connectionError && <Notice>{connectionError}</Notice>}
+              <p>프로젝트 폴더에서 실행해 주세요.</p>
+              <pre>
+                <code>{".\\scripts\\start.ps1"}</code>
+              </pre>
+              <details>
+                <summary>서버가 이미 실행 중인가요?</summary>
+                <p>
+                  새 브라우저를 연결하거나 연결을 해제했다면 아래 명령으로 다시
+                  열어 주세요.
+                </p>
+                <pre>
+                  <code>{".\\scripts\\start.ps1 -Open"}</code>
+                </pre>
+                <p>
+                  터미널에서는 <code>pnpm open</code>으로도 열 수 있어요. 서버와
+                  같은 데이터 폴더 설정을 사용해 주세요.
+                </p>
+              </details>
+              <Button onClick={() => void retryConnection()}>
+                연결 다시 확인
+              </Button>
+            </>
+          )}
           <div className="local-note">
             <ShieldCheck size={16} /> 클라우드 가입이나 결제 없이 연결
           </div>
@@ -245,9 +280,19 @@ export function App() {
           </a>
           <button
             className="plain"
-            onClick={() => {
-              sessionStorage.removeItem(TOKEN_KEY);
-              setConnected(false);
+            disabled={disconnecting}
+            onClick={async () => {
+              setDisconnecting(true);
+              setConnectionError("");
+              try {
+                await api("/browser/logout", "POST", {});
+                sessionStorage.removeItem(TOKEN_KEY);
+                setConnected(false);
+              } catch (e) {
+                setConnectionError(message(e));
+              } finally {
+                setDisconnecting(false);
+              }
             }}
           >
             <LogOut size={16} /> 연결 해제
@@ -306,6 +351,7 @@ export function App() {
           </div>
         </header>
         <main id="main-content" tabIndex={-1}>
+          {connectionError && <Notice>{connectionError}</Notice>}
           <div className="page-context">
             <span>
               <span className="status-dot" /> 나만의 학습 흐름을 만들어 보세요

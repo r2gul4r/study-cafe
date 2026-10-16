@@ -8,5 +8,8 @@ coverage/
 *.db-shm
 *.db-wal
 session-token
+browser-sessions.json
+browser-sessions.json.tmp
+server-address.json
 codex-schema/
 live-smoke-result.json

@@ -1,6 +1,6 @@
 # 백엔드 API와 운영
 
-백엔드 기본 주소: `http://127.0.0.1:4317`. 모든 `/api/*` 요청은 `Authorization: Bearer <session-token>` 헤더가 필요하다. 기본 Origin은 서버 포트와 개발용 5173의 localhost·127.0.0.1을 포함한다. 다른 프론트 주소를 사용하면 `STUDY_CAFE_ALLOWED_ORIGINS`에 정확한 origin으로 등록한다. 브라우저 인증 토큰을 URL query에 넣지 않는다.
+백엔드 기본 주소: `http://127.0.0.1:4317`. 학습 데이터 API는 CLI의 `Authorization: Bearer <session-token>` 또는 브라우저의 HttpOnly 쿠키+`X-Study-Cafe-Client: browser` 인증이 필요하다. 브라우저는 서버 실행 시 자동 연결되며 수동 토큰 입력이 없다. 기본 Origin은 서버 포트와 개발용 5173의 localhost·127.0.0.1을 포함한다. 브라우저 쿠키 요청은 현재 Host와 같은 Origin만 허용하므로 개발 프록시는 Host를 보존해야 한다. [연결 API와 보호 방식](AUTOMATIC_CONNECTION.md)을 따른다. 장기 인증 토큰을 URL에 넣지 않는다.
 
 ## 처음부터 공부 한 회차까지
 

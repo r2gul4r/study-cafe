@@ -3,6 +3,7 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { createApp } from "../src/app.js";
+import { openBrowser } from "../src/local-browser.js";
 import type { AgentPort } from "../src/agent.js";
 const agent: AgentPort = {
   async ask(role, input: any, schema) {
@@ -152,10 +153,12 @@ store.run(
   "INSERT OR REPLACE INTO settings(key,value) VALUES('ui_fixture_seeded','true')",
 );
 await runtime.app.listen({ host: "127.0.0.1", port: 4319 });
-console.log(
-  "UI verification only: http://127.0.0.1:4319 | token: study-cafe-ui-only",
-);
+console.log("UI verification only: http://127.0.0.1:4319");
 console.log(`UI data: ${dataDir}`);
+if (process.env.STUDY_CAFE_NO_OPEN !== "1")
+  void openBrowser(
+    `http://127.0.0.1:4319/#/connect?code=${runtime.browserSessions.issue("127.0.0.1:4319")}`,
+  ).catch(() => console.error("브라우저 자동 열기에 실패했습니다."));
 for (const signal of ["SIGINT", "SIGTERM"] as const)
   process.once(
     signal,

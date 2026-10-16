@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 export const TOKEN_KEY = "study-cafe-session";
+export const browserHeaders = () => ({ "X-Study-Cafe-Client": "browser" });
 export class ApiError extends Error {
   constructor(
     public code: string,
@@ -15,14 +16,17 @@ export async function api<T = any>(
   method = "GET",
   body?: unknown,
   signal?: AbortSignal,
+  headers?: Record<string, string>,
 ): Promise<T> {
   let res: Response;
   try {
     res = await fetch("/api" + path, {
       method,
       signal,
+      credentials: "same-origin",
       headers: {
-        Authorization: "Bearer " + (sessionStorage.getItem(TOKEN_KEY) ?? ""),
+        ...browserHeaders(),
+        ...headers,
         ...(body !== undefined ? { "Content-Type": "application/json" } : {}),
       },
       body: body === undefined ? undefined : JSON.stringify(body),
@@ -47,6 +51,37 @@ export async function api<T = any>(
     );
   }
   return data;
+}
+// StrictMode may mount twice; a one-use launch grant must be exchanged once.
+let initialConnection: Promise<void> | undefined;
+let connectionAttempt: Promise<void> | undefined;
+export const initializeConnection = () =>
+  (initialConnection ??= connectBrowser());
+export function connectBrowser() {
+  return (connectionAttempt ??= performConnection().finally(() => {
+    connectionAttempt = undefined;
+  }));
+}
+async function performConnection() {
+  const route = location.hash.slice(1);
+  const launch = route.split("?")[0] === "/connect";
+  const code = launch
+    ? new URLSearchParams(route.split("?")[1]).get("code")
+    : null;
+  if (launch) {
+    // Remove the short-lived secret before any network request or navigation.
+    history.replaceState(null, "", location.pathname + location.search + "#/");
+    dispatchEvent(new HashChangeEvent("hashchange"));
+  }
+  const legacy = sessionStorage.getItem(TOKEN_KEY);
+  if (code) await api("/browser/connect", "POST", { code });
+  else if (legacy)
+    await api("/browser/connect", "POST", {}, undefined, {
+      Authorization: `Bearer ${legacy}`,
+    });
+  sessionStorage.removeItem(TOKEN_KEY);
+  // Also verifies that the browser accepted the HttpOnly cookie.
+  await api("/browser/session");
 }
 export function useQuery<T = any>(path: string | null, interval = 0) {
   const [data, setData] = useState<T>();
