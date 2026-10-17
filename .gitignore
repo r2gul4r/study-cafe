@@ -4,6 +4,7 @@ dist/
 .data/
 data/
 coverage/
+output/
 *.db
 *.db-shm
 *.db-wal

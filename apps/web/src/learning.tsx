@@ -30,6 +30,7 @@ import { date, label, type Goal, type ResultItem, type Job } from "./types";
 import { QuestionBody, safeUrl } from "./library";
 import { ScopeEditor } from "./goals";
 import { BackupRestore } from "./backup-restore";
+import { jobGuidance } from "./job-guidance";
 export function NotesPage({ goal }: { goal: Goal }) {
   const wrong = useQuery<ResultItem[]>(`/goals/${goal.id}/wrong`, 10000),
     notes = useQuery<any[]>(`/goals/${goal.id}/notes`, 10000);
@@ -190,12 +191,13 @@ export function ReviewsPage({ goal }: { goal: Goal }) {
         title="복습 일정"
         description="기억이 흐려질 때쯤, 같은 개념을 다시 만나세요."
         action={
-          <Button
+          <Action
             disabled={!due.length}
-            onClick={() => go("/exams?new=1&review=1")}
+            run={() => api(`/goals/${goal.id}/review-exam`, "POST", {})}
+            onDone={() => go("/exams")}
           >
             <RotateCcw size={16} /> 복습 시험 만들기
-          </Button>
+          </Action>
         }
       />
       <section className="review-hero panel">
@@ -208,7 +210,9 @@ export function ReviewsPage({ goal }: { goal: Goal }) {
             오늘 다시 만날 문제 <span>{due.length}</span>
           </h2>
           <p className="muted">
-            풀이 결과와 기억 난이도에 따라 다음 복습일이 조정돼요.
+            오늘 완료 {q.data?.filter((r) => r.completedToday).length ?? 0}개.
+            같은 날 다시 맞힌 문제는 오늘 목록에서 빠지고, 장기 복습 간격은 중복
+            갱신하지 않아요.
           </p>
         </div>
         <div className="review-total">
@@ -264,8 +268,20 @@ export function ReviewsPage({ goal }: { goal: Goal }) {
                       .join(" · ") || "학습한 개념 다시 확인하기"}
                   </p>
                 </div>
-                <Badge value={r.overdue ? "needs_review" : "queued"}>
-                  {r.overdue ? "복습할 차례" : "예정"}
+                <Badge
+                  value={
+                    r.completedToday
+                      ? "confirmed"
+                      : r.overdue
+                        ? "needs_review"
+                        : "queued"
+                  }
+                >
+                  {r.completedToday
+                    ? "오늘 완료"
+                    : r.overdue
+                      ? "복습할 차례"
+                      : "예정"}
                 </Badge>
               </div>
             );
@@ -375,6 +391,7 @@ export function JobsPage({ refresh }: { refresh: () => void }) {
   );
 }
 function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
+  const guidance = jobGuidance(j.error);
   const extractionResults =
     j.kind === "extract_questions" && j.result
       ? [j.result]
@@ -405,14 +422,15 @@ function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
             일시정지
           </Action>
         )}
-        {["paused", "failed", "waiting_user"].includes(j.status) && (
-          <Action
-            run={() => api(`/jobs/${j.id}/resume`, "POST", {})}
-            onDone={onChange}
-          >
-            다시 진행
-          </Action>
-        )}
+        {["paused", "failed", "waiting_user"].includes(j.status) &&
+          !guidance.restart && (
+            <Action
+              run={() => api(`/jobs/${j.id}/resume`, "POST", {})}
+              onDone={onChange}
+            >
+              다시 진행
+            </Action>
+          )}
         {!["succeeded", "cancelled"].includes(j.status) && (
           <Action
             variant="ghost"
@@ -434,6 +452,17 @@ function JobDetail({ job: j, onChange }: { job: Job; onChange: () => void }) {
             </p>
           )}
         </Notice>
+      )}
+      {j.error && (
+        <div className="info-strip">
+          <div>
+            <strong>다음에 할 일</strong>
+            <p>{guidance.text}</p>
+            <Button variant="secondary" onClick={() => go(guidance.href)}>
+              {guidance.label}
+            </Button>
+          </div>
+        </div>
       )}
       {j.kind === "research" && Array.isArray(j.result?.outcomes) ? (
         <p className="pre-wrap">
@@ -674,7 +703,7 @@ export function SettingsPage() {
             </div>
           </dl>
           <p className="small muted">
-            스캔 PDF의 OCR과 코드 실행 채점은 아직 지원하지 않아요. 첨부 음성은
+            스캔 PDF OCR과 Python 표준입출력 실행 채점을 지원해요. 첨부 음성은
             파일로 내려받아 확인할 수 있어요.
           </p>
         </section>

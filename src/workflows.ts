@@ -2,6 +2,13 @@ import { z } from "zod";
 import { GoalSessions } from "./goal-sessions.js";
 import { AnswerIndex } from "./answer-retrieval.js";
 import { extractionPayload } from "./extraction-payload.js";
+import {
+  imageDeliveryPlan,
+  deliverImages,
+  validateDeliveredImages,
+} from "./image-delivery.js";
+import { gradePython } from "./python.js";
+import { nearDuplicate } from "./question-similarity.js";
 import { containsVerbatimQuote } from "./evidence.js";
 import { correctionCheckOutput, correctionPolicy } from "./corrections.js";
 import {
@@ -26,6 +33,7 @@ import {
   regionImageInputs,
   validateVisualEvidence,
   type ImageInput,
+  regionBounds,
 } from "./pdf-visuals.js";
 import { Jobs, Waiting, type JobContext } from "./jobs.js";
 import { Catalog } from "./catalog.js";
@@ -50,6 +58,7 @@ import {
   scopeInput,
   Fault,
   canonicalQuestion,
+  hash,
 } from "./core.js";
 
 const researchOutput = z
@@ -105,7 +114,21 @@ const shortAnswerPolicy =
   "For short questions, every scored requirement must be explicitly requested by the stem or passage. " +
   "If explanation, reasoning, an example, units or a specific format will be scored, state that requirement in the question. " +
   "Use separate criteria for separately requested outputs and explanations. A model answer is illustrative: allow semantically equivalent answers and never require its exact phrasing. " +
+  "When only a final value is requested, describe the rubric solely as that value, and put calculation methods in explanation instead. " +
   "Do not add rubric requirements merely to fill points. For extracted questions preserve the source wording; leave unsupported rubric details out or report the question unresolved.";
+// Original questions choose their own scale. Integer weights prevent repeated
+// fractional-offset output failures; extracted/manual rubrics keep their scale.
+const originalQuestionInput = questionInput.safeExtend({
+  points: z.number().int().min(1).max(100).default(1),
+  rubric: z
+    .array(
+      questionInput.shape.rubric.removeDefault().element.extend({
+        points: z.number().int().min(1).max(100),
+      }),
+    )
+    .max(20)
+    .default([]),
+});
 export function registerWorkflows(
   jobs: Jobs,
   catalog: Catalog,
@@ -199,9 +222,10 @@ export function registerWorkflows(
         ordinal: segment.ordinal,
       };
     });
-    const visualIds = new Set<string>(
-      (q.visualEvidence ?? []).map((v: any) => v.segmentId),
-    );
+    const visualIds = new Set<string>([
+      ...(q.visualEvidence ?? []).map((v: any) => v.segmentId),
+      ...materials.filter((m) => m.locator.ocr).map((m) => m.segmentId),
+    ]);
     const rendered = await withPageImages(
       s,
       materials.filter((m) => visualIds.has(m.segmentId)),
@@ -225,6 +249,7 @@ export function registerWorkflows(
           (m) => rendered.find((v) => v.segmentId === m.segmentId) ?? m,
         ),
         visualPolicy:
+          "Materials marked locator.ocr are uncertain OCR transcripts, not a trusted text layer. Independently compare cited content against the attached original page, including signs, numbers, units and formulas. For generated questions check that the original actually supports the new question, not literal wording equality. Return visualCheck for OCR evidence; if you cannot read required evidence set usable=false. " +
           "When learnerRegions is nonempty, labelled learner_region images replace the corresponding full pages in requiredAssetIds. Compare EACH crop to its original page: every needed condition, shared passage, axis/legend, formula and choice must remain visible. Text transcribed in the stem is not permission to omit a necessary graph or shared context from a crop. A crop that hides required content or includes an answer must fail complete/noAnswerLeak. Original full pages are reviewer evidence only when replaced by crops. " +
           "If visualEvidence is nonempty, inspect every attached original page. Return visualCheck: faithful confirms every stem/passage/choice and math symbol agrees with the original question image (not the answer sheet), complete confirms graphs and all necessary context are visible in requiredAssetIds, and noAnswerLeak confirms those learner-facing images contain no solutions/answer keys. Any missing image, changed question or unreadable question formula makes usable=false. Text-layout loss may be transcribed into readable plain/Unicode math only when visualTranscription=true and the original image is preserved. Classify worked-solution notation separately with sourceQualityPolicy; a harmless intermediate omission does not make a faithful question image invalid. For answerContinuationEvidence, check consecutive pages and matching parent problem/subpart; adjacency alone is not proof. Include specific reasons for discrepancies.",
         sourceQualityPolicy,
@@ -265,7 +290,9 @@ export function registerWorkflows(
     if (sourceFailure)
       return { ...review, usable: false, reason: sourceFailure };
     if (
-      (q.visualEvidence?.length || q.visualTranscription) &&
+      (q.visualEvidence?.length ||
+        q.visualTranscription ||
+        materials.some((m) => m.locator.ocr)) &&
       !(
         review.visualCheck?.faithful &&
         review.visualCheck.complete &&
@@ -289,6 +316,19 @@ export function registerWorkflows(
           reason:
             "문제 요구와 채점 기준 불일치: " +
             mismatches.map((c) => c.reason).join(" "),
+        };
+    }
+    if (q.python) {
+      const execution = await ctx.step(
+        `python:verify:${q.revisionId ?? canonicalQuestion(q)}:${hash(JSON.stringify([q.python, q.modelAnswer]))}`,
+        () => gradePython(q.modelAnswer ?? "", q.python, ctx.signal),
+      );
+      if (execution.some((r) => r.status !== "passed"))
+        return {
+          ...review,
+          usable: false,
+          reason:
+            "모범 코드가 실행 테스트를 통과하지 못했습니다. 문제 조건·테스트·코드를 확인하세요.",
         };
     }
     const notice = correction
@@ -642,13 +682,9 @@ export function registerWorkflows(
       const context = body.map((m) => m.text).join("\n");
       let retrieval = answerIndex.search(query, { context });
       let selectedAnswers = retrieval.materials;
-      let rendered = await withPageImages(
-        s,
-        [...body, ...selectedAnswers],
-        ctx.signal,
-      );
-      body = rendered.slice(0, body.length);
-      selectedAnswers = rendered.slice(body.length);
+      let rendered: Material[] = [];
+      let imageRequests = 0;
+      const requestedImages = new Set<string>();
       const supplied = (items: Material[]) =>
         items.map((m) => body.find((v) => v.segmentId === m.segmentId) ?? m);
       const processed = new Map<
@@ -670,6 +706,35 @@ export function registerWorkflows(
         ...retrieval.diagnostics,
       });
       for (let part = 0; part < 20; part++) {
+        const materials = [...body, ...selectedAnswers];
+        const delivery = await ctx.step(
+          `extract:images:${latest}:${offset}:${part}`,
+          async () =>
+            imageDeliveryPlan(
+              materials,
+              batch.map((m) => m.segmentId),
+              selectedAnswers
+                .filter(
+                  (m) => retrieval.diagnostics.reasons[m.segmentId] === "match",
+                )
+                .map((m) => m.segmentId),
+              [...requestedImages],
+            ),
+        );
+        rendered = await deliverImages(
+          s,
+          materials,
+          delivery.selected,
+          ctx.signal,
+        );
+        body = rendered.slice(0, body.length);
+        selectedAnswers = rendered.slice(body.length);
+        ctx.event({
+          type: "image_delivery",
+          segmentId: batch[0]!.segmentId,
+          part,
+          ...delivery,
+        });
         const result = await ctx.step(
           `extract:page:${latest}:${offset}:${part}`,
           async () => {
@@ -693,6 +758,12 @@ export function registerWorkflows(
                     materialDeliveryPolicy:
                       "Each immutable segment appears in full exactly once across segments, adjacentSegments, sourceContext and answerSegments. sourceHeaderId/sourceContextIds/answerSegmentIds refer to those same full materials, including ones in another array. Resolve these IDs across ALL four arrays before declaring missing context. They do not authorize extracting a question anchored outside segments. No original text is shortened by this deduplication.",
                     answerIndex: retrieval.candidates,
+                    imageDelivery: {
+                      ...delivery,
+                      requestsRemaining: 2 - imageRequests,
+                    },
+                    imagePolicy:
+                      "Only materials with pageImage were actually attached to this call. Omitted images are navigation metadata, NOT visual evidence. If a needed image is omitted, return imageRequest={segmentIds:[IDs from omitted]}, questions=[], unresolved=[], hasMore=false and answerSearch=null. At most two image requests. If the answer text itself is missing use answerSearch instead. Never cite an unprovided image. Return imageRequest=null for normal extraction.",
                     answerRetrieval: {
                       ...retrieval.diagnostics,
                       searchesRemaining: 2 - searches,
@@ -728,6 +799,13 @@ export function registerWorkflows(
                         .strict()
                         .nullable()
                         .default(null),
+                      imageRequest: z
+                        .object({
+                          segmentIds: z.array(z.string()).min(1).max(16),
+                        })
+                        .strict()
+                        .nullable()
+                        .default(null),
                       unresolved: z.array(
                         z
                           .object({ reference: z.string(), reason: z.string() })
@@ -737,13 +815,14 @@ export function registerWorkflows(
                     .strict()
                     .refine(
                       (v) =>
-                        !v.answerSearch ||
-                        (!v.questions.length &&
-                          !v.unresolved.length &&
-                          !v.hasMore),
+                        !(v.answerSearch && v.imageRequest) &&
+                        (!(v.answerSearch || v.imageRequest) ||
+                          (!v.questions.length &&
+                            !v.unresolved.length &&
+                            !v.hasMore)),
                       {
                         message:
-                          "answerSearch must be a search-only response with empty questions/unresolved and hasMore=false",
+                          "answerSearch/imageRequest must be mutually exclusive request-only responses with empty questions/unresolved and hasMore=false",
                       },
                     ),
                   false,
@@ -775,6 +854,7 @@ export function registerWorkflows(
                   "추출 결과 범위가 다릅니다.",
                 );
                 validateExtraction(q, src, body, selectedAnswers);
+                validateDeliveredImages(q.visualEvidence, rendered);
                 requireThat(
                   batch.some(
                     (m) =>
@@ -796,6 +876,7 @@ export function registerWorkflows(
             return {
               ids,
               answerSearch: output.answerSearch,
+              imageRequest: output.imageRequest,
               unresolved: issues,
               hasMore: output.hasMore,
               processed: [
@@ -811,6 +892,25 @@ export function registerWorkflows(
             };
           },
         );
+        if (result.imageRequest) {
+          const ids = result.imageRequest.segmentIds;
+          const omitted = new Set(delivery.omitted.map((m) => m.segmentId));
+          if (
+            part === 19 ||
+            imageRequests >= 2 ||
+            !ids.every((id) => omitted.has(id))
+          ) {
+            unresolved.push({
+              reference: `segment:${batch[0]!.segmentId}`,
+              reason:
+                "PDF 추가 이미지 요청이 반복되거나 허용된 구간/횟수를 벗어났습니다. 필요한 페이지를 직접 지정해 새 추출을 시작하세요.",
+            });
+            break;
+          }
+          ids.forEach((id) => requestedImages.add(id));
+          imageRequests++;
+          continue;
+        }
         if (result.answerSearch) {
           const request = result.answerSearch;
           const found = answerIndex.search(request.query || query, {
@@ -855,13 +955,17 @@ export function registerWorkflows(
           }
           searches++;
           retrieval = next;
-          rendered = await withPageImages(
-            s,
-            [...body, ...next.materials],
-            ctx.signal,
-          );
-          body = rendered.slice(0, body.length);
-          selectedAnswers = rendered.slice(body.length);
+          // Preserve the full text for explicitly requested pages as well as answer anchors.
+          selectedAnswers = [
+            ...new Map(
+              [
+                ...next.materials,
+                ...selectedAnswers.filter((m) =>
+                  requestedImages.has(m.segmentId),
+                ),
+              ].map((m) => [m.segmentId, m]),
+            ).values(),
+          ];
           seenSets.add(nextSet);
           ctx.event({
             type: "answer_retrieval",
@@ -922,6 +1026,80 @@ export function registerWorkflows(
       unresolved,
     };
   });
+  jobs.handlers.set("suggest_regions", async (input, ctx) => {
+    const q = catalog.readQuestion(input.questionId, input.revisionId);
+    requireThat(
+      catalog.readQuestion(input.questionId).revisionId === q.revisionId,
+      "REVISION_CONFLICT",
+      "문항 버전이 변경됐습니다. 최신 문항에서 다시 요청하세요.",
+      409,
+    );
+    const originals = q.visualEvidence.filter(
+      (v: { role: string }) => v.role === "question",
+    );
+    requireThat(
+      originals.length > 0 && originals.length <= 8,
+      "PDF_REGION_SOURCE",
+      "문제 원본 이미지 1~8개가 필요합니다.",
+    );
+    const materials: Material[] = originals.map(
+      (v: { segmentId: string; assetId: string }) => {
+        const seg = s.get("segments", v.segmentId);
+        return {
+          segmentId: seg.id,
+          revisionId: seg.revision_id,
+          sourceId: s.get("source_revisions", seg.revision_id).source_id,
+          title: "문제 원본",
+          kind: "reference",
+          url: null,
+          text: seg.text,
+          locator: decode(seg.locator),
+          pageImage: { assetId: v.assetId, width: 0, height: 0 },
+        };
+      },
+    );
+    const result = await ctx.step(`regions:${q.revisionId}`, async () => {
+      const proposed = await ask(
+        ctx,
+        "suggest_question_regions",
+        {
+          stem: q.stem,
+          passage: q.passage,
+          choices: q.choices,
+          pages: materials,
+          instruction:
+            "Suggest normalized bounding rectangles for this question. Keep all needed shared passages, figures, axes, legends, formulas and choices. Never include answers. If no safe single rectangle exists for a page, use full-page bounds and explain the uncertainty. Only use supplied segment IDs. This is a suggestion for user inspection, not approval.",
+        },
+        z
+          .object({
+            regions: z
+              .array(
+                z
+                  .object({
+                    segmentId: z.string(),
+                    bounds: regionBounds,
+                    reason: z.string().max(1500),
+                  })
+                  .strict(),
+              )
+              .min(1)
+              .max(8),
+          })
+          .strict(),
+        false,
+        imageInputs(s, materials),
+      );
+      const ids = proposed.regions.map((r) => r.segmentId);
+      requireThat(
+        new Set(ids).size === ids.length &&
+          ids.every((id) => materials.some((m) => m.segmentId === id)),
+        "PDF_REGION_SOURCE",
+        "추천 영역이 이 문항의 원본 구간과 일치하지 않습니다.",
+      );
+      return proposed;
+    });
+    return { revisionId: q.revisionId, ...result };
+  });
   jobs.handlers.set("verify_question", async (input, ctx) => {
     const q = catalog.readQuestion(input.questionId);
     return ctx.step(
@@ -949,6 +1127,12 @@ export function registerWorkflows(
     const empty = exam.slots.filter(
       (slot: any) => !exam.items.some((q: any) => q.slot === slot.slot),
     );
+    if (empty.length && exam.template.mode === "review")
+      throw new Waiting({
+        code: "REVIEW_COUNT",
+        message:
+          "복습 대상보다 요청 문항이 많습니다. 복습 일정 화면에서 오늘 남은 문항으로 시험을 만드세요.",
+      });
     if (empty.length && exam.template.policy === "past_only")
       throw new Waiting({
         code: "INSUFFICIENT_PAST",
@@ -1004,16 +1188,21 @@ export function registerWorkflows(
                   exclude: current.items.map((q: any) => q.stem),
                   sourceMatch: null,
                   shortAnswerPolicy,
+                  scoringPolicy:
+                    "For original short questions, use positive INTEGER rubric points and set question.points to their exact sum. For example two criteria of 2 and 3 points total 5. Never add tiny placeholder criteria (such as 0.05 points). Recalculate the sum before returning; invalid sums are rejected, never normalized by the server.",
+                  executionPolicy:
+                    "If slot.execution=python, return python with language=python, starterCode, timeoutMs=5000 and 2-5 stdin/stdout tests including at least one public example and boundary cases. modelAnswer must be runnable Python 3.14 code without markdown, using only standard input/output and standard library. Explicitly state the input/output contract and equal-weight tests scoring in the stem. No network, OS files, subprocesses or pip packages. Otherwise python=null. Code tests must test the requested behavior, not a particular solution.",
                   instruction:
                     "Create exactly one original grounded question for this slot. origin=ai_generated. Set goalId, scopeId, type and conceptIds exactly from the input. Use human-readable choice/rubric IDs. familyId, parentId and groupId must be null for a new independent question. No unsupported image/audio assets. Use exact supplied evidence quotes. For short answers choices=[] and answer=[], provide modelAnswer and rubric whose points sum to points. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above. Correct previousFailure if present.",
                 },
-                questionInput,
+                originalQuestionInput,
               );
               requireThat(
                 q.goalId === exam.goalId &&
                   q.scopeId === exam.scopeId &&
                   q.origin === "ai_generated" &&
                   q.type === slot.type &&
+                  (q.python?.language ?? null) === (slot.execution ?? null) &&
                   q.conceptIds.includes(slot.conceptId) &&
                   (slot.difficulty === "any" ||
                     q.difficulty === slot.difficulty),
@@ -1028,6 +1217,13 @@ export function registerWorkflows(
               );
               catalog.validateQuestion(q);
               requireThat(
+                !current.items.some((existing: { stem: string }) =>
+                  nearDuplicate(existing.stem, q.stem),
+                ),
+                "NEAR_DUPLICATE",
+                "기존 문항과 표현·수치만 다른 문제가 생성됐습니다. 같은 개념의 다른 상황·요구로 출제하세요.",
+              );
+              requireThat(
                 !current.items.some(
                   (existing: any) =>
                     canonicalQuestion(existing) === canonicalQuestion(q),
@@ -1041,7 +1237,11 @@ export function registerWorkflows(
               feedback = review.reason;
             } catch (e) {
               ctx.signal.throwIfAborted();
-              if (e instanceof Fault && e.code.startsWith("CODEX_")) throw e;
+              if (
+                e instanceof Fault &&
+                (e.code.startsWith("CODEX_") || e.code === "PYTHON_RUNTIME")
+              )
+                throw e;
               feedback = (e instanceof Error ? e.message : String(e)).slice(
                 0,
                 4000,
@@ -1090,6 +1290,21 @@ export function registerWorkflows(
         continue;
       const expectedVersion = item.assessment.version;
       const gradeStep = `grade:${item.slot}:${expectedVersion}`;
+      if (item.python) {
+        await ctx.step(
+          `${gradeStep}:python`,
+          () =>
+            gradePython(item.answerGiven?.value ?? "", item.python, ctx.signal),
+          (results) =>
+            learning.pythonGrade(
+              input.attemptId,
+              item.slot,
+              results,
+              expectedVersion,
+            ),
+        );
+        continue;
+      }
       await ctx.step(
         gradeStep,
         async () => {
@@ -1250,16 +1465,21 @@ export function registerWorkflows(
             materials,
             sourceMatch: null,
             shortAnswerPolicy,
+            executionPolicy: parent.python
+              ? "Preserve Python standard-input/output execution. Supply new behavior-based test cases (including public examples and hidden boundary cases) and runnable Python modelAnswer. State equal-weight test scoring in the stem. Preserve the parent question type."
+              : "Preserve the parent question type; python=null.",
             instruction:
               "Test the same concept with a meaningfully different situation. origin=ai_variant and parentId must equal the original ID. Preserve goal/scope and family. Cite exact source evidence. Choices may be shuffled: in stem, choices and explanation refer to exact choice content, never positional letters/numbers or phrases like all/none of the above.",
           },
-          questionInput,
+          originalQuestionInput,
         );
         requireThat(
           q.origin === "ai_variant" &&
             q.parentId === parent.id &&
             q.goalId === parent.goalId &&
-            q.scopeId === parent.scopeId,
+            q.scopeId === parent.scopeId &&
+            q.type === parent.type &&
+            (q.python?.language ?? null) === (parent.python?.language ?? null),
           "VARIANT",
           "변형 관계가 다릅니다.",
         );

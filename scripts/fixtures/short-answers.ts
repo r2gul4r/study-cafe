@@ -84,6 +84,77 @@ const pending = { status: "pending" as const, score: null, passed: false };
 
 export const shortAnswerCases: ShortAnswerCase[] = [
   {
+    id: "described-method-value-only",
+    title: "CSS 값과 풀이 요구 구분",
+    kind: "skill",
+    concept: "content-box 높이",
+    material:
+      "content-box의 전체 높이는 콘텐츠 높이와 위아래 padding, border의 합이다.",
+    stem: "content-box 요소의 height는 90px, 위아래 padding은 10px와 15px, 위아래 border는 2px와 3px이다. 테두리 바깥쪽까지의 높이는 몇 px인가?",
+    modelAnswer: "120px",
+    answer: "120px",
+    rubric: [
+      criterion(
+        "height",
+        "콘텐츠 높이에 위아래 padding과 border를 더해 120px로 제시함",
+        2,
+      ),
+    ],
+    expected: full(2),
+  },
+  {
+    id: "long-equivalent-answer",
+    title: "장문에서 핵심 의미 판정",
+    kind: "general",
+    concept: "중앙값",
+    material:
+      "중앙값은 자료를 크기순으로 정렬했을 때 가운데 값이다. 자료 개수가 짝수이면 가운데 두 값의 산술평균이다.",
+    stem: "자료 개수가 짝수일 때 중앙값을 구하는 방법을 설명하시오.",
+    modelAnswer: "자료를 크기순으로 정렬하고 가운데 두 값의 평균을 구한다.",
+    answer:
+      "자료를 먼저 크기순으로 나열해야 합니다. " +
+      "최댓값과 최솟값만으로는 중앙값을 정하지 못하며 자료의 순서가 중요합니다. ".repeat(
+        35,
+      ) +
+      "짝수 개의 자료에서는 중앙의 두 수를 더한 뒤 2로 나누면 됩니다.",
+    rubric: [
+      criterion("sort", "자료를 크기순으로 정렬한다."),
+      criterion("average", "가운데 두 값의 평균을 구한다."),
+    ],
+    expected: full(2),
+  },
+  {
+    id: "alternate-valid-example",
+    title: "여러 가능한 정답",
+    kind: "general",
+    concept: "평균",
+    material: "두 수의 산술평균은 합을 2로 나눈 값이다.",
+    stem: "서로 다른 정수 두 개를 써서 산술평균이 5가 되는 예를 하나 제시하시오.",
+    modelAnswer: "4와 6",
+    answer: "2와 8",
+    rubric: [
+      criterion(
+        "example",
+        "서로 다른 정수 두 개의 합이 10인 예를 제시한다.",
+        2,
+      ),
+    ],
+    expected: full(2),
+  },
+  {
+    id: "contradictory-answer",
+    title: "서로 모순되는 답",
+    kind: "general",
+    concept: "평균",
+    material: "자료 2, 4, 6의 산술평균은 (2+4+6)/3=4이다.",
+    stem: "자료 2, 4, 6의 산술평균을 하나의 값으로 쓰시오.",
+    modelAnswer: "4",
+    answer: "4 또는 12. 둘 중 어느 쪽인지는 모르겠다.",
+    rubric: [criterion("value", "산술평균을 4로 확정한다.", 2)],
+    expected: { status: "confirmed", score: 0, passed: false },
+    alternative: pending,
+  },
+  {
     ...astronomy,
     id: "meaning-paraphrase",
     answer: "어떤 천체를 중심으로 그 둘레를 도는 천체다.",

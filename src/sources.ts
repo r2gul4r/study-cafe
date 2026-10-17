@@ -4,6 +4,7 @@ import ipaddr from "ipaddr.js";
 import { load } from "cheerio";
 import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import { createRequire } from "node:module";
+import { PdfOcr, type OcrLanguage } from "./ocr.js";
 import { dirname, join } from "node:path";
 import { Catalog } from "./catalog.js";
 import { decode, requireThat, id, hash, now, Fault } from "./core.js";
@@ -116,6 +117,11 @@ export async function extract(
   bytes: Uint8Array,
   mime: string,
   baseUrl?: string,
+  options: {
+    ocr?: boolean;
+    ocrLanguages?: OcrLanguage[];
+    signal?: AbortSignal;
+  } = {},
 ): Promise<Extraction> {
   requireThat(
     bytes.length <= 20 * 1024 * 1024,
@@ -141,6 +147,8 @@ export async function extract(
       cMapUrl: join(pdfRoot, "cmaps").replaceAll("\\", "/") + "/",
       cMapPacked: true,
     });
+    const ocr = new PdfOcr(options.ocrLanguages);
+    let scannedPages = 0;
     try {
       const doc = await task.promise;
       requireThat(
@@ -151,15 +159,27 @@ export async function extract(
       const pages = [];
       let total = 0;
       for (let i = 1; i <= doc.numPages; i++) {
+        options.signal?.throwIfAborted();
         const page = await doc.getPage(i);
         const content = await page.getTextContent();
         const parts = content.items.filter(
           (x: any) => typeof x.str === "string",
         ) as any[];
-        const text = parts
+        let text = parts
           .map((x) => x.str + (x.hasEOL ? "\n" : " "))
           .join("")
           .trim();
+        let ocrResult;
+        if (!text && options.ocr) {
+          requireThat(
+            ++scannedPages <= 20,
+            "OCR_PAGE_LIMIT",
+            "스캔 페이지는 한 번에 최대 20쪽입니다. PDF를 나눠 가져오세요.",
+            422,
+          );
+          ocrResult = await ocr.recognize(doc, page, options.signal);
+          text = ocrResult.text;
+        }
         total += text.length;
         requireThat(
           total <= 2_000_000,
@@ -171,6 +191,16 @@ export async function extract(
             text,
             locator: {
               pdfPage: i,
+              ...(ocrResult
+                ? {
+                    ocr: {
+                      confidence: ocrResult.confidence,
+                      engine: ocrResult.engine,
+                      languages: ocrResult.languages,
+                      requiresVisualReview: true,
+                    },
+                  }
+                : {}),
               boxes: parts.map((x) => ({
                 text: x.str,
                 transform: x.transform,
@@ -183,11 +213,12 @@ export async function extract(
       requireThat(
         pages.length,
         "OCR_REQUIRED",
-        "추출 가능한 텍스트가 없습니다. 스캔 PDF는 OCR 확장이 필요합니다.",
+        "추출 가능한 텍스트가 없습니다. 스캔 PDF OCR을 선택하고 언어를 확인해 다시 가져오세요.",
         422,
       );
       return { pages, links: [] };
     } finally {
+      await ocr.close();
       await task.destroy();
     }
   }
@@ -232,7 +263,13 @@ export class Sources {
   ) {}
   async prepare(
     sourceId: string,
-    input: { text?: string; base64?: string; mime?: string },
+    input: {
+      text?: string;
+      base64?: string;
+      mime?: string;
+      ocr?: boolean;
+      ocrLanguages?: OcrLanguage[];
+    },
     signal?: AbortSignal,
   ) {
     const source = this.catalog.readSource(sourceId);
@@ -254,7 +291,10 @@ export class Sources {
       requireThat(source.url, "SOURCE_URL", "다운로드 URL이 없습니다.");
       file = await this.fetcher(source.url, signal);
     }
-    const extracted = await extract(file.bytes, file.mime, file.url);
+    const extracted = await extract(file.bytes, file.mime, file.url, {
+      ...input,
+      signal,
+    });
     signal?.throwIfAborted();
     return {
       file: {

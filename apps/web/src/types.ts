@@ -13,7 +13,12 @@ export type Scope = {
   title: string;
   concepts: Concept[];
   references: string[];
-  examFormat?: { total: number; minutes: number; evidenceUrl: string } | null;
+  examFormat?: {
+    total: number;
+    minutes: number;
+    evidenceUrl: string;
+    sections?: ExamSection[];
+  } | null;
 };
 export type Goal = {
   id: string;
@@ -27,13 +32,21 @@ export type Goal = {
   createdAt: string;
   scope: Scope | null;
 };
+export type ExamSection = {
+  title: string;
+  count: number;
+  minutes: number;
+  conceptIds: string[];
+};
 export type Template = {
+  sections?: ExamSection[];
   id: string;
   name: string;
   total: number;
   single: number;
   multiple: number;
   short: number;
+  python?: number;
   mode: string;
   policy: string;
   minutes: number | null;
@@ -52,6 +65,13 @@ export type Question = {
   scopeId: string;
   stem: string;
   type: string;
+  python?: {
+    language: "python";
+    starterCode: string;
+    timeoutMs: number;
+    tests: { name: string; stdin: string; stdout: string; hidden: boolean }[];
+    testCount?: number;
+  } | null;
   origin: string;
   difficulty: string;
   status: string;
@@ -140,6 +160,15 @@ export type Answer = {
   savedAt?: string;
 };
 export type Attempt = {
+  section?: {
+    index: number;
+    title: string;
+    firstSlot: number;
+    lastSlot: number;
+    count: number;
+    deadline: string | null;
+    remainingMs: number | null;
+  } | null;
   id: string;
   examId: string;
   status: string;
@@ -157,6 +186,13 @@ export type Assessment = {
     evidence: string;
     reason: string;
     verdict?: string;
+  }[];
+  execution?: {
+    name: string;
+    status: string;
+    stdout?: string;
+    stderr?: string;
+    hidden?: boolean;
   }[];
   gradingReview?: {
     policyVersion: number;
@@ -275,6 +311,7 @@ export const labels: Record<string, string> = {
   verify_question: "문항 검토",
   generate_variant: "변형 문제 생성",
   grade_attempt: "주관식 채점",
+  suggest_regions: "PDF 표시 영역 추천",
   summarize_wrong: "오답 요약",
   unseen: "아직 학습 전",
   review_needed: "복습 필요",

@@ -30,7 +30,9 @@ const cases = materialGoals.filter((c) => !selected || selected.includes(c.id));
 const phase = arg("phase") ?? "all";
 assert.ok(["all", "research", "generate", "extract"].includes(phase));
 const maxCalls = Number(arg("max-calls") ?? 40);
-assert.ok(Number.isInteger(maxCalls) && maxCalls >= 1 && maxCalls <= 100);
+assert.ok(Number.isInteger(maxCalls) && maxCalls >= 1 && maxCalls <= 200);
+const count = Number(arg("count") ?? 4);
+assert.ok([4, 25].includes(count));
 const resume = arg("resume");
 const dataDir = resume
   ? resolve(resume)
@@ -265,10 +267,10 @@ try {
       if (!state.examId) {
         const template = f.exams.template({
           name: "실제 자료 생성 표본",
-          total: 4,
-          single: 2,
-          multiple: 1,
-          short: 1,
+          total: count,
+          single: count === 25 ? 18 : 2,
+          multiple: count === 25 ? 2 : 1,
+          short: count === 25 ? 5 : 1,
           policy: "ai_only",
         });
         state.examId = f.exams.create(state.goalId, template.id).id;
@@ -277,12 +279,11 @@ try {
       await run(state, "prepareJob", "prepare_exam", { examId: state.examId });
       const exam = f.exams.get(state.examId, true);
       assert.equal(exam.status, "ready");
-      assert.equal(exam.items.length, 4);
+      assert.equal(exam.items.length, count);
       assert.deepEqual(exam.items.map((q: any) => q.type).sort(), [
-        "multiple",
-        "short",
-        "single",
-        "single",
+        ...Array(count === 25 ? 2 : 1).fill("multiple"),
+        ...Array(count === 25 ? 5 : 1).fill("short"),
+        ...Array(count === 25 ? 18 : 2).fill("single"),
       ]);
       for (const q of exam.items) {
         assert.equal(q.goalId, state.goalId);
@@ -303,7 +304,125 @@ try {
       state.generated = exam.items;
       state.generationPassed = true;
       save();
-      console.log(`[${c.id}] generated and independently verified: 4/4`);
+      console.log(
+        `[${c.id}] generated and independently verified: ${count}/${count}`,
+      );
+      if (process.argv.includes("--cycle") && !state.cyclePassed) {
+        state.attemptId ??= f.exams.start(exam.id).id;
+        const attempt = f.exams.attempt(state.attemptId);
+        if (attempt.status === "active") {
+          for (const q of exam.items) {
+            if (
+              attempt.answers.some((a: { slot: number }) => a.slot === q.slot)
+            )
+              continue;
+            const value =
+              q.slot === 1
+                ? [
+                    q.choices.find(
+                      (c: { id: string }) => !q.answer.includes(c.id),
+                    ).id,
+                  ]
+                : q.type === "short"
+                  ? q.modelAnswer
+                  : q.answer;
+            f.exams.saveAnswer(state.attemptId, q.slot, {
+              value,
+              version: 0,
+              flagged: q.slot === 1,
+              uncertain: false,
+              hintUsed: false,
+              recall: null,
+            });
+          }
+          f.learning.submit(state.attemptId, state.attemptId);
+        }
+        save();
+        await run(state, "gradingJob", "grade_attempt", {
+          attemptId: state.attemptId,
+        });
+        if (
+          process.argv.includes("--retry-pending") &&
+          f.learning.result(state.attemptId).pending
+        ) {
+          await run(state, "gradingRetryJob", "grade_attempt", {
+            attemptId: state.attemptId,
+          });
+        }
+        const result = f.learning.result(state.attemptId);
+        assert.equal(result.pending, 0);
+        assert.equal(
+          result.items.filter((q: any) => !q.assessment.passed).length,
+          1,
+        );
+        await run(state, "summaryJob", "summarize_wrong", {
+          goalId: state.goalId,
+        });
+        await run(state, "variantJob", "generate_variant", {
+          questionId: exam.items[0].id,
+        });
+        state.reviewExamId ??= f.exams.createReview(state.goalId).id;
+        const review = f.exams.get(state.reviewExamId, true);
+        state.reviewAttemptId ??= f.exams.start(review.id).id;
+        const reviewAttempt = f.exams.attempt(state.reviewAttemptId);
+        if (reviewAttempt.status === "active") {
+          for (const q of review.items) {
+            if (
+              reviewAttempt.answers.some(
+                (a: { slot: number }) => a.slot === q.slot,
+              )
+            )
+              continue;
+            f.exams.saveAnswer(reviewAttempt.id, q.slot, {
+              value: q.type === "short" ? q.modelAnswer : q.answer,
+              version: 0,
+              flagged: false,
+              uncertain: false,
+              hintUsed: false,
+              recall: null,
+            });
+          }
+          f.learning.submit(reviewAttempt.id, reviewAttempt.id);
+        }
+        save();
+        await run(state, "reviewGradingJob", "grade_attempt", {
+          attemptId: reviewAttempt.id,
+        });
+        const reviewed = f.learning.result(reviewAttempt.id);
+        assert.equal(reviewed.pending, 0);
+        assert.ok(reviewed.items.every((q: any) => q.assessment.passed));
+        state.cyclePassed = true;
+        state.cycle = {
+          earned: result.earned,
+          total: result.totalPossible,
+          pending: result.pending,
+          wrong: [1],
+          reviewExamId: review.id,
+          reviewCount: review.items.length,
+          reviewAttemptId: reviewAttempt.id,
+          reviewEarned: reviewed.earned,
+          reviewTotal: reviewed.totalPossible,
+          method:
+            "API integration: model answers with one deliberate objective error; not an independent accuracy score",
+        };
+        state.distribution = {
+          difficulty: Object.fromEntries(
+            ["easy", "medium", "hard"].map((d) => [
+              d,
+              exam.items.filter((q: any) => q.difficulty === d).length,
+            ]),
+          ),
+          concepts: Object.fromEntries(
+            [...new Set(exam.items.flatMap((q: any) => q.conceptIds))].map(
+              (c) => [
+                String(c),
+                exam.items.filter((q: any) => q.conceptIds.includes(c)).length,
+              ],
+            ),
+          ),
+        };
+        save();
+      }
     }
   if (["all", "extract"].includes(phase))
     for (const c of cases) {
@@ -362,9 +481,16 @@ try {
       assert.equal(result.usable, 1, JSON.stringify(result));
       const question = state.extractedControl;
       assert.equal(question.origin, "external_practice");
-      assert.equal(
-        question.choices.find((v: any) => v.id === question.answer[0])?.text,
-        c.expectedAnswer,
+      const selectedText = question.choices.find(
+        (v: any) => v.id === question.answer[0],
+      )?.text;
+      // Authored controls put the answer in a. The extractor may preserve
+      // that original printed marker as part of the exact choice wording.
+      const printedAnswer = `a. ${c.expectedAnswer}`;
+      assert.ok(c.paper.split("\n").includes(printedAnswer));
+      assert.ok(
+        selectedText === c.expectedAnswer || selectedText === printedAnswer,
+        `Unexpected extracted answer: ${selectedText}`,
       );
       assert.ok(question.sourceMatch?.edition);
       state.extractedControl = question;

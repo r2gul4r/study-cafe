@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { StudyText } from "./study-content";
 import { ShortGradeDetails } from "./short-grade-details";
+import { PythonPanel, PythonResults } from "./python-panel";
+import { SectionEditor } from "./section-editor";
+import type { ExamSection } from "./types";
 import {
   Plus,
   Play,
@@ -189,6 +192,7 @@ function CreateExam({
   onDone: () => void;
 }) {
   const q = useQuery<Template[]>("/exam-templates");
+  const [sections, setSections] = useState<ExamSection[]>([]);
   const [template, setTemplate] = useState(""),
     [total, setTotal] = useState(25),
     [single, setSingle] = useState(20),
@@ -209,9 +213,15 @@ function CreateExam({
               single,
               multiple,
               short: total - single - multiple,
+              python: Number(f.get("python") || 0),
               mode,
               policy: f.get("policy"),
-              minutes: f.get("minutes") ? Number(f.get("minutes")) : null,
+              minutes: sections.length
+                ? sections.reduce((n, s) => n + s.minutes, 0)
+                : f.get("minutes")
+                  ? Number(f.get("minutes"))
+                  : null,
+              sections,
               difficulty: f.get("difficulty"),
               shuffleChoices: true,
             });
@@ -248,7 +258,18 @@ function CreateExam({
             <Field label="학습 방식">
               <Select
                 value={mode}
-                onChange={(e) => setMode(e.target.value)}
+                onChange={(e) => {
+                  setMode(e.target.value);
+                  const format = goal.scope?.examFormat;
+                  if (e.target.value === "mock" && format) {
+                    setSections(format.sections ?? []);
+                    setTotal(format.total);
+                    setSingle(Math.min(single, format.total));
+                    setMultiple(
+                      Math.min(multiple, Math.max(0, format.total - single)),
+                    );
+                  }
+                }}
                 options={["practice", "weakness", "review", "mock"]}
               />
             </Field>
@@ -323,10 +344,24 @@ function CreateExam({
                 type="number"
                 min={1}
                 max={1440}
-                required={mode === "mock"}
-                placeholder="비우면 시간 제한 없음"
+                required={mode === "mock" && !sections.length}
+                disabled={!!sections.length}
               />
             </Field>
+            <Field label="주관식 중 Python 실행 문항 수">
+              <input
+                name="python"
+                type="number"
+                min={0}
+                max={Math.max(0, total - single - multiple)}
+                defaultValue={0}
+              />
+            </Field>
+            <SectionEditor
+              value={sections}
+              change={setSections}
+              concepts={goal.scope?.concepts ?? []}
+            />
             {mode === "mock" && (
               <Notice tone="info">
                 실전 모의시험은 학습 범위에 저장된 공식 문항 수·시간과 일치해야
@@ -352,11 +387,16 @@ export function AttemptPage({ id }: { id: string }) {
 }
 function ExamRunner({ initial }: { initial: Attempt }) {
   const [attempt, setAttempt] = useState(initial),
-    [index, setIndex] = useState(0),
+    [index, setIndex] = useState((initial.section?.firstSlot ?? 1) - 1),
     [confirm, setConfirm] = useState(false),
     [tick, setTick] = useState(Date.now()),
     [pollError, setPollError] = useState("");
   const answers = useAnswers(initial);
+  useEffect(() => {
+    const s = attempt.section;
+    if (s && (index + 1 < s.firstSlot || index + 1 > s.lastSlot))
+      setIndex(s.firstSlot - 1);
+  }, [attempt.section?.index, index]);
   useEffect(() => {
     let live = true;
     const poll = setInterval(
@@ -386,9 +426,10 @@ function ExamRunner({ initial }: { initial: Attempt }) {
   if (attempt.status === "submitted") return <ResultsPage id={attempt.id} />;
   const item = attempt.exam.items[index],
     draft = answers.drafts[item.slot];
-  const remaining = attempt.deadline
-    ? Math.max(0, new Date(attempt.deadline).getTime() - tick)
-    : attempt.remainingMs;
+  const currentDeadline = attempt.section?.deadline ?? attempt.deadline;
+  const remaining = currentDeadline
+    ? Math.max(0, new Date(currentDeadline).getTime() - tick)
+    : (attempt.section?.remainingMs ?? attempt.remainingMs);
   const answered = Object.values(answers.drafts).filter((d) =>
     Array.isArray(d.value) ? d.value.length : String(d.value).trim(),
   ).length;
@@ -409,6 +450,31 @@ function ExamRunner({ initial }: { initial: Attempt }) {
         }
       />
       {pollError && <Notice>{pollError}</Notice>}
+      {attempt.section && (
+        <div className="info-strip">
+          <strong>
+            {attempt.section.index + 1}/{attempt.section.count}섹션 ·{" "}
+            {attempt.section.title}
+          </strong>
+          {attempt.section.index + 1 < attempt.section.count && (
+            <Action
+              variant="secondary"
+              disabled={blocked}
+              run={async () => {
+                await answers.flush();
+                return api<Attempt>(
+                  `/attempts/${attempt.id}/next-section`,
+                  "POST",
+                  { expectedIndex: attempt.section!.index },
+                );
+              }}
+              onDone={setAttempt}
+            >
+              현재 섹션 확정하고 다음으로
+            </Action>
+          )}
+        </div>
+      )}
       {blocked && (
         <Notice tone="info">
           시험이 일시정지되어 있어요.{" "}
@@ -464,10 +530,18 @@ function ExamRunner({ initial }: { initial: Attempt }) {
             <legend className="sr-only">답안 선택</legend>
             {item.type === "short" ? (
               <textarea
-                aria-label="주관식 답안"
+                aria-label={item.python ? "Python 코드 답안" : "주관식 답안"}
                 value={typeof draft?.value === "string" ? draft.value : ""}
                 rows={7}
-                placeholder="생각한 답을 적어 주세요."
+                placeholder={
+                  item.python?.starterCode || "생각한 답을 적어 주세요."
+                }
+                spellCheck={item.python ? false : undefined}
+                style={
+                  item.python
+                    ? { fontFamily: "monospace", tabSize: 4 }
+                    : undefined
+                }
                 onChange={(e) =>
                   answers.change(item.slot, { value: e.target.value })
                 }
@@ -513,6 +587,15 @@ function ExamRunner({ initial }: { initial: Attempt }) {
               })
             )}
           </fieldset>
+          {item.python && (
+            <PythonPanel
+              key={item.slot}
+              question={item}
+              attemptId={attempt.id}
+              code={typeof draft?.value === "string" ? draft.value : ""}
+              disabled={blocked}
+            />
+          )}
           <div className="row wrap spaced">
             <label className="check-label">
               <input
@@ -582,7 +665,7 @@ function ExamRunner({ initial }: { initial: Attempt }) {
           <div className="question-footer">
             <Button
               variant="secondary"
-              disabled={index === 0}
+              disabled={index === (attempt.section?.firstSlot ?? 1) - 1}
               onClick={() => setIndex((i) => i - 1)}
             >
               <ArrowLeft size={16} /> 이전 문제
@@ -592,7 +675,10 @@ function ExamRunner({ initial }: { initial: Attempt }) {
             </span>
             <Button
               variant="secondary"
-              disabled={index === attempt.exam.items.length - 1}
+              disabled={
+                index ===
+                (attempt.section?.lastSlot ?? attempt.exam.items.length) - 1
+              }
               onClick={() => setIndex((i) => i + 1)}
             >
               다음 문제 <ArrowRight size={16} />
@@ -623,6 +709,11 @@ function ExamRunner({ initial }: { initial: Attempt }) {
               return (
                 <button
                   key={q.slot}
+                  disabled={
+                    !!attempt.section &&
+                    (q.slot < attempt.section.firstSlot ||
+                      q.slot > attempt.section.lastSlot)
+                  }
                   aria-label={`${i + 1}번 문제${done ? ", 답변함" : ""}${d?.flagged ? ", 다시 보기" : ""}`}
                   className={`${done ? "answered" : ""} ${i === index ? "current" : ""} ${d?.flagged ? "flagged" : ""}`}
                   onClick={() => setIndex(i)}
@@ -678,8 +769,8 @@ function ExamRunner({ initial }: { initial: Attempt }) {
                 : "모든 문항에 답했어요."}
             </p>
             <p className="muted">
-              제출 후 객관식은 바로 채점하고, 주관식은 에이전트 채점 작업으로
-              이어져요.
+              제출 후 객관식은 바로 채점해요. Python 문항은 테스트를 실행하고,
+              서술형 문항은 AI가 채점해요.
             </p>
             <Action
               run={async () => {
@@ -771,7 +862,7 @@ export function ResultsPage({ id, slot }: { id: string; slot?: number }) {
                 run={() => api(`/attempts/${id}/grade`, "POST", {})}
                 onDone={() => go("/jobs")}
               >
-                주관식 채점 요청
+                미확정 문항 채점 요청
               </Action>
             )}
             <Action
@@ -847,7 +938,12 @@ export function ResultsPage({ id, slot }: { id: string; slot?: number }) {
               className="muted"
               text={item.assessment.explanation || item.assessment.reason || ""}
             />
-            {item.type === "short" && <ShortGradeDetails item={item} />}
+            {item.type === "short" && !item.python && (
+              <ShortGradeDetails item={item} />
+            )}
+            {item.assessment.execution && (
+              <PythonResults runs={item.assessment.execution} />
+            )}
             <div className="row wrap">
               <Button variant="secondary" onClick={() => setManual(item)}>
                 채점 직접 검토

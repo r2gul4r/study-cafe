@@ -2,6 +2,7 @@ import { fsrs, createEmptyCard, Rating, type Card } from "ts-fsrs";
 import { Exams } from "./exams.js";
 import { id, now, decode, requireThat, dayAt } from "./core.js";
 import { gradeOutput, resolveShortGrade } from "./grading.js";
+import type { Execution } from "./python.js";
 
 export { gradeOutput } from "./grading.js";
 export class Learning {
@@ -66,7 +67,9 @@ export class Learning {
             status: "pending",
             score: null,
             passed: false,
-            explanation: "주관식 채점 대기",
+            explanation: q.python
+              ? "Python 실행 채점 대기"
+              : "주관식 채점 대기",
             reason: "unknown",
             criteria: [],
             actor: "app",
@@ -91,12 +94,28 @@ export class Learning {
     });
   }
   expire() {
+    const sections = this.store.all(
+      "SELECT s.* FROM attempt_sections s JOIN attempts a ON a.id=s.attempt_id WHERE a.status='active' AND s.deadline<=?",
+      now(),
+    );
+    const sectionExpired: string[] = [];
+    for (const row of sections) {
+      let current = this.exams.sections.get(row.attempt_id);
+      while (current?.deadline && current.deadline <= now()) {
+        if (!this.exams.sections.next(row.attempt_id, current.index, true)) {
+          this.submit(row.attempt_id, "deadline:" + row.attempt_id, true);
+          sectionExpired.push(row.attempt_id);
+          break;
+        }
+        current = this.exams.sections.get(row.attempt_id);
+      }
+    }
     const rows = this.store.all(
       "SELECT id FROM attempts WHERE status='active' AND deadline IS NOT NULL AND deadline<=?",
       now(),
     );
     for (const r of rows) this.submit(r.id, "deadline:" + r.id, true);
-    return rows.map((r) => r.id);
+    return [...sectionExpired, ...rows.map((r) => r.id)];
   }
   latest(attemptId: string, slot: number) {
     const row = this.store.one(
@@ -271,6 +290,60 @@ export class Learning {
       );
       this.rebuild(this.store.get("exams", attempt.exam_id).goal_id);
       return result;
+    });
+  }
+  pythonGrade(
+    attemptId: string,
+    slot: number,
+    results: (Execution & { name: string; hidden: boolean })[],
+    expectedVersion: number,
+  ) {
+    const attempt = this.store.get("attempts", attemptId);
+    const item = this.exams
+      .get(attempt.exam_id, true)
+      .items.find((q: any) => q.slot === slot);
+    const latest = this.latest(attemptId, slot);
+    requireThat(
+      item?.python && results.length === item.python.tests.length,
+      "PYTHON_TESTS",
+      "실행 테스트 결과가 일치하지 않습니다.",
+    );
+    requireThat(
+      latest?.status === "pending" &&
+        !["user", "correction"].includes(latest.actor) &&
+        !latest.correctionRevision,
+      "GRADE_PROTECTED",
+      "확정·수동 검토·정정 결과는 자동으로 덮어쓰지 않습니다.",
+      409,
+    );
+    const passed = results.filter((r) => r.status === "passed").length;
+    return this.store.tx(() => {
+      const value = this.assess(
+        attemptId,
+        slot,
+        {
+          status: "confirmed",
+          score: Number(((item.points * passed) / results.length).toFixed(6)),
+          passed: passed === results.length,
+          actor: "python",
+          reason: "execution",
+          criteria: [],
+          explanation: `Python 실행 테스트 ${passed}/${results.length} 통과. 각 테스트는 동일 배점입니다.`,
+          execution: results.map((r) =>
+            r.hidden
+              ? {
+                  name: r.name,
+                  hidden: true,
+                  status: r.status,
+                  durationMs: r.durationMs,
+                }
+              : r,
+          ),
+        },
+        expectedVersion,
+      );
+      this.rebuild(item.goalId);
+      return value;
     });
   }
   manual(

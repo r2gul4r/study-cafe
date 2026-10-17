@@ -30,7 +30,15 @@ import {
   Action,
   Notice,
 } from "./ui";
-import { date, label, type Goal, type Home, type Concept } from "./types";
+import {
+  date,
+  label,
+  type Goal,
+  type Home,
+  type Concept,
+  type ExamSection,
+} from "./types";
+import { SectionEditor } from "./section-editor";
 import { GoalActions } from "./goal-actions";
 export function Dashboard({
   goals,
@@ -613,6 +621,9 @@ export function ScopeEditor({
   onSaved: () => void;
 }) {
   const base = initial ?? goal.scope;
+  const [sections, setSections] = useState<ExamSection[]>(
+    base?.examFormat?.sections ?? [],
+  );
   return (
     <Modal title="학습 범위 확인" onClose={onClose} wide>
       <SubmitForm
@@ -628,7 +639,7 @@ export function ScopeEditor({
                 throw new Error(
                   "각 줄을 ‘영역 | 개념’ 형식으로 입력해 주세요.",
                 );
-              const old = goal.scope?.concepts.find(
+              const old = (base?.concepts as Concept[] | undefined)?.find(
                 (c) => c.area === area.trim() && c.name === name,
               );
               return {
@@ -648,11 +659,13 @@ export function ScopeEditor({
             examFormat:
               f.get("examTotal") ||
               f.get("examMinutes") ||
-              f.get("examEvidence")
+              f.get("examEvidence") ||
+              sections.length
                 ? {
                     total: Number(f.get("examTotal")),
                     minutes: Number(f.get("examMinutes")),
                     evidenceUrl: f.get("examEvidence"),
+                    sections,
                   }
                 : null,
           });
@@ -725,6 +738,15 @@ export function ScopeEditor({
                 defaultValue={base?.examFormat?.evidenceUrl ?? ""}
               />
             </Field>
+            <SectionEditor
+              value={sections}
+              change={setSections}
+              concepts={(base?.concepts ?? []).filter((c: Concept) => !!c.id)}
+            />
+            <p className="small muted">
+              새로 추가한 개념은 범위를 먼저 저장한 뒤 섹션에 지정할 수 있어요.
+              선택하지 않으면 전체 개념을 사용해요.
+            </p>
           </div>
         </details>
       </SubmitForm>

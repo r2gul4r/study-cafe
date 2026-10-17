@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from "node:crypto";
 import { z } from "zod";
+import { pythonSpec } from "./python-contract.js";
 
 export class Fault extends Error {
   constructor(
@@ -27,6 +28,14 @@ export const decode = <T = any>(value: unknown): T => JSON.parse(String(value));
 export const text = z.string().trim().min(1).max(100_000);
 export const key = z.string().min(1).max(100);
 export const evidence = z.object({ segmentId: key, quote: text }).strict();
+export const examSection = z
+  .object({
+    title: text.max(100),
+    count: z.number().int().min(1).max(300),
+    minutes: z.number().int().min(1).max(1440),
+    conceptIds: z.array(key).max(200).default([]),
+  })
+  .strict();
 export const goalInput = z
   .object({
     title: text.max(200),
@@ -70,6 +79,7 @@ export const scopeInput = z
         total: z.number().int().min(1).max(300),
         minutes: z.number().int().min(1).max(1440),
         evidenceUrl: z.url(),
+        sections: z.array(examSection).max(10).default([]),
       })
       .nullable()
       .default(null),
@@ -82,6 +92,7 @@ export const questionInput = z
     familyId: key.optional(),
     parentId: key.nullable().default(null),
     type: z.enum(["single", "multiple", "short"]),
+    python: pythonSpec.nullable().default(null),
     stem: text,
     passage: z.string().max(50000).nullable().default(null),
     groupId: key.nullable().default(null),
@@ -172,6 +183,8 @@ export const questionInput = z
   .strict()
   .superRefine((q, c) => {
     const bad = (message: string) => c.addIssue({ code: "custom", message });
+    if (q.python && q.type !== "short")
+      bad("Python 실행 문항은 주관식이어야 합니다.");
     if (new Set(q.choices.map((v) => v.id)).size !== q.choices.length)
       bad("보기 ID가 중복됩니다.");
     if (new Set(q.conceptIds).size !== q.conceptIds.length)
@@ -215,6 +228,7 @@ export const templateInput = z
     single: z.number().int().min(0).default(20),
     multiple: z.number().int().min(0).default(0),
     short: z.number().int().min(0).default(5),
+    python: z.number().int().min(0).max(100).default(0),
     mode: z
       .enum(["practice", "weakness", "review", "mock"])
       .default("practice"),
@@ -224,9 +238,24 @@ export const templateInput = z
     minutes: z.number().int().min(1).max(1440).nullable().default(null),
     difficulty: z.enum(["easy", "medium", "hard", "any"]).default("any"),
     shuffleChoices: z.boolean().default(true),
+    sections: z.array(examSection).max(10).default([]),
   })
   .strict()
   .superRefine((v, c) => {
+    if (v.python > v.short)
+      c.addIssue({
+        code: "custom",
+        message: "Python 실행 문항 수는 주관식 수 이하여야 합니다.",
+      });
+    if (
+      v.sections.length &&
+      (v.sections.reduce((n, s) => n + s.count, 0) !== v.total ||
+        v.sections.reduce((n, s) => n + s.minutes, 0) !== v.minutes)
+    )
+      c.addIssue({
+        code: "custom",
+        message: "섹션 문항 수·시간 합계는 시험 전체와 같아야 합니다.",
+      });
     if (v.total !== v.single + v.multiple + v.short)
       c.addIssue({
         code: "custom",

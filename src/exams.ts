@@ -1,5 +1,7 @@
 import { Store } from "./store.js";
 import { Catalog } from "./catalog.js";
+import { reviewQueue } from "./reviews.js";
+import { ExamSections } from "./exam-sections.js";
 import {
   decode,
   id,
@@ -16,6 +18,9 @@ export class Exams {
   get store() {
     return this.catalog.store;
   }
+  get sections() {
+    return new ExamSections(this.store);
+  }
   template(input: unknown) {
     const data = templateInput.parse(input),
       recordId = id();
@@ -26,6 +31,62 @@ export class Exams {
       now(),
     );
     return { id: recordId, ...data };
+  }
+  createReview(goalId: string) {
+    requireThat(
+      !this.catalog.readGoal(goalId).archived,
+      "ARCHIVED",
+      "보관된 목표입니다.",
+    );
+    const due = reviewQueue(this.catalog, goalId).filter((r) => r.overdue);
+    const familyIds = new Set(due.map((r) => r.familyId));
+    const scope = this.catalog.latestScope(goalId);
+    const bank = this.catalog.listQuestions(goalId, {
+      status: "usable",
+      limit: 100000,
+    }).items;
+    const selected = [...familyIds]
+      .map((family) =>
+        bank.find((q) => q.familyId === family && q.scopeId === scope?.id),
+      )
+      .filter((q) => !!q)
+      .slice(0, 100);
+    requireThat(
+      selected.length,
+      "NO_REVIEWS",
+      "현재 범위에서 복습할 수 있는 문항이 없습니다. 문제은행의 검토 상태와 학습 범위를 확인하세요.",
+      409,
+    );
+    const template = this.template({
+      name: "오늘 복습",
+      total: selected.length,
+      single: selected.filter((q) => q.type === "single").length,
+      multiple: selected.filter((q) => q.type === "multiple").length,
+      short: selected.filter((q) => q.type === "short").length,
+      python: selected.filter((q) => !!q.python).length,
+      mode: "review",
+      policy: "mixed",
+    });
+    // Keep the actual due concepts/types, rather than allocating a new syllabus.
+    const examId = id();
+    const slots = selected.map((q, i) => ({
+      slot: i + 1,
+      type: q.type,
+      conceptId: q.conceptIds[0],
+      difficulty: "any",
+      execution: q.python ? "python" : null,
+    }));
+    this.store.run(
+      "INSERT INTO exams VALUES(?,?,?,?,?,?)",
+      examId,
+      goalId,
+      scope!.id,
+      "preparing",
+      JSON.stringify({ template, templateId: template.id, seed: id(), slots }),
+      now(),
+    );
+    this.fillExisting(examId);
+    return this.finalize(examId);
   }
   create(goalId: string, templateId: string, seed: string = id()) {
     const goal = this.catalog.readGoal(goalId);
@@ -44,16 +105,19 @@ export class Exams {
         "확인된 공식 시험 구성과 일치하지 않습니다.",
         409,
       );
+      requireThat(
+        JSON.stringify(template.sections ?? []) ===
+          JSON.stringify(scope.examFormat.sections ?? []),
+        "EXAM_FORMAT",
+        "확인된 공식 섹션 구성과 일치하지 않습니다.",
+        409,
+      );
     }
     let concepts: any[] = scope.concepts;
     if (template.mode === "review") {
-      const due = this.store
-        .all(
-          "SELECT question_id FROM review_states WHERE goal_id=? AND due<=?",
-          goalId,
-          now(),
-        )
-        .flatMap((r) => this.catalog.readQuestion(r.question_id).conceptIds);
+      const due = reviewQueue(this.catalog, goalId)
+        .filter((r) => r.overdue)
+        .flatMap((r) => this.catalog.readQuestion(r.questionId).conceptIds);
       concepts = concepts.filter((c) => due.includes(c.id));
       requireThat(
         concepts.length,
@@ -82,8 +146,22 @@ export class Exams {
       ...Array(template.multiple).fill("multiple"),
       ...Array(template.short).fill("short"),
     ];
+    let pythonRemaining = template.python ?? 0;
     const slots = types.map((type, i) => {
-      const concept = [...concepts].sort(
+      let boundary = 0;
+      const section = template.sections?.find((s) => {
+        boundary += s.count;
+        return i < boundary;
+      });
+      const eligible = section?.conceptIds.length
+        ? concepts.filter((c) => section.conceptIds.includes(c.id))
+        : concepts;
+      requireThat(
+        eligible.length,
+        "SECTION_SCOPE",
+        "섹션에 해당하는 학습 개념이 없습니다.",
+      );
+      const concept = [...eligible].sort(
         (a, b) =>
           ((i + 1) * b.weight) / totalWeight -
           (counts.get(b.id) ?? 0) -
@@ -93,6 +171,7 @@ export class Exams {
       return {
         slot: i + 1,
         type,
+        execution: type === "short" && pythonRemaining-- > 0 ? "python" : null,
         conceptId: concept.id,
         difficulty: template.difficulty,
       };
@@ -137,11 +216,17 @@ export class Exams {
       409,
     );
     if (exam.template.policy === "ai_only") return;
+    const dueFamilies = new Set(
+      reviewQueue(this.catalog, exam.goalId)
+        .filter((r) => r.overdue)
+        .map((r) => r.familyId),
+    );
     const pool = this.catalog
       .listQuestions(exam.goalId, { status: "usable", limit: 100000 })
       .items.filter(
         (q) =>
           q.scopeId === exam.scopeId &&
+          (exam.template.mode !== "review" || dueFamilies.has(q.familyId)) &&
           (exam.template.policy !== "past_only" || q.origin === "past_exam"),
       );
     const exposure = (q: any) =>
@@ -179,17 +264,30 @@ export class Exams {
         if (group.some((x) => used.has(x.id) || families.has(x.familyId)))
           continue;
         const mapped: { q: any; slot: any }[] = [];
-        const taken = new Set<number>();
-        for (const member of group) {
-          const slot = empty.find(
-            (s: any) => !taken.has(s.slot) && matches(member, s),
+        const sections = exam.template.sections?.length
+          ? exam.template.sections
+          : [{ count: exam.template.total }];
+        let firstSlot = 1;
+        for (const section of sections) {
+          const lastSlot = firstSlot + section.count - 1;
+          const available = empty.filter(
+            (s: { slot: number }) => s.slot >= firstSlot && s.slot <= lastSlot,
           );
-          if (!slot) {
-            mapped.length = 0;
-            break;
+          mapped.length = 0;
+          const taken = new Set<number>();
+          for (const member of group) {
+            const slot = available.find(
+              (s: any) => !taken.has(s.slot) && matches(member, s),
+            );
+            if (!slot) {
+              mapped.length = 0;
+              break;
+            }
+            taken.add(slot.slot);
+            mapped.push({ q: member, slot });
           }
-          taken.add(slot.slot);
-          mapped.push({ q: member, slot });
+          if (mapped.length) break;
+          firstSlot = lastSlot + 1;
         }
         if (!mapped.length) continue;
         for (const match of mapped) {
@@ -310,6 +408,7 @@ export class Exams {
       started,
       deadline,
     );
+    this.sections.start(attemptId, e.template, started);
     return this.attempt(attemptId);
   }
   attempt(attemptId: string) {
@@ -322,6 +421,7 @@ export class Exams {
       deadline: r.deadline,
       submittedAt: r.submitted_at,
       remainingMs: r.remaining_ms,
+      section: this.sections.get(attemptId),
       exam: this.get(r.exam_id),
       answers: this.store
         .all(
@@ -368,6 +468,7 @@ export class Exams {
     );
     requireThat(item, "SLOT", "없는 문항입니다.");
     const q = decode(item.data);
+    this.sections.assertSlot(attemptId, slot);
     if (q.type === "short")
       requireThat(
         typeof data.value === "string" && data.value.length <= 20000,
@@ -425,7 +526,9 @@ export class Exams {
     );
     if (!resume)
       requireThat(
-        !r.deadline || Date.parse(r.deadline) > Date.now(),
+        (!r.deadline || Date.parse(r.deadline) > Date.now()) &&
+          (!this.sections.get(attemptId)?.deadline ||
+            this.sections.get(attemptId)!.deadline! > now()),
         "DEADLINE",
         "시간이 만료됐습니다.",
         409,
@@ -444,12 +547,14 @@ export class Exams {
       resume ? null : remaining,
       attemptId,
     );
+    this.sections.pause(attemptId, resume);
     return this.attempt(attemptId);
   }
 }
 function matches(q: any, s: any) {
   return (
     q.type === s.type &&
+    (q.python?.language ?? null) === (s.execution ?? null) &&
     q.conceptIds.includes(s.conceptId) &&
     (s.difficulty === "any" || q.difficulty === s.difficulty)
   );
@@ -467,7 +572,19 @@ export function publicQuestion(q: any) {
     review,
     correctionReviewToken,
     pastExamEvidence,
+    python,
     ...publicData
   } = q;
-  return publicData;
+  return {
+    ...publicData,
+    ...(python
+      ? {
+          python: {
+            ...python,
+            tests: python.tests.filter((t: { hidden: boolean }) => !t.hidden),
+            testCount: python.tests.length,
+          },
+        }
+      : {}),
+  };
 }

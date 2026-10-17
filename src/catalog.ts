@@ -99,6 +99,22 @@ export class Catalog {
           );
         return { ...c, id: conceptId };
       });
+      const format = data.examFormat;
+      if (format?.sections.length) {
+        requireThat(
+          format.sections.reduce((n, s) => n + s.count, 0) === format.total &&
+            format.sections.reduce((n, s) => n + s.minutes, 0) ===
+              format.minutes,
+          "EXAM_FORMAT",
+          "공식 섹션의 문항 수·시간 합계가 전체와 다릅니다.",
+        );
+        const ids = new Set(data.concepts.map((c) => c.id));
+        requireThat(
+          format.sections.every((s) => s.conceptIds.every((id) => ids.has(id))),
+          "SECTION_SCOPE",
+          "섹션에 현재 범위에 없는 개념이 있습니다.",
+        );
+      }
       const scopeId = id(),
         version = (this.latestScope(goalId)?.version ?? 0) + 1;
       this.store.run(

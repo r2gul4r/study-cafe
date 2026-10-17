@@ -18,6 +18,8 @@ import { Jobs } from "./jobs.js";
 import { GoalLifecycle } from "./goal-lifecycle.js";
 import { Exams } from "./exams.js";
 import { Learning } from "./learning.js";
+import { reviewQueue } from "./reviews.js";
+import { gradePython, pythonRuntime } from "./python.js";
 import { CodexAgent, type AgentPort } from "./agent.js";
 import { registerWorkflows } from "./workflows.js";
 import {
@@ -410,17 +412,14 @@ export async function createApp(options: AppOptions) {
     readNotes(store, req.params.id),
   );
   route("GET", "/api/goals/:id/reviews", "복습 예정", (req) =>
-    store
-      .all(
-        "SELECT * FROM review_states WHERE goal_id=? ORDER BY due",
-        req.params.id,
-      )
-      .map((r) => ({
-        questionId: r.question_id,
-        due: r.due,
-        overdue: r.due <= now(),
-        state: decode(r.data),
-      })),
+    reviewQueue(catalog, req.params.id),
+  );
+  route(
+    "POST",
+    "/api/goals/:id/review-exam",
+    "오늘 남은 문항으로 복습 시험 생성",
+    (req) => exams.createReview(req.params.id),
+    z.object({}).strict(),
   );
   route("GET", "/api/goals/:id/review-events", "복습 반영 근거", (req) =>
     store
@@ -504,6 +503,11 @@ export async function createApp(options: AppOptions) {
       .object({
         text: z.string().max(2_000_000).optional(),
         base64: z.string().max(28_000_000).optional(),
+        ocr: z.boolean().default(false),
+        ocrLanguages: z
+          .array(z.enum(["eng", "jpn", "kor"]))
+          .length(1)
+          .default(["eng"]),
         mime: z
           .enum(["application/pdf", "text/plain", "text/html", "text/markdown"])
           .optional(),
@@ -785,6 +789,77 @@ export async function createApp(options: AppOptions) {
       })
       .strict(),
   );
+  route("GET", "/api/python/runtime", "Python 실행기 상태", () => ({
+    available: pythonRuntime().available,
+    engine: pythonRuntime().engine,
+  }));
+  route(
+    "POST",
+    "/api/questions/:id/suggest-regions",
+    "PDF 표시 영역 추천",
+    (req, reply) =>
+      enqueue(
+        "suggest_regions",
+        { questionId: req.params.id, revisionId: req.body.revisionId },
+        req,
+        reply,
+      ),
+    z.object({ revisionId: key }).strict(),
+  );
+  let pythonPreviewBusy = false;
+  route(
+    "POST",
+    "/api/attempts/:id/python/:slot",
+    "공개 예제로 Python 실행",
+    async (req) => {
+      learning.expire();
+      const attempt = exams.attempt(req.params.id);
+      requireThat(
+        attempt.status === "active",
+        "ATTEMPT_CLOSED",
+        "진행 중인 시험에서 실행하세요.",
+        409,
+      );
+      const item = attempt.exam.items.find(
+        (q: any) => q.slot === Number(req.params.slot),
+      );
+      exams.sections.assertSlot(req.params.id, Number(req.params.slot));
+      requireThat(
+        item?.python,
+        "PYTHON_QUESTION",
+        "Python 실행 문항이 아닙니다.",
+      );
+      requireThat(
+        !pythonPreviewBusy,
+        "PYTHON_BUSY",
+        "다른 코드 실행이 끝난 뒤 다시 실행하세요.",
+        409,
+      );
+      pythonPreviewBusy = true;
+      try {
+        return await gradePython(req.body.code, item.python);
+      } finally {
+        pythonPreviewBusy = false;
+      }
+    },
+    z.object({ code: z.string().min(1).max(20000) }).strict(),
+  );
+  route(
+    "POST",
+    "/api/attempts/:id/next-section",
+    "현재 섹션 확정 후 다음 섹션",
+    (req) => {
+      learning.expire();
+      requireThat(
+        exams.sections.next(req.params.id, req.body.expectedIndex),
+        "LAST_SECTION",
+        "마지막 섹션입니다. 답안을 제출하세요.",
+        409,
+      );
+      return exams.attempt(req.params.id);
+    },
+    z.object({ expectedIndex: z.number().int().min(0) }).strict(),
+  );
   route(
     "POST",
     "/api/attempts/:id/pause",
@@ -1019,10 +1094,13 @@ export async function createApp(options: AppOptions) {
       continueAttempts: store.all(
         "SELECT id,exam_id,status FROM attempts WHERE status IN ('active','paused') ORDER BY started_at DESC",
       ),
-      dueReviews: store.one(
-        "SELECT COUNT(*) count FROM review_states WHERE due<=?",
-        now(),
-      ).count,
+      dueReviews: store
+        .all("SELECT id FROM goals WHERE archived=0")
+        .reduce(
+          (n, g) =>
+            n + reviewQueue(catalog, g.id).filter((r) => r.overdue).length,
+          0,
+        ),
       jobs: store.all(
         "SELECT id,kind,status FROM jobs WHERE status IN ('running','queued','waiting_user','failed','paused') ORDER BY created_at DESC LIMIT 20",
       ),
@@ -1101,8 +1179,8 @@ export async function createApp(options: AppOptions) {
     timezoneDefault: "Asia/Seoul",
     defaultQuestionCount: 25,
     formats: ["text/plain", "text/html", "application/pdf"],
-    ocr: false,
-    codeExecution: false,
+    ocr: true,
+    codeExecution: pythonRuntime().available,
     frontend,
     fsrsVersion: "5.4.2",
   }));

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { api, browserHeaders } from "./api";
-import { Button, Field, Notice, SubmitForm } from "./ui";
-import type { Question } from "./types";
+import { api, browserHeaders, useQuery } from "./api";
+import { Action, Button, Field, Notice, SubmitForm } from "./ui";
+import type { Question, Job } from "./types";
 
 type Bounds = { x: number; y: number; width: number; height: number };
 const full: Bounds = { x: 0, y: 0, width: 1, height: 1 };
@@ -165,6 +165,20 @@ export function QuestionRegions({
       ]),
     ),
   );
+  const [suggestionId, setSuggestionId] = useState("");
+  const suggestion = useQuery<Job>(
+    suggestionId ? `/jobs/${suggestionId}` : null,
+    3000,
+  );
+  const suggested =
+    suggestion.data?.status === "succeeded" &&
+    suggestion.data.result?.revisionId === question.revisionId
+      ? (suggestion.data.result.regions as {
+          segmentId: string;
+          bounds: Bounds;
+          reason: string;
+        }[])
+      : null;
   return (
     <details className="spaced">
       <summary>PDF 문제 표시 영역 설정</summary>
@@ -173,6 +187,48 @@ export function QuestionRegions({
         백분율을 입력할 수 있어요. 저장하면 새 버전이 검토 대기가 됩니다. 원본
         근거와 기존 시험은 유지됩니다.
       </Notice>
+      <Action
+        variant="secondary"
+        run={() =>
+          api<Job>(`/questions/${question.id}/suggest-regions`, "POST", {
+            revisionId: question.revisionId,
+          })
+        }
+        onDone={(j) => setSuggestionId(j.id)}
+      >
+        AI로 표시 영역 추천받기
+      </Action>
+      {suggestion.data && !suggested && (
+        <p className="small">
+          {suggestion.data.error?.message ??
+            "원본에서 필요한 영역을 확인하고 있어요."}
+        </p>
+      )}
+      {suggested && (
+        <div className="spaced">
+          <p>{suggested.map((r) => r.reason).join(" ")}</p>
+          <Button
+            variant="secondary"
+            onClick={() =>
+              setBounds(
+                Object.fromEntries(
+                  pages.map((v) => [
+                    v.assetId,
+                    suggested.find((r) => r.segmentId === v.segmentId)
+                      ?.bounds ?? full,
+                  ]),
+                ),
+              )
+            }
+          >
+            추천 영역을 화면에 적용
+          </Button>
+          <p className="small muted">
+            영역을 직접 확인한 뒤 아래에서 저장하세요. 저장 후 독립 검토를 다시
+            받아요.
+          </p>
+        </div>
+      )}
       <SubmitForm
         submit="표시 영역을 새 버전으로 저장"
         onSubmit={() => {

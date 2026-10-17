@@ -776,12 +776,55 @@
                           "evidenceUrl": {
                             "type": "string",
                             "format": "uri"
+                          },
+                          "sections": {
+                            "default": [],
+                            "maxItems": 10,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "title": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 100
+                                },
+                                "count": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 300
+                                },
+                                "minutes": {
+                                  "type": "integer",
+                                  "minimum": 1,
+                                  "maximum": 1440
+                                },
+                                "conceptIds": {
+                                  "default": [],
+                                  "maxItems": 200,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 100
+                                  }
+                                }
+                              },
+                              "required": [
+                                "title",
+                                "count",
+                                "minutes",
+                                "conceptIds"
+                              ],
+                              "additionalProperties": false
+                            }
                           }
                         },
                         "required": [
                           "total",
                           "minutes",
-                          "evidenceUrl"
+                          "evidenceUrl",
+                          "sections"
                         ],
                         "additionalProperties": false
                       },
@@ -1301,6 +1344,75 @@
             "browserClient": []
           }
         ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/goals/{id}/review-exam": {
+      "post": {
+        "summary": "오늘 남은 문항으로 복습 시험 생성",
+        "security": [
+          {
+            "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {},
+                "additionalProperties": false
+              }
+            }
+          }
+        },
         "parameters": [
           {
             "name": "id",
@@ -1865,6 +1977,26 @@
                     "type": "string",
                     "maxLength": 28000000
                   },
+                  "ocr": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "ocrLanguages": {
+                    "default": [
+                      "eng"
+                    ],
+                    "minItems": 1,
+                    "maxItems": 1,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "eng",
+                        "jpn",
+                        "kor"
+                      ]
+                    }
+                  },
                   "mime": {
                     "type": "string",
                     "enum": [
@@ -1875,6 +2007,10 @@
                     ]
                   }
                 },
+                "required": [
+                  "ocr",
+                  "ocrLanguages"
+                ],
                 "additionalProperties": false
               }
             }
@@ -2114,6 +2250,75 @@
                       "single",
                       "multiple",
                       "short"
+                    ]
+                  },
+                  "python": {
+                    "default": null,
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "language": {
+                            "type": "string",
+                            "const": "python"
+                          },
+                          "starterCode": {
+                            "default": "",
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          "timeoutMs": {
+                            "default": 5000,
+                            "type": "integer",
+                            "minimum": 1000,
+                            "maximum": 10000
+                          },
+                          "tests": {
+                            "minItems": 1,
+                            "maxItems": 10,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
+                                },
+                                "stdin": {
+                                  "type": "string",
+                                  "maxLength": 10000
+                                },
+                                "stdout": {
+                                  "type": "string",
+                                  "maxLength": 10000
+                                },
+                                "hidden": {
+                                  "default": false,
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "stdin",
+                                "stdout",
+                                "hidden"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "language",
+                          "starterCode",
+                          "timeoutMs",
+                          "tests"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
                     ]
                   },
                   "stem": {
@@ -2558,6 +2763,7 @@
                   "scopeId",
                   "parentId",
                   "type",
+                  "python",
                   "stem",
                   "passage",
                   "groupId",
@@ -2883,6 +3089,75 @@
                       "single",
                       "multiple",
                       "short"
+                    ]
+                  },
+                  "python": {
+                    "default": null,
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "language": {
+                            "type": "string",
+                            "const": "python"
+                          },
+                          "starterCode": {
+                            "default": "",
+                            "type": "string",
+                            "maxLength": 20000
+                          },
+                          "timeoutMs": {
+                            "default": 5000,
+                            "type": "integer",
+                            "minimum": 1000,
+                            "maximum": 10000
+                          },
+                          "tests": {
+                            "minItems": 1,
+                            "maxItems": 10,
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "maxLength": 120
+                                },
+                                "stdin": {
+                                  "type": "string",
+                                  "maxLength": 10000
+                                },
+                                "stdout": {
+                                  "type": "string",
+                                  "maxLength": 10000
+                                },
+                                "hidden": {
+                                  "default": false,
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "name",
+                                "stdin",
+                                "stdout",
+                                "hidden"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "language",
+                          "starterCode",
+                          "timeoutMs",
+                          "tests"
+                        ],
+                        "additionalProperties": false
+                      },
+                      {
+                        "type": "null"
+                      }
                     ]
                   },
                   "stem": {
@@ -3332,6 +3607,7 @@
                   "scopeId",
                   "parentId",
                   "type",
+                  "python",
                   "stem",
                   "passage",
                   "groupId",
@@ -4236,6 +4512,12 @@
                     "minimum": 0,
                     "maximum": 9007199254740991
                   },
+                  "python": {
+                    "default": 0,
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
                   "mode": {
                     "default": "practice",
                     "type": "string",
@@ -4282,6 +4564,48 @@
                   "shuffleChoices": {
                     "default": true,
                     "type": "boolean"
+                  },
+                  "sections": {
+                    "default": [],
+                    "maxItems": 10,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 100
+                        },
+                        "count": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 300
+                        },
+                        "minutes": {
+                          "type": "integer",
+                          "minimum": 1,
+                          "maximum": 1440
+                        },
+                        "conceptIds": {
+                          "default": [],
+                          "maxItems": 200,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 100
+                          }
+                        }
+                      },
+                      "required": [
+                        "title",
+                        "count",
+                        "minutes",
+                        "conceptIds"
+                      ],
+                      "additionalProperties": false
+                    }
                   }
                 },
                 "required": [
@@ -4290,11 +4614,13 @@
                   "single",
                   "multiple",
                   "short",
+                  "python",
                   "mode",
                   "policy",
                   "minutes",
                   "difficulty",
-                  "shuffleChoices"
+                  "shuffleChoices",
+                  "sections"
                 ],
                 "additionalProperties": false
               }
@@ -4967,6 +5293,295 @@
           },
           {
             "name": "slot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/python/runtime": {
+      "get": {
+        "summary": "Python 실행기 상태",
+        "security": [
+          {
+            "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/questions/{id}/suggest-regions": {
+      "post": {
+        "summary": "PDF 표시 영역 추천",
+        "security": [
+          {
+            "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "revisionId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  }
+                },
+                "required": [
+                  "revisionId"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/attempts/{id}/python/{slot}": {
+      "post": {
+        "summary": "공개 예제로 Python 실행",
+        "security": [
+          {
+            "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 20000
+                  }
+                },
+                "required": [
+                  "code"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slot",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공"
+          },
+          "202": {
+            "description": "비동기 작업 접수. 응답은 Job 객체이며 id로 상태와 이벤트를 조회합니다."
+          },
+          "400": {
+            "description": "입력 검증 실패"
+          },
+          "401": {
+            "description": "로컬 세션 인증 필요"
+          },
+          "403": {
+            "description": "Host 또는 Origin 거부"
+          },
+          "404": {
+            "description": "자료 없음"
+          },
+          "409": {
+            "description": "상태 또는 버전 충돌"
+          },
+          "422": {
+            "description": "지원하지 않는 자료 또는 도메인 검증 실패"
+          },
+          "502": {
+            "description": "에이전트 연결 또는 결과 오류"
+          },
+          "504": {
+            "description": "외부 작업 시간 초과"
+          }
+        }
+      }
+    },
+    "/api/attempts/{id}/next-section": {
+      "post": {
+        "summary": "현재 섹션 확정 후 다음 섹션",
+        "security": [
+          {
+            "localToken": []
+          },
+          {
+            "browserCookie": [],
+            "browserClient": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$schema": "https://json-schema.org/draft/2020-12/schema",
+                "type": "object",
+                "properties": {
+                  "expectedIndex": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  }
+                },
+                "required": [
+                  "expectedIndex"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {

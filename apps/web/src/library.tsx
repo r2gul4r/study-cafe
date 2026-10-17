@@ -154,7 +154,12 @@ export function SourcesPage({ goal }: { goal: Goal }) {
                 let binary = "";
                 for (let i = 0; i < bytes.length; i += 8192)
                   binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
-                payload = { base64: btoa(binary), mime: "application/pdf" };
+                payload = {
+                  base64: btoa(binary),
+                  mime: "application/pdf",
+                  ocr: f.get("ocr") === "on",
+                  ocrLanguages: [String(f.get("ocrLanguage") || "eng")],
+                };
               } else if (inputType === "text")
                 payload = { text, mime: "text/plain" };
               const s = await api("/sources", "POST", {
@@ -177,6 +182,21 @@ export function SourcesPage({ goal }: { goal: Goal }) {
               setDetail(source);
             }}
           >
+            {inputType === "pdf" && (
+              <div className="form-grid">
+                <label>
+                  <input name="ocr" type="checkbox" /> 스캔 페이지 OCR 사용
+                  (최대 20쪽)
+                </label>
+                <Field label="OCR 언어">
+                  <select name="ocrLanguage">
+                    <option value="eng">영어</option>
+                    <option value="jpn">일본어</option>
+                    <option value="kor">한국어</option>
+                  </select>
+                </Field>
+              </div>
+            )}
             <Field label="자료 제목">
               <input
                 autoFocus
@@ -370,6 +390,13 @@ function SourceDetail({
           segments.data.map((seg) => (
             <div className="excerpt" key={seg.id}>
               <small className="muted">원문 구간 · {seg.ordinal + 1}</small>
+              {seg.locator?.ocr && (
+                <Notice tone="info">
+                  OCR 인식 결과 · 신뢰도{" "}
+                  {Math.round(seg.locator.ocr.confidence)}%. 문자·수식 오류가
+                  있을 수 있어 원본 이미지 대조 후 문제를 사용해요.
+                </Notice>
+              )}
               <p className="pre-wrap">{seg.text}</p>
             </div>
           ))

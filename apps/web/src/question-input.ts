@@ -11,6 +11,7 @@ export function revisionInput(q: Question) {
     groupId: q.groupId ?? null,
     pastExamEvidence: q.pastExamEvidence ?? null,
     type: q.type,
+    python: q.python ?? null,
     stem: q.stem,
     passage: q.passage,
     choices: q.choices,

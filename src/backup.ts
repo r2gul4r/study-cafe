@@ -90,7 +90,7 @@ export function verifyBackup(dir: string) {
       "백업 참조 오류",
     );
     requireThat(
-      [1, schemaVersion].includes(
+      [1, 2, schemaVersion].includes(
         Number(db.prepare("PRAGMA user_version").get()!.user_version),
       ),
       "BACKUP_SCHEMA",

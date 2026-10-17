@@ -87,6 +87,7 @@ export const rubricInstruction =
   "For EVERY criterion return its exact id, aligned, a verbatim promptQuote and promptField (stem or passage), and a Korean reason. " +
   "aligned=true means the ENTIRE criterion evaluates something the learner was asked to provide. Quote the actual request, not merely a topic word or code. " +
   "An output/name/value request does not implicitly require a derivation, explanation, example or verbatim model wording. " +
+  "Distinguish an explicit demand to SHOW/EXPLAIN a method from a criterion that merely describes how the expected value is obtained. For example, 'add padding and border to give 120px' identifies the expected value; it does not demand written working unless the criterion explicitly says to show or explain the calculation. Do not invent a process requirement from such descriptive wording. " +
   "If a criterion bundles a requested result with an unrequested explanation, mark it unaligned even when part of it is justified. " +
   "A model answer may contain helpful extra detail; that does not make the detail mandatory. Respect explicit explanation, format, unit and precision requirements. " +
   "If unsupported or ambiguous, set aligned=false and explain the mismatch; use an empty quote if no supporting request exists. Never rewrite the frozen rubric or redistribute points.";

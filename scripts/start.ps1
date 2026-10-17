@@ -27,6 +27,8 @@ if (-not $env:CODEX_BIN -and -not (Get-Command codex -ErrorAction SilentlyContin
     if ($codexExecutable) { $env:CODEX_BIN = $codexExecutable.FullName }
   }
 }
+& $nodeExecutable 'node_modules\deno\install.cjs'
+if ($LASTEXITCODE -ne 0) { throw 'Python execution runtime setup failed. Run pnpm install --frozen-lockfile and pnpm setup:runtimes.' }
 & $nodeExecutable 'node_modules\typescript\bin\tsc'
 if ($LASTEXITCODE -ne 0) { throw 'TypeScript build failed.' }
 if (-not $Test) {
