@@ -1,0 +1,152 @@
+{
+  "date": "2026-10-17",
+  "mode": "real Chrome UI and existing local Codex login",
+  "goalId": "04ee26b2-502e-493b-a07a-aa070ee9a1c1",
+  "source": "self-authored Python for/range text entered and ingested through UI",
+  "main": {
+    "attemptId": "54ce10c8-8fc8-4314-9170-9675414144ee",
+    "examId": "8b6150c7-254a-4383-9be2-2361d1944b3d",
+    "submittedAt": "2026-10-17T06:30:33.080Z",
+    "questionCount": 25,
+    "types": {
+      "single": 18,
+      "multiple": 2,
+      "short": 5
+    },
+    "score": 27,
+    "possible": 32,
+    "pending": 0,
+    "wrongSlots": [
+      1,
+      19,
+      21
+    ]
+  },
+  "review": {
+    "attemptId": "e4196830-e215-432c-9844-42cf6e521895",
+    "examId": "b10883fa-aa82-4ec7-a803-53318e65abc0",
+    "submittedAt": "2026-10-17T06:33:43.720Z",
+    "questionCount": 3,
+    "types": {
+      "single": 1,
+      "multiple": 1,
+      "short": 1
+    },
+    "score": 5,
+    "possible": 5,
+    "pending": 0,
+    "wrongSlots": [],
+    "variantSlot": 1,
+    "parentSlotInMain": 1
+  },
+  "notes": {
+    "count": 1,
+    "conceptCount": 2,
+    "wrongSlots": [
+      1,
+      19,
+      21
+    ],
+    "uncertainCorrectSlot": 2
+  },
+  "session": {
+    "threadId": "01a1487e-deae-72e1-b309-31c01a7cbe42",
+    "resumedCount": 27,
+    "recoveredCount": 0
+  },
+  "jobs": [
+    {
+      "id": "756d9c7e-bad3-4f22-96a1-a1334ac1c370",
+      "kind": "ingest_source",
+      "status": "succeeded",
+      "created_at": "2026-10-17T06:21:43.128Z",
+      "updated_at": "2026-10-17T06:21:43.174Z"
+    },
+    {
+      "id": "0d9f7d19-ced9-47e5-ad3e-0352670dc2c7",
+      "kind": "prepare_exam",
+      "status": "succeeded",
+      "created_at": "2026-10-17T06:22:04.723Z",
+      "updated_at": "2026-10-17T06:27:48.609Z"
+    },
+    {
+      "id": "0008bc93-11cb-44f9-ba4c-8fa3dea48e09",
+      "kind": "grade_attempt",
+      "status": "succeeded",
+      "created_at": "2026-10-17T06:30:33.118Z",
+      "updated_at": "2026-10-17T06:31:38.253Z"
+    },
+    {
+      "id": "b97afa4f-3456-4eda-b0c6-be150e16b7e4",
+      "kind": "summarize_wrong",
+      "status": "succeeded",
+      "created_at": "2026-10-17T06:31:54.950Z",
+      "updated_at": "2026-10-17T06:32:07.762Z"
+    },
+    {
+      "id": "d54818e7-3007-4d51-99c4-7df0a396a919",
+      "kind": "generate_variant",
+      "status": "succeeded",
+      "created_at": "2026-10-17T06:32:16.387Z",
+      "updated_at": "2026-10-17T06:32:29.200Z"
+    },
+    {
+      "id": "0d738242-1b19-4e8c-b149-d5cf5c939c04",
+      "kind": "grade_attempt",
+      "status": "succeeded",
+      "created_at": "2026-10-17T06:33:43.750Z",
+      "updated_at": "2026-10-17T06:33:54.462Z"
+    }
+  ],
+  "agentCalls": {
+    "total": 66,
+    "completed": 66,
+    "failed": 0,
+    "byRole": {
+      "generate_question": 25,
+      "verify_question": 26,
+      "audit_rubric": 6,
+      "grade_answer": 6,
+      "review_short_answer": 1,
+      "summarize_misconceptions": 1,
+      "generate_variant": 1
+    }
+  },
+  "reviewSchedule": {
+    "states": 25,
+    "events": 28,
+    "sameDayExcluded": 3,
+    "policy": "same_family_same_day does not change the long-term schedule"
+  },
+  "checks": {
+    "all28AnswersMatchExpectedGrades": true,
+    "reloadPreservedFiveAnswersAndFlags": true,
+    "pauseResumePassed": true,
+    "summaryQuestion21LinkPassed": true,
+    "variantUsedInReview": true,
+    "unchangedGoalThread": true
+  },
+  "fix": "Notes tab now says 틀리거나 헷갈린 문제 instead of 틀린 문제",
+  "validation": {
+    "testsPassed": 141,
+    "typecheck": "passed",
+    "build": "passed",
+    "checklistVibeCli": "not installed"
+  },
+  "limits": [
+    "Single self-authored Python scope, not web research or general grading accuracy",
+    "Same-day review only; multi-day retention and cross-PC restore not tested"
+  ],
+  "screenshots": [
+    "exam-ready.png",
+    "answers-after-reload.png",
+    "all-answers-saved.png",
+    "result-27-of-32.png",
+    "notes-label-fixed.png",
+    "misconception-summary.png",
+    "summary-links-to-question21.png",
+    "review-schedule-25.png",
+    "variant-in-review.png",
+    "review-result-5-of-5.png"
+  ]
+}

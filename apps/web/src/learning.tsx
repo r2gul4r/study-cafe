@@ -56,7 +56,7 @@ export function NotesPage({ goal }: { goal: Goal }) {
           className={tab === "wrong" ? "selected" : ""}
           onClick={() => setTab("wrong")}
         >
-          틀린 문제 · {wrong.data?.length ?? 0}
+          틀리거나 헷갈린 문제 · {wrong.data?.length ?? 0}
         </button>
         <button
           className={tab === "summary" ? "selected" : ""}
