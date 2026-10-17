@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { GoalSessions } from "./goal-sessions.js";
 import { AnswerIndex } from "./answer-retrieval.js";
 import { extractionPayload } from "./extraction-payload.js";
 import { containsVerbatimQuote } from "./evidence.js";
@@ -114,6 +115,7 @@ export function registerWorkflows(
   agent: AgentPort,
 ) {
   const s = catalog.store;
+  const goalSessions = new GoalSessions(catalog, agent);
   const ask = async <T>(
     ctx: JobContext,
     role: string,
@@ -124,7 +126,7 @@ export function registerWorkflows(
   ) => {
     const started = now();
     try {
-      const result = await agent.ask(role, input, schema, {
+      const result = await goalSessions.ask(ctx.jobId, role, input, schema, {
         signal: ctx.signal,
         search,
         images,
@@ -138,7 +140,7 @@ export function registerWorkflows(
         JSON.stringify({
           role,
           status: "completed",
-          promptVersion: 18,
+          promptVersion: 19,
           startedAt: started,
         }),
         now(),
@@ -153,7 +155,7 @@ export function registerWorkflows(
           JSON.stringify({
             role,
             status: "failed",
-            promptVersion: 18,
+            promptVersion: 19,
             startedAt: started,
           }),
           now(),

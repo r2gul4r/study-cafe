@@ -9,7 +9,7 @@ import {
   unlinkSync,
 } from "node:fs";
 import { join, resolve } from "node:path";
-import { Store } from "./store.js";
+import { Store, schemaVersion } from "./store.js";
 import { id, hash, requireThat, now } from "./core.js";
 
 export function backup(store: Store) {
@@ -90,7 +90,9 @@ export function verifyBackup(dir: string) {
       "백업 참조 오류",
     );
     requireThat(
-      (db.prepare("PRAGMA user_version").get() as any).user_version === 1,
+      [1, schemaVersion].includes(
+        Number(db.prepare("PRAGMA user_version").get()!.user_version),
+      ),
       "BACKUP_SCHEMA",
       "DB 스키마 오류",
     );

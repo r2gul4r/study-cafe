@@ -9,6 +9,8 @@ import {
 import { join } from "node:path";
 import { id, hash, now, decode, requireThat } from "./core.js";
 
+export const schemaVersion = 2;
+
 const migration = `
 CREATE TABLE goals(id TEXT PRIMARY KEY,data TEXT NOT NULL,archived INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL);
 CREATE TABLE scopes(id TEXT PRIMARY KEY,goal_id TEXT NOT NULL REFERENCES goals(id),version INTEGER NOT NULL,data TEXT NOT NULL,created_at TEXT NOT NULL,UNIQUE(goal_id,version));
@@ -50,7 +52,7 @@ export class Store {
     );
     const version = this.one("PRAGMA user_version")?.user_version;
     requireThat(
-      version === 0 || version === 1,
+      Number.isInteger(version) && version >= 0 && version <= schemaVersion,
       "SCHEMA_VERSION",
       "지원하지 않는 데이터 버전입니다.",
     );
@@ -58,6 +60,18 @@ export class Store {
       this.tx(() => {
         this.db.exec(migration);
         this.db.exec("PRAGMA user_version=1");
+      });
+    if (version < 2)
+      this.tx(() => {
+        this.db.exec(`
+          CREATE TABLE goal_sessions(
+            goal_id TEXT PRIMARY KEY REFERENCES goals(id) ON DELETE CASCADE,
+            thread_id TEXT NOT NULL UNIQUE,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+          );
+          PRAGMA user_version=2;
+        `);
       });
   }
   run(sql: string, ...params: any[]) {

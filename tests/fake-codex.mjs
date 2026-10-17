@@ -18,6 +18,17 @@ createInterface({ input: process.stdin }).on("line", (line) => {
       throw new Error("Inherited tools were not disabled");
     result = { thread: { id: "thread-1" } };
   }
+  if (msg.method === "turn/interrupt") {
+    send({ id: msg.id, result: {} });
+    send({
+      method: "turn/completed",
+      params: {
+        threadId: msg.params.threadId,
+        turn: { id: msg.params.turnId, status: "interrupted", items: [] },
+      },
+    });
+    return;
+  }
   if (msg.method === "turn/start") {
     if (mode === "images") {
       const input = msg.params.input;
