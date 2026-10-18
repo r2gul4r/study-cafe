@@ -194,6 +194,12 @@ test("missing history recovers from DB; a provider error preserves the saved lin
     /Recover this goal/,
   );
   assert.deepEqual(events, [
+    {
+      type: "agent_configuration",
+      goalId: goal.id,
+      role: "plan_goal",
+      configuration: null,
+    },
     { type: "goal_session", goalId: goal.id, action: "recovered" },
   ]);
   await agent.close();
@@ -305,7 +311,7 @@ test("legacy DB/backup migration preserves goals and goal deletion removes the s
   s.close();
   s = new Store(dir);
   t.after(() => s.close());
-  assert.equal(s.one("PRAGMA user_version").user_version, 3);
+  assert.equal(s.one("PRAGMA user_version").user_version, 4);
   assert.equal(new Catalog(s).readGoal(goal.id).title, "Legacy");
   s.run(
     "INSERT INTO goal_sessions VALUES(?,?,?,?)",
@@ -319,7 +325,7 @@ test("legacy DB/backup migration preserves goals and goal deletion removes the s
   const restoredDir = temp();
   restoreBackup(backupDir, restoredDir);
   const restored = new Store(restoredDir);
-  assert.equal(restored.one("PRAGMA user_version").user_version, 3);
+  assert.equal(restored.one("PRAGMA user_version").user_version, 4);
   assert.equal(new Catalog(restored).readGoal(goal.id).title, "Legacy");
   restored.close();
   const jobs = new Jobs(s),

@@ -6,6 +6,65 @@ import { join, resolve } from "node:path";
 import { z } from "zod";
 import { CodexAgent, wireSchema } from "../src/agent.js";
 
+for (const role of ["plan_goal", "research_sources"]) {
+  for (const ending of ["complete", "cancel", "disconnect"]) {
+    test(
+      `${role} has no turn deadline and still handles ${ending}`,
+      { timeout: 5000 },
+      async (t) => {
+        const agent = new CodexAgent({
+          binary: process.execPath,
+          args: [resolve("tests/fake-session-codex.mjs")],
+          cwd: mkdtempSync(join(tmpdir(), "study-cafe-long-turn-")),
+          timeoutMs: 40,
+        });
+        const controller = new AbortController();
+        let action: NodeJS.Timeout | undefined;
+        t.after(async () => {
+          clearTimeout(action);
+          await agent.close();
+        });
+        agent.on("notification", (event: { method: string }) => {
+          if (event.method !== "turn/started" || ending === "complete") return;
+          action = setTimeout(() => {
+            if (ending === "cancel") controller.abort();
+            else void agent.close();
+          }, 160);
+        });
+        const result = agent.ask(
+          role,
+          ending === "complete" ? { delayMs: 160 } : { hang: true },
+          z.object({ threadId: z.string(), history: z.number() }),
+          { signal: controller.signal },
+        );
+        if (ending === "complete") assert.equal((await result).history, 1);
+        else
+          await assert.rejects(result, {
+            code: ending === "cancel" ? "CANCELLED" : "CODEX_EXIT",
+          });
+      },
+    );
+  }
+}
+
+test("question generation keeps its turn deadline", async (t) => {
+  const agent = new CodexAgent({
+    binary: process.execPath,
+    args: [resolve("tests/fake-session-codex.mjs")],
+    cwd: mkdtempSync(join(tmpdir(), "study-cafe-timed-turn-")),
+    timeoutMs: 40,
+  });
+  t.after(() => agent.close());
+  await assert.rejects(
+    agent.ask(
+      "generate_question",
+      { delayMs: 160 },
+      z.object({ threadId: z.string(), history: z.number() }),
+    ),
+    { code: "CODEX_TURN_TIMEOUT" },
+  );
+});
+
 test("provider schema removes unsupported URI format but local validation stays strict", () => {
   const local = z
     .object({ url: z.url(), optional: z.string().optional() })

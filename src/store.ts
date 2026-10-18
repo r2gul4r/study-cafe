@@ -9,7 +9,7 @@ import {
 import { join } from "node:path";
 import { id, hash, now, decode, requireThat } from "./core.js";
 
-export const schemaVersion = 3;
+export const schemaVersion = 4;
 
 const migration = `
 CREATE TABLE goals(id TEXT PRIMARY KEY,data TEXT NOT NULL,archived INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL);
@@ -78,6 +78,13 @@ export class Store {
         this.db.exec(
           `CREATE TABLE IF NOT EXISTS attempt_sections(attempt_id TEXT PRIMARY KEY REFERENCES attempts(id) ON DELETE CASCADE,section_index INTEGER NOT NULL,deadline TEXT,remaining_ms INTEGER); PRAGMA user_version=3;`,
         );
+      });
+    if (version < 4)
+      this.tx(() => {
+        this.db.exec(`CREATE TABLE IF NOT EXISTS goal_agent_settings(
+          goal_id TEXT PRIMARY KEY REFERENCES goals(id) ON DELETE CASCADE,
+          model TEXT NOT NULL,effort TEXT NOT NULL,updated_at TEXT NOT NULL
+        ); PRAGMA user_version=4;`);
       });
   }
   run(sql: string, ...params: any[]) {

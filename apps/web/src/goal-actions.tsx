@@ -4,7 +4,6 @@ import { api, useQuery } from "./api";
 import {
   Action,
   Button,
-  Field,
   Loading,
   Modal,
   Notice,
@@ -35,57 +34,59 @@ export function GoalActions({
       }
       onClose={close}
     >
-      <p className="goal-action-title">{goal.title}</p>
-      {mode === "menu" && (
-        <div className="goal-action-list">
-          <Button variant="secondary" onClick={edit}>
-            <Pencil size={17} /> 목표 수정
-          </Button>
-          {goal.archived ? (
-            <Action
-              variant="secondary"
-              run={() =>
-                api(`/goals/${goal.id}/archive`, "POST", { archived: false })
-              }
-              onDone={changed}
-            >
-              <RotateCcw size={17} /> 목표 복원
-            </Action>
-          ) : (
-            <Button variant="secondary" onClick={() => setMode("archive")}>
-              <Archive size={17} /> 목표 보관
+      <div className="modal-body">
+        <p className="goal-action-title">{goal.title}</p>
+        {mode === "menu" && (
+          <div className="goal-action-list">
+            <Button variant="secondary" onClick={edit}>
+              <Pencil size={17} /> 목표 수정
             </Button>
-          )}
-          <Button variant="danger" onClick={() => setMode("delete")}>
-            <Trash2 size={17} /> 영구 삭제
-          </Button>
-        </div>
-      )}
-      {mode === "archive" && (
-        <>
-          <Notice tone="info">
-            학습 기록을 유지하면서 공부 중인 목록에서 숨깁니다. 보관함에서
-            언제든 복원할 수 있어요. 이미 시작한 에이전트 작업은 계속
-            진행됩니다.
-          </Notice>
-          <div className="row wrap spaced">
-            <Button variant="secondary" onClick={close}>
-              취소
+            {goal.archived ? (
+              <Action
+                variant="secondary"
+                run={() =>
+                  api(`/goals/${goal.id}/archive`, "POST", { archived: false })
+                }
+                onDone={changed}
+              >
+                <RotateCcw size={17} /> 목표 복원
+              </Action>
+            ) : (
+              <Button variant="secondary" onClick={() => setMode("archive")}>
+                <Archive size={17} /> 목표 보관
+              </Button>
+            )}
+            <Button variant="danger" onClick={() => setMode("delete")}>
+              <Trash2 size={17} /> 영구 삭제
             </Button>
-            <Action
-              run={() =>
-                api(`/goals/${goal.id}/archive`, "POST", { archived: true })
-              }
-              onDone={changed}
-            >
-              보관하기
-            </Action>
           </div>
-        </>
-      )}
-      {mode === "delete" && (
-        <DeleteGoal goal={goal} changed={changed} close={close} />
-      )}
+        )}
+        {mode === "archive" && (
+          <>
+            <Notice tone="info">
+              학습 기록을 유지하면서 공부 중인 목록에서 숨깁니다. 보관함에서
+              언제든 복원할 수 있어요. 이미 시작한 에이전트 작업은 계속
+              진행됩니다.
+            </Notice>
+            <div className="row wrap spaced">
+              <Button variant="secondary" onClick={close}>
+                취소
+              </Button>
+              <Action
+                run={() =>
+                  api(`/goals/${goal.id}/archive`, "POST", { archived: true })
+                }
+                onDone={changed}
+              >
+                보관하기
+              </Action>
+            </div>
+          </>
+        )}
+        {mode === "delete" && (
+          <DeleteGoal goal={goal} changed={changed} close={close} />
+        )}
+      </div>
     </Modal>
   );
 }
@@ -153,17 +154,14 @@ function DeleteGoal({
         <SubmitForm
           submit="목표와 기록 영구 삭제"
           submitVariant="danger"
-          onSubmit={(f) =>
+          onSubmit={() =>
             api(`/goals/${goal.id}`, "DELETE", {
-              title: f.get("title"),
+              title: data.title,
               confirmation: data.confirmation,
             })
           }
           onDone={changed}
         >
-          <Field label={`확인을 위해 ‘${data.title}’ 입력`}>
-            <input name="title" required autoComplete="off" />
-          </Field>
           <Button type="button" variant="secondary" onClick={close}>
             취소
           </Button>

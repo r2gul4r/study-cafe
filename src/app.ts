@@ -12,7 +12,7 @@ import { join } from "node:path";
 import { Store } from "./store.js";
 import { BrowserSessions } from "./browser-sessions.js";
 import { readNotes } from "./notes.js";
-import { Catalog, sourceInput } from "./catalog.js";
+import { Catalog, sourceInput, sourcePatchInput } from "./catalog.js";
 import { Sources, fetchPublic } from "./sources.js";
 import { Jobs } from "./jobs.js";
 import { GoalLifecycle } from "./goal-lifecycle.js";
@@ -21,6 +21,8 @@ import { Learning } from "./learning.js";
 import { reviewQueue } from "./reviews.js";
 import { gradePython, pythonRuntime } from "./python.js";
 import { CodexAgent, type AgentPort } from "./agent.js";
+import { AgentSettings } from "./agent-settings.js";
+import { agentConfiguration } from "./agent-configuration.js";
 import { registerWorkflows } from "./workflows.js";
 import {
   questionRegionsInput,
@@ -33,6 +35,7 @@ import {
   decode,
   now,
   goalInput,
+  goalPatchInput,
   scopeInput,
   questionInput,
   templateInput,
@@ -66,6 +69,7 @@ export async function createApp(options: AppOptions) {
       model: process.env.STUDY_CAFE_MODEL,
     });
   registerWorkflows(jobs, catalog, sources, exams, learning, agent);
+  const agentSettings = new AgentSettings(store, agent);
   const tokenFile = join(options.dataDir, "session-token");
   const token =
     options.token ??
@@ -318,11 +322,24 @@ export async function createApp(options: AppOptions) {
     catalog.readGoal(req.params.id),
   );
   route(
+    "GET",
+    "/api/goals/:id/agent-settings",
+    "공부 세션 모델·추론 설정",
+    (req) => agentSettings.read(req.params.id),
+  );
+  route(
+    "PUT",
+    "/api/goals/:id/agent-settings",
+    "공부 세션 모델·추론 변경",
+    (req) => agentSettings.save(req.params.id, req.body),
+    agentConfiguration,
+  );
+  route(
     "PATCH",
     "/api/goals/:id",
     "목표 변경",
     (req) => catalog.updateGoal(req.params.id, req.body),
-    goalInput.partial(),
+    goalPatchInput,
   );
   route(
     "POST",
@@ -483,7 +500,7 @@ export async function createApp(options: AppOptions) {
       );
       return catalog.readSource(req.params.id);
     },
-    sourceInput.partial(),
+    sourcePatchInput,
   );
   route("GET", "/api/sources/:id/segments", "원문 근거 구간", (req) =>
     catalog.segments(req.params.id),
@@ -1034,7 +1051,9 @@ export async function createApp(options: AppOptions) {
   route("GET", "/api/agent/status", "코덱스 연결·로그인 상태", () =>
     agent.status(),
   );
-  route("GET", "/api/agent/models", "코덱스 모델 목록", () => agent.models());
+  route("GET", "/api/agent/models", "코덱스 모델 목록", () =>
+    agentSettings.models(),
+  );
   route(
     "POST",
     "/api/agent/login",

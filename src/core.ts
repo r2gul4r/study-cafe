@@ -57,6 +57,15 @@ export const goalInput = z
       .default("Asia/Seoul"),
   })
   .strict();
+// PATCH must preserve omitted fields; optional defaults still run in Zod 4.
+export const goalPatchInput = goalInput.partial().extend({
+  description: goalInput.shape.description.removeDefault().optional(),
+  kind: goalInput.shape.kind.removeDefault().optional(),
+  level: goalInput.shape.level.removeDefault().optional(),
+  targetDate: goalInput.shape.targetDate.removeDefault().optional(),
+  minutesPerDay: goalInput.shape.minutesPerDay.removeDefault().optional(),
+  timezone: goalInput.shape.timezone.removeDefault().optional(),
+});
 export const scopeInput = z
   .object({
     title: text.max(200),

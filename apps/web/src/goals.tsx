@@ -40,6 +40,7 @@ import {
 } from "./types";
 import { SectionEditor } from "./section-editor";
 import { GoalActions } from "./goal-actions";
+import { SessionSettings } from "./session-settings";
 export function Dashboard({
   goals,
   home,
@@ -142,7 +143,11 @@ export function Dashboard({
         ].map(([Icon, title, value, sub], i) => {
           const I = Icon as typeof Target;
           return (
-            <div className="stat-card" key={i}>
+            <button
+              className="stat-card"
+              key={i}
+              onClick={() => go(["/goals", "/goals", "/reviews", "/jobs"][i])}
+            >
               <div className="row between">
                 <span>{String(title)}</span>
                 <I size={18} />
@@ -152,7 +157,7 @@ export function Dashboard({
                 <small>개</small>
               </strong>
               <p>{String(sub)}</p>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -429,6 +434,11 @@ export function Goals({
                   <Badge>{goal.level || "현재 수준 미정"}</Badge>
                   <Badge>목표일 {date(goal.targetDate)}</Badge>
                 </div>
+                <SessionSettings
+                  key={goal.id}
+                  goalId={goal.id}
+                  title={goal.title}
+                />
                 <div className="row wrap spaced">
                   <Action
                     run={() => api(`/goals/${goal.id}/plan`, "POST", {})}

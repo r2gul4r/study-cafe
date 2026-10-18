@@ -33,6 +33,7 @@ import { Dashboard, Goals } from "./goals";
 import { SourcesPage, Bank } from "./library";
 import { ExamsPage, AttemptPage, ResultsPage } from "./exams";
 import { NotesPage, ReviewsPage, JobsPage, SettingsPage } from "./learning";
+import { ActivityIsland } from "./activity-island";
 const nav = [
   ["/", "학습 홈", LayoutDashboard],
   ["/goals", "내 목표", Target],
@@ -50,6 +51,9 @@ export function App() {
   const [connecting, setConnecting] = useState(true);
   const [connectionError, setConnectionError] = useState("");
   const [disconnecting, setDisconnecting] = useState(false);
+  const agentStatus = useQuery<{ type?: string }>(
+    connected ? "/agent/status" : null,
+  );
   useEffect(() => {
     let live = true;
     void initializeConnection()
@@ -90,6 +94,14 @@ export function App() {
   const [narrow, setNarrow] = useState(
     matchMedia("(max-width: 760px)").matches,
   );
+  useEffect(() => {
+    if (!mobile || !narrow) return;
+    const overflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = overflow;
+    };
+  }, [mobile, narrow]);
   useEffect(() => {
     const media = matchMedia("(max-width: 760px)");
     const resize = () => setNarrow(media.matches);
@@ -232,7 +244,7 @@ export function App() {
         className={`sidebar ${mobile ? "open" : ""}`}
         inert={narrow && !mobile}
       >
-        <a className="brand" href="#/">
+        <a className="brand" href="#/" onClick={() => setMobile(false)}>
           <span className="brand-icon">
             <Coffee size={21} />
           </span>
@@ -252,7 +264,9 @@ export function App() {
             <a
               key={path}
               className={pathname === path ? "active" : ""}
+              aria-current={pathname === path ? "page" : undefined}
               href={"#" + path}
+              onClick={() => setMobile(false)}
             >
               <Icon size={18} />
               <span>{name}</span>
@@ -274,7 +288,9 @@ export function App() {
           </div>
           <a
             className={pathname === "/settings" ? "active" : ""}
+            aria-current={pathname === "/settings" ? "page" : undefined}
             href="#/settings"
+            onClick={() => setMobile(false)}
           >
             <Settings size={18} /> 설정
           </a>
@@ -351,6 +367,12 @@ export function App() {
           </div>
         </header>
         <main id="main-content" tabIndex={-1}>
+          {agentStatus.data?.type === "ui-fixture" && (
+            <Notice tone="info">
+              UI 검증용 공부방 · 실제 AI 호출이 없는 테스트 화면이에요. 실사용은
+              바탕화면의 공부방 바로가기로 열어 주세요.
+            </Notice>
+          )}
           {connectionError && <Notice>{connectionError}</Notice>}
           <div className="page-context">
             <span>
@@ -375,6 +397,13 @@ export function App() {
                   ))}
               </select>
             </label>
+          </div>
+          <div className="session-toolbar">
+            <ActivityIsland
+              jobs={home.data?.jobs ?? []}
+              loading={home.loading}
+              error={home.error}
+            />
           </div>
           {goals.error && (
             <Notice>
@@ -403,7 +432,7 @@ export function App() {
           ) : pathname === "/settings" ? (
             <SettingsPage />
           ) : pathname.startsWith("/attempt/") ? (
-            <AttemptPage id={pathname.split("/")[2]} />
+            <AttemptPage key={pathname} id={pathname.split("/")[2]} />
           ) : pathname.startsWith("/result/") ? (
             <ResultsPage
               key={route}
@@ -426,21 +455,21 @@ export function App() {
               }
             />
           ) : pathname === "/sources" ? (
-            <SourcesPage key={goal.id} goal={goal} />
+            <SourcesPage key={`sources:${goal.id}`} goal={goal} />
           ) : pathname === "/bank" ? (
             <Bank
-              key={goal.id + route}
+              key={`bank:${goal.id}:${route}`}
               goal={goal}
               search={
                 new URLSearchParams(route.split("?")[1]).get("search") ?? ""
               }
             />
           ) : pathname === "/exams" ? (
-            <ExamsPage key={goal.id} goal={goal} />
+            <ExamsPage key={`exams:${goal.id}`} goal={goal} />
           ) : pathname === "/notes" ? (
-            <NotesPage key={goal.id} goal={goal} />
+            <NotesPage key={`notes:${goal.id}`} goal={goal} />
           ) : pathname === "/reviews" ? (
-            <ReviewsPage key={goal.id} goal={goal} />
+            <ReviewsPage key={`reviews:${goal.id}`} goal={goal} />
           ) : (
             <Heading
               title="화면을 찾을 수 없어요"

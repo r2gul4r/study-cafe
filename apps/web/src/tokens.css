@@ -1,8 +1,11 @@
 :root {
-  --canvas: #f8faf8;
-  --ink: #34463b;
-  --muted: #687b6e;
-  --line: #e5eae5;
-  --green: #326d53;
-  --green-soft: #edf4ed;
+  --canvas: #f5f6f3;
+  --surface: #ffffff;
+  --ink: #253e33;
+  --muted: #5e7266;
+  --line: #dde5dd;
+  --green: #27654c;
+  --green-soft: #eaf3eb;
+  --shadow: 0 2px 3px #16372b03, 0 8px 28px #16372b06;
+  --radius: 16px;
 }

@@ -1,15 +1,34 @@
 import { spawn } from "node:child_process";
 import { homedir } from "node:os";
 import { join } from "node:path";
+import { existsSync } from "node:fs";
 
-export function defaultDataDir() {
-  return (
-    process.env.STUDY_CAFE_DATA_DIR ??
-    join(
-      process.env.LOCALAPPDATA ?? join(homedir(), ".local", "share"),
+export function defaultDataDir(
+  env: NodeJS.ProcessEnv = process.env,
+  home = homedir(),
+  platform: NodeJS.Platform = process.platform,
+) {
+  if (env.STUDY_CAFE_DATA_DIR?.trim()) return env.STUDY_CAFE_DATA_DIR;
+  if (platform !== "win32")
+    return join(
+      env.LOCALAPPDATA ?? join(home, ".local", "share"),
       "study-cafe",
-    )
+    );
+  // Packaged Windows apps virtualize AppData. The profile directory is shared
+  // with ordinary desktop launches, so both must use this location.
+  const directory = join(home, ".study-cafe");
+  const legacy = join(
+    env.LOCALAPPDATA ?? join(home, "AppData", "Local"),
+    "study-cafe",
   );
+  if (
+    !existsSync(join(directory, "study-cafe.db")) &&
+    existsSync(join(legacy, "study-cafe.db"))
+  )
+    throw new Error(
+      `기존 공부방 데이터가 ${legacy}에 있습니다. 서버를 종료하고 백업한 뒤 ${directory}로 이전하세요. 빈 DB는 만들지 않았습니다.`,
+    );
+  return directory;
 }
 export function openBrowser(url: string): Promise<void> {
   const parsed = new URL(url);

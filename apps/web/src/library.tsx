@@ -131,6 +131,7 @@ export function SourcesPage({ goal }: { goal: Goal }) {
               <button
                 key={v}
                 className={inputType === v ? "selected" : ""}
+                aria-pressed={inputType === v}
                 onClick={() => setInputType(v)}
               >
                 {t}

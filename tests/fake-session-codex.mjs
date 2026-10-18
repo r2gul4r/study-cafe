@@ -26,6 +26,25 @@ createInterface({ input: process.stdin }).on("line", (line) => {
   if (id === undefined) return;
   const reply = (result) => send({ id, result });
   if (method === "config/read") return reply({ config: {} });
+  if (method === "model/list")
+    return reply({
+      data: [
+        {
+          id: params.cursor ? "model-b" : "model-a",
+          model: params.cursor ? "model-b" : "model-a",
+          displayName: params.cursor ? "Model B" : "Model A",
+          defaultReasoningEffort: params.cursor ? "high" : "medium",
+          supportedReasoningEfforts: (params.cursor
+            ? ["high", "max"]
+            : ["low", "medium", "high"]
+          ).map((reasoningEffort) => ({
+            reasoningEffort,
+            description: reasoningEffort,
+          })),
+        },
+      ],
+      nextCursor: params.cursor ? null : "second-page",
+    });
   if (method === "thread/start") {
     const threadId = randomUUID();
     threads[threadId] = {

@@ -5,8 +5,13 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { Fault, requireThat } from "./core.js";
+import {
+  modelCatalog,
+  type AgentConfiguration,
+} from "./agent-configuration.js";
 
 export type AskOptions = {
+  configuration?: AgentConfiguration;
   signal?: AbortSignal;
   search?: boolean;
   images?: { path: string; label: string }[];
@@ -353,13 +358,35 @@ export class CodexAgent extends EventEmitter implements AgentPort {
   }
   async models() {
     await this.connect();
-    return this.rpc("model/list", {});
+    const data: z.infer<typeof modelCatalog>["data"] = [];
+    const seen = new Set<string>();
+    let cursor: string | undefined;
+    do {
+      const page = modelCatalog.parse(
+        await this.rpc("model/list", {
+          ...(cursor ? { cursor } : {}),
+          limit: 100,
+        }),
+      );
+      data.push(...page.data);
+      cursor = page.nextCursor ?? undefined;
+      requireThat(
+        !cursor || !seen.has(cursor),
+        "CODEX_MODEL_CATALOG",
+        "모델 목록 페이지가 반복되었습니다.",
+        502,
+      );
+      if (cursor) seen.add(cursor);
+    } while (cursor);
+    return { data, nextCursor: null };
   }
   private async thread(role: string, options: AskOptions): Promise<string> {
     const session = options.session;
     const params = {
       cwd: this.options.cwd,
-      ...(this.options.model ? { model: this.options.model } : {}),
+      ...((options.configuration?.model ?? this.options.model)
+        ? { model: options.configuration?.model ?? this.options.model }
+        : {}),
       approvalPolicy: "never",
       sandbox: "read-only",
       config: {
@@ -442,7 +469,13 @@ export class CodexAgent extends EventEmitter implements AgentPort {
           }
         : input,
     );
-    const timeoutMs = this.options.timeoutMs ?? 180_000;
+    // Planning and source discovery may keep searching legitimately for a long
+    // time. Only explicit cancellation or a provider/connection failure stops
+    // these turns; transport RPCs still have their own response deadlines.
+    const timeoutMs =
+      role === "plan_goal" || role === "research_sources"
+        ? undefined
+        : (this.options.timeoutMs ?? 180_000);
     return new Promise<T>((resolve, reject) => {
       let turnId: string | undefined;
       let settled = false;
@@ -486,15 +519,18 @@ export class CodexAgent extends EventEmitter implements AgentPort {
       };
       const abort = () =>
         stop(new Fault(409, "CANCELLED", "에이전트 작업이 취소되었습니다."));
-      const timer = setTimeout(() => {
-        stop(
-          new Fault(
-            504,
-            "CODEX_TURN_TIMEOUT",
-            "에이전트 작업 제한 시간을 초과했습니다.",
-          ),
-        );
-      }, timeoutMs);
+      const timer =
+        timeoutMs === undefined
+          ? undefined
+          : setTimeout(() => {
+              stop(
+                new Fault(
+                  504,
+                  "CODEX_TURN_TIMEOUT",
+                  "에이전트 작업 제한 시간을 초과했습니다.",
+                ),
+              );
+            }, timeoutMs);
       const onExit = (e: Error) => finish(stopping ?? e);
       const onNotification = (msg: any) => {
         const p = msg.params ?? {};
@@ -561,7 +597,11 @@ export class CodexAgent extends EventEmitter implements AgentPort {
       }
       void this.rpc("turn/start", {
         threadId,
-        effort: this.options.effort ?? "medium",
+        ...(options.configuration
+          ? { model: options.configuration.model }
+          : {}),
+        effort:
+          options.configuration?.effort ?? this.options.effort ?? "medium",
         input: [
           { type: "text", text: inputText },
           ...(options.images ?? []).flatMap((image) => [

@@ -2,6 +2,8 @@ import { z } from "zod";
 import type { AgentPort, AskOptions } from "./agent.js";
 import { Catalog } from "./catalog.js";
 import { decode, now, requireThat } from "./core.js";
+import { AgentSettings } from "./agent-settings.js";
+import { isStudyModelAllowed } from "./agent-configuration.js";
 
 // Unknown/new roles stay isolated until deliberately added to the manager.
 const managedRoles = new Set([
@@ -102,14 +104,32 @@ export class GoalSessions {
     schema: z.ZodType<T>,
     options: AskOptions,
   ): Promise<T> {
+    const goalId = this.goalId(jobId);
+    const configured = () => {
+      const configuration =
+        new AgentSettings(this.catalog.store, this.agent).read(goalId)
+          .configuration ?? undefined;
+      requireThat(
+        !configuration || isStudyModelAllowed(configuration.model),
+        "AGENT_MODEL_DISABLED",
+        "Daybreak는 공부방에서 제외된 모델입니다. 목표에서 다른 모델을 선택해 주세요.",
+      );
+      options.onProgress?.({
+        type: "agent_configuration",
+        goalId,
+        role,
+        configuration: configuration ?? null,
+      });
+      return configuration;
+    };
     // First grading is isolated too: the manager may have authored the answer.
     if (!managedRoles.has(role))
       return this.agent.ask(role, input, schema, {
         ...options,
+        configuration: configured(),
         session: undefined,
       });
 
-    const goalId = this.goalId(jobId);
     const previous = this.lanes.get(goalId) ?? Promise.resolve();
     let release!: () => void;
     const gate = new Promise<void>((resolve) => {
@@ -127,6 +147,7 @@ export class GoalSessions {
       );
       return await this.agent.ask(role, input, schema, {
         ...options,
+        configuration: configured(),
         session: {
           goalId,
           threadId: row ? z.string().parse(row.thread_id) : undefined,

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x2=".8" y2="1"><stop stop-color="#438468"/><stop offset="1" stop-color="#173f31"/></linearGradient>
+    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#fffdf2"/><stop offset="1" stop-color="#e6e9d4"/></linearGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="58" fill="url(#bg)"/>
+  <rect x="14" y="14" width="228" height="228" rx="53" fill="none" stroke="#b5d5b5" stroke-opacity=".2" stroke-width="2"/>
+  <path d="M45 150Q86 138 124 157Q164 139 205 149V202Q164 191 125 210Q85 191 45 202Z" fill="#102f26" opacity=".3"/>
+  <path d="M43 139Q85 130 124 149Q163 130 205 139V189Q162 182 124 201Q85 182 43 189Z" fill="url(#paper)"/>
+  <path d="M124 152V192" stroke="#95ae93" stroke-width="3" stroke-linecap="round"/>
+  <path d="M60 153Q85 151 108 163M60 165Q85 163 108 175M141 163Q162 152 188 153M141 175Q162 164 188 165" fill="none" stroke="#9aad8c" stroke-width="4" stroke-linecap="round"/>
+  <path d="M158 83H172Q190 83 190 100Q190 117 168 117H156" fill="none" stroke="#efd99f" stroke-width="11"/>
+  <path d="M84 76H163V113Q163 141 125 141Q87 141 84 113Z" fill="#fff9e8"/>
+  <ellipse cx="123.5" cy="77" rx="39.5" ry="10" fill="#efe0b9"/>
+  <ellipse cx="123.5" cy="78" rx="30" ry="5" fill="#5b3d28"/>
+  <path d="M110 57Q101 48 114 36M135 57Q125 48 139 34" fill="none" stroke="#d8e7ce" stroke-width="5" stroke-linecap="round" opacity=".85"/>
+  <path d="M197 38L201 49L212 53L201 57L197 68L193 57L182 53L193 49Z" fill="#efd295"/>
+</svg>

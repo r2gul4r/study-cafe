@@ -19,6 +19,8 @@ cd C:\git\study-cafe
 
 스크립트는 PATH의 Node/pnpm 또는 설치된 Codex 번들 런타임을 찾아 의존성 설치·빌드·실행한다. 일반 개발 환경에서는 다음 명령을 사용한다.
 
+Windows 바탕화면 바로가기는 `.\scripts\create-shortcut.ps1`로 만든다. **공부방** 아이콘을 열면 서버가 꺼져 있을 때 숨김 창으로 시작하고, 이미 실행 중이면 기존 서버에 연결한다. 실행 오류는 알림과 `output/launcher` 로그로 확인한다. 아이콘 원본은 `apps/web/public/study-cafe.svg`이며 `node scripts/build-icon.mjs`로 Windows용 ICO를 재생성할 수 있다.
+
 ```sh
 pnpm install --frozen-lockfile
 pnpm --dir apps/web install --frozen-lockfile
@@ -26,7 +28,7 @@ pnpm build
 pnpm start
 ```
 
-기본 주소는 `http://127.0.0.1:4317`이다. 데이터 기본 위치는 Windows의 `%LOCALAPPDATA%\study-cafe`이며 `STUDY_CAFE_DATA_DIR`로 변경할 수 있다. 데이터 폴더는 실행 코드·Git 저장소와 분리한다. 서버를 종료하려면 Ctrl+C를 누른다.
+기본 주소는 `http://127.0.0.1:4317`이다. Windows 데이터 기본 위치는 `%USERPROFILE%\.study-cafe`다. Codex 앱의 AppData 가상화와 관계없이 바탕화면·터미널 실행이 같은 DB를 사용한다. `STUDY_CAFE_DATA_DIR`를 명시하면 해당 경로를 사용한다. 이전 `%LOCALAPPDATA%\study-cafe`에 DB가 있고 새 위치에 없으면 빈 DB를 만들지 않고 이전 안내를 출력한다. 기존 서버를 종료하고 데이터 폴더 전체를 백업한 뒤 새 위치로 복사해야 하며, 서로 다른 DB를 덮어쓰거나 합치면 안 된다. 데이터 폴더는 실행 코드·Git 저장소와 분리한다. 서버를 종료하려면 Ctrl+C를 누른다.
 
 서버가 브라우저를 열고 자동으로 연결한다. 토큰을 복사하거나 입력할 필요가 없다. 같은 브라우저의 연결은 30일 동안 유지하며 서버를 재시작하거나 새 탭을 열어도 다시 연결된다. 연결 해제·쿠키 삭제·만료 후에는 서버가 실행 중인 상태에서 `pnpm open` 또는 `.\scripts\start.ps1 -Open`으로 다시 연다. 사용자 지정 데이터 폴더는 서버와 실행기에 같은 `STUDY_CAFE_DATA_DIR`를 지정한다. 자동 브라우저 열기를 끄려면 `STUDY_CAFE_NO_OPEN=1` 또는 `.\scripts\start.ps1 -NoBrowser`를 사용한다. [보호 방식·문제 해결](docs/AUTOMATIC_CONNECTION.md).
 
@@ -35,12 +37,15 @@ pnpm start
 학습 데이터 API는 인증을 계속 요구한다. 브라우저는 보호된 쿠키와 요청 출처 검사로 연결하며, CLI는 기존처럼 토큰 파일의 값을 `Authorization: Bearer ...` 헤더에 넣는다. `/api/browser/connect`는 일회용 연결 정보 또는 기존 Bearer 인증을 검증하며 빈 요청으로 연결할 수 없다. 토큰을 URL이나 Git에 넣지 않는다.
 
 ```powershell
-$studyToken = (Get-Content "$env:LOCALAPPDATA\study-cafe\session-token" -Raw).Trim()
+$studyData = node --import tsx scripts/data-directory.ts
+$studyToken = (Get-Content (Join-Path $studyData 'session-token') -Raw).Trim()
 $studyHeaders = @{ Authorization = "Bearer $studyToken" }
 Invoke-RestMethod http://127.0.0.1:4317/api/home -Headers $studyHeaders
 ```
 
-코덱스 실행 파일을 자동으로 찾지 못하면 `CODEX_BIN` 환경 변수에 경로를 지정한다. 모델을 지정하려면 `/api/agent/models`에서 사용 가능한 후보를 확인한 뒤 `STUDY_CAFE_MODEL`을 설정한다. 계정 상태 조회와 실제 추론 성공은 별개이며 다음 검사로 실제 호출을 확인할 수 있다.
+화면 상단에서 현재 목표를 선택한 뒤 **모델 · 추론** 버튼을 누르면 공부 세션별 설정을 바꿀 수 있다. Codex가 반환한 모델과 지원 추론 강도만 선택하며 DB에 저장한다. 기존 대화는 유지되고 다음 AI 호출부터 적용한다. 검증·재채점도 선택한 설정을 사용하되 별도 대화로 실행한다. 아직 설정하지 않은 목표는 기존 `STUDY_CAFE_MODEL` 또는 Codex 기본 모델과 추론 `medium`을 사용한다. [사용법·검증](docs/SESSION_SETTINGS_2026_10_18.md).
+
+코덱스 실행 파일을 자동으로 찾지 못하면 `CODEX_BIN` 환경 변수에 경로를 지정한다. 계정 상태·모델 목록 조회와 실제 추론 성공은 별개이며 다음 검사로 실제 호출을 확인할 수 있다.
 
 ```sh
 pnpm codex:probe

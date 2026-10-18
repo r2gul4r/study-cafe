@@ -279,6 +279,7 @@ function CreateExam({
                   type="button"
                   key={n}
                   className={total === n ? "selected" : ""}
+                  aria-pressed={total === n}
                   onClick={() => {
                     setTotal(n);
                     setSingle(n - 5);
@@ -889,6 +890,7 @@ export function ResultsPage({ id, slot }: { id: string; slot?: number }) {
           <button
             key={v}
             className={filter === v ? "selected" : ""}
+            aria-pressed={filter === v}
             onClick={() => setFilter(v)}
           >
             {t}

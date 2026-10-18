@@ -646,3 +646,13 @@ export const sourceInput = z
     answerSourceIds: z.array(z.string()).max(20).default([]),
   })
   .strict();
+// Do not apply creation defaults to fields absent from a partial update.
+export const sourcePatchInput = sourceInput.partial().extend({
+  url: sourceInput.shape.url.removeDefault().optional(),
+  publisher: sourceInput.shape.publisher.removeDefault().optional(),
+  kind: sourceInput.shape.kind.removeDefault().optional(),
+  rights: sourceInput.shape.rights.removeDefault().optional(),
+  rightsBasis: sourceInput.shape.rightsBasis.removeDefault().optional(),
+  examEvidence: sourceInput.shape.examEvidence.removeDefault().optional(),
+  answerSourceIds: sourceInput.shape.answerSourceIds.removeDefault().optional(),
+});

@@ -55,12 +55,14 @@ export function NotesPage({ goal }: { goal: Goal }) {
       <div className="segmented narrow">
         <button
           className={tab === "wrong" ? "selected" : ""}
+          aria-pressed={tab === "wrong"}
           onClick={() => setTab("wrong")}
         >
           틀리거나 헷갈린 문제 · {wrong.data?.length ?? 0}
         </button>
         <button
           className={tab === "summary" ? "selected" : ""}
+          aria-pressed={tab === "summary"}
           onClick={() => setTab("summary")}
         >
           개념 요약 · {notes.data?.length ?? 0}
@@ -81,6 +83,7 @@ export function NotesPage({ goal }: { goal: Goal }) {
                 <button
                   key={q.attemptId + ":" + q.slot}
                   className={selected === i ? "selected" : ""}
+                  aria-pressed={selected === i}
                   onClick={() => setSelected(i)}
                 >
                   <span className="muted small">
@@ -225,12 +228,14 @@ export function ReviewsPage({ goal }: { goal: Goal }) {
         <div className="segmented narrow">
           <button
             className={filter === "all" ? "selected" : ""}
+            aria-pressed={filter === "all"}
             onClick={() => setFilter("all")}
           >
             전체
           </button>
           <button
             className={filter === "due" ? "selected" : ""}
+            aria-pressed={filter === "due"}
             onClick={() => setFilter("due")}
           >
             오늘까지
@@ -339,6 +344,7 @@ export function JobsPage({ refresh }: { refresh: () => void }) {
           <button
             key={v}
             className={filter === v ? "selected" : ""}
+            aria-pressed={filter === v}
             onClick={() => {
               setFilter(v);
               setId("");
@@ -357,6 +363,7 @@ export function JobsPage({ refresh }: { refresh: () => void }) {
               <button
                 key={j.id}
                 className={j.id === selected?.id ? "selected" : ""}
+                aria-pressed={j.id === selected?.id}
                 onClick={() => setId(j.id)}
               >
                 <span className="source-icon">
@@ -760,10 +767,27 @@ export function SettingsPage() {
       <section className="panel spaced">
         <h3>디자인 참고</h3>
         <p className="muted small">
-          무료 MIT 템플릿의 탐색·목록·노트 구성을 참고해 study-cafe에 맞게
-          구현했어요.
+          공개된 카드·버튼·상태 알림·탐색 패턴을 공부방에 맞게 구현했어요.
         </p>
         <div className="row wrap">
+          {[
+            ["21st", "https://21st.dev/community/components/s/card"],
+            ["SmoothUI", "https://smoothui.dev/docs/components/dynamic-island"],
+            ["Component Gallery", "https://component.gallery/components/tabs/"],
+            ["Magic UI", "https://magicui.design/docs/components/bento-grid"],
+            ["Uiverse", "https://uiverse.io/vinodjangid07/chilly-newt-81"],
+          ].map(([name, url]) => (
+            <a
+              className="text-link"
+              key={name}
+              href={url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {name}
+              <ExternalLink size={14} />
+            </a>
+          ))}
           <a
             className="text-link"
             href="https://github.com/satnaing/shadcn-admin"

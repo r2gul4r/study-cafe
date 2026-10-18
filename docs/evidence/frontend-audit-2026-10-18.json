@@ -1,0 +1,290 @@
+[
+  {
+    "route": "#/",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "오늘도, 한 걸음 더.",
+    "width": 320
+  },
+  {
+    "route": "#/goals",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "내 목표",
+    "width": 320
+  },
+  {
+    "route": "#/sources",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "학습 자료",
+    "width": 320
+  },
+  {
+    "route": "#/bank",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "문제은행",
+    "width": 320
+  },
+  {
+    "route": "#/exams",
+    "dialogs": 0,
+    "scrollWidth": 320,
+    "settings": 1,
+    "title": "시험과 기록",
+    "width": 320
+  },
+  {
+    "route": "#/notes",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "오답 노트",
+    "width": 320
+  },
+  {
+    "route": "#/reviews",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "복습 일정",
+    "width": 320
+  },
+  {
+    "route": "#/jobs",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "에이전트 작업",
+    "width": 320
+  },
+  {
+    "route": "#/settings",
+    "dialogs": 0,
+    "scrollWidth": 305,
+    "settings": 1,
+    "title": "설정",
+    "width": 320
+  },
+  {
+    "route": "#/",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "오늘도, 한 걸음 더.",
+    "width": 390
+  },
+  {
+    "route": "#/goals",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "내 목표",
+    "width": 390
+  },
+  {
+    "route": "#/sources",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "학습 자료",
+    "width": 390
+  },
+  {
+    "route": "#/bank",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "문제은행",
+    "width": 390
+  },
+  {
+    "route": "#/exams",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "시험과 기록",
+    "width": 390
+  },
+  {
+    "route": "#/notes",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "오답 노트",
+    "width": 390
+  },
+  {
+    "route": "#/reviews",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "복습 일정",
+    "width": 390
+  },
+  {
+    "route": "#/jobs",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "에이전트 작업",
+    "width": 390
+  },
+  {
+    "route": "#/settings",
+    "dialogs": 0,
+    "scrollWidth": 375,
+    "settings": 1,
+    "title": "설정",
+    "width": 390
+  },
+  {
+    "route": "#/",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "오늘도, 한 걸음 더.",
+    "width": 768
+  },
+  {
+    "route": "#/goals",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "내 목표",
+    "width": 768
+  },
+  {
+    "route": "#/sources",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "학습 자료",
+    "width": 768
+  },
+  {
+    "route": "#/bank",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "문제은행",
+    "width": 768
+  },
+  {
+    "route": "#/exams",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "시험과 기록",
+    "width": 768
+  },
+  {
+    "route": "#/notes",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "오답 노트",
+    "width": 768
+  },
+  {
+    "route": "#/reviews",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "복습 일정",
+    "width": 768
+  },
+  {
+    "route": "#/jobs",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "에이전트 작업",
+    "width": 768
+  },
+  {
+    "route": "#/settings",
+    "dialogs": 0,
+    "scrollWidth": 753,
+    "settings": 1,
+    "title": "설정",
+    "width": 768
+  },
+  {
+    "route": "#/",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "오늘도, 한 걸음 더.",
+    "width": 1280
+  },
+  {
+    "route": "#/goals",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "내 목표",
+    "width": 1280
+  },
+  {
+    "route": "#/sources",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "학습 자료",
+    "width": 1280
+  },
+  {
+    "route": "#/bank",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "문제은행",
+    "width": 1280
+  },
+  {
+    "route": "#/exams",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "시험과 기록",
+    "width": 1280
+  },
+  {
+    "route": "#/notes",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "오답 노트",
+    "width": 1280
+  },
+  {
+    "route": "#/reviews",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "복습 일정",
+    "width": 1280
+  },
+  {
+    "route": "#/jobs",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "에이전트 작업",
+    "width": 1280
+  },
+  {
+    "route": "#/settings",
+    "dialogs": 0,
+    "scrollWidth": 1265,
+    "settings": 1,
+    "title": "설정",
+    "width": 1280
+  }
+]
